@@ -135,6 +135,7 @@
     ground. That is the whole idea.</p>
     <hr class="rule" />
     <p class="smallcaps">Teacher notes</p>
+    <small>The base of this map is terrain only — no modern roads, city labels, or present-day state lines, which would show learners a country that did not yet exist. The state and territory borders drawn in gray are from <strong>1854</strong>. The novel is set earlier than that, roughly in the 1830s or 1840s, but every state along the river — Missouri, Illinois, Kentucky, Tennessee, Arkansas, Mississippi, Louisiana — was already in place by then and had the same shape, so the boundaries the raft passes are the right ones. What changes after the raft's era is chiefly the far West, off the edge of this story.</small>
     <small>St. Petersburg is Twain's version of Hannibal, Missouri, where he grew up. Bricksville, Pikesville, and the Wilks town are inventions; they are placed here at their approximate settings, inferred from the raft's travel time and Twain's descriptions of the Arkansas shore.</small>
     <small>Cairo, Illinois; St. Louis; Jackson's Island; and the Ohio confluence are real and named or clearly implied in the novel. River miles are approximate.</small>
     <small>The novel is set roughly forty to fifty years before it was published — in the 1830s or 1840s, when slavery was legal in Missouri, Kentucky, Tennessee, Arkansas, Mississippi, and Louisiana, and illegal in Illinois and the states up the Ohio.</small>
@@ -147,10 +148,21 @@
      PART 1 — Content and reading panel. No dependencies.
      =================================================================== -->
 <script>
+/* ---------------------------------------------------------------------
+   THE MAP BENEATH THE STORY
+   No modern basemap: today's highways, city labels, and state lines show
+   learners a country that did not yet exist. Instead, bare terrain, with
+   the period state and territory borders drawn plainly on top.
+   --------------------------------------------------------------------- */
 var CONFIG = {
-  apiKey: "",
-  styledBasemap: "arcgis/topographic",
-  freeBasemap: "osm"
+
+  /* Terrain with no labels, no roads, no borders. Needs no key. */
+  terrainUrl: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer",
+
+  /* States and territories, 1854. Outlines only — no fill, no labels. */
+  boundaryUrl: "https://services.arcgis.com/BG6nSlhZSAWtExvp/arcgis/rest/services/1854_US_states_and_territories/FeatureServer/0",
+  boundaryColor: [140, 140, 140, 0.9],   /* light gray */
+  boundaryWidth: 1.2
 };
 
 /* Colors are read from the stylesheet, so a theme swap re-skins the map too. */
@@ -381,14 +393,20 @@ function showMapMessage(title, html){
 
   require([
     "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/Basemap", "esri/layers/TileLayer", "esri/layers/FeatureLayer",
     "esri/layers/GraphicsLayer", "esri/Graphic",
     "esri/geometry/Point", "esri/geometry/Polyline"
-  ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
+  ], function(esriConfig, Map, MapView, Basemap, TileLayer, FeatureLayer,
+              GraphicsLayer, Graphic, Point, Polyline){
 
-    var basemap = CONFIG.freeBasemap;
-    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.styledBasemap; }
+    /* Bare terrain: relief and water, but no labels, roads, or modern borders. */
+    var terrain = new Basemap({
+      baseLayers: [ new TileLayer({ url: CONFIG.terrainUrl }) ],
+      title: "Terrain",
+      id: "terrain-no-labels"
+    });
 
-    var map = new Map({ basemap: basemap });
+    var map = new Map({ basemap: terrain });
     var view = new MapView({
       container: "viewDiv", map: map,
       center: [-90.2, 36.2], zoom: 6,
@@ -403,6 +421,37 @@ function showMapMessage(title, html){
       });
 
     var SR = { wkid: 4326 };
+
+    /* ---------------------------------------------------------------
+       THE 1854 BORDERS
+       Outlines only: no fill, no labels, no legend. Just enough to show
+       which state each bank belongs to, without a modern map's clutter.
+       (The service is published with a max scale of about 1:155,000, which
+       would make the borders vanish at the closest stops. Draw at all scales.)
+       --------------------------------------------------------------- */
+    var bounds = new FeatureLayer({
+      url: CONFIG.boundaryUrl,
+      title: "States and territories, 1854",
+      popupEnabled: false,
+      labelsVisible: false,
+      minScale: 0,
+      maxScale: 0,
+      renderer: {
+        type: "simple",
+        symbol: {
+          type: "simple-fill",
+          color: [0, 0, 0, 0],                      /* no fill: the terrain shows through */
+          outline: { color: CONFIG.boundaryColor, width: CONFIG.boundaryWidth }
+        }
+      }
+    });
+
+    bounds.load().then(function(){
+      map.add(bounds, 0);                           /* beneath the river and the stops */
+    }).catch(function(){
+      /* The terrain and the story still work without them; stay quiet. */
+    });
+
     var riverLayer    = new GraphicsLayer();   /* the whole river, faint */
     var ohioLayer     = new GraphicsLayer();   /* the escape they missed */
     var territoryLayer= new GraphicsLayer();   /* the escape they never take */

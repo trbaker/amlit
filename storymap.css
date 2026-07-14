@@ -16,7 +16,7 @@
    ------------------------------------------------------------ */
 :root{
   /* Palette */
-  --paper:      #EAE0CC;   /* page background */
+  --paper:      #FFFFFF;   /* page background */
   --paper-deep: #DFD1B6;   /* cards, insets, open panels */
   --ink:        #26201A;   /* text, rules, outlines */
   --muted:      #5A4D3D;   /* secondary text */
@@ -400,18 +400,18 @@ details.qgroup[open] summary::after{ content: "–"; }
    question banks, and the stop cards all carry over.
 
    THE HOUSE ON MANGO STREET — Chicago brick, vacant lot, hope
-     --paper:#F2EDE6; --paper-deep:#E4DAcd; --ink:#2B2320;
+     --paper:#FFFFFF; --paper-deep:#E4DAcd; --ink:#2B2320;
      --muted:#6A5C52; --accent:#B5462F; --accent-2:#C9A227; --cool:#3F6F73;
 
    THEIR EYES WERE WATCHING GOD — muck, hurricane, horizon
-     --paper:#EFEAD8; --paper-deep:#DDD6BC; --ink:#22261F;
+     --paper:#FFFFFF; --paper-deep:#DDD6BC; --ink:#22261F;
      --muted:#5B6152; --accent:#8C5A2B; --accent-2:#A8A05C; --cool:#2F5B60;
 
    THE UNDERGROUND RAILROAD — night, lantern, rail
-     --paper:#E7E3DC; --paper-deep:#D5D0C6; --ink:#1B1D1F;
+     --paper:#FFFFFF; --paper-deep:#D5D0C6; --ink:#1B1D1F;
      --muted:#575B5E; --accent:#7D2B2B; --accent-2:#8E7A4E; --cool:#31465C;
 
    ADVENTURES OF HUCKLEBERRY FINN — river light, raft, silt
-     --paper:#EDE8D5; --paper-deep:#DCD5BC; --ink:#2A2620;
+     --paper:#FFFFFF; --paper-deep:#DCD5BC; --ink:#2A2620;
      --muted:#5E5648; --accent:#9A6B2F; --accent-2:#B9A05E; --cool:#4A6B5D;
    ============================================================ */

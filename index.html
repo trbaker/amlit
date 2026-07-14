@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
 
-<!-- The shared Storygrounds stylesheet -->
 <link rel="stylesheet" href="storymap.css" />
 </head>
 <body>
@@ -24,9 +23,9 @@
     <p class="lede">Every one of these books happens <em>somewhere</em>. A family is driven off a
     farm and pointed down a numbered highway. A boy and a man drift south on a river that is carrying
     them the wrong way. Put those places on a map and the story stops being background and starts
-    being evidence — something students can trace, measure, and argue with.</p>
-    <p class="lede">Each study below pairs an interactive map with the text, and with a bank of
-    questions built on three levels.</p>
+    being evidence &mdash; something students can trace, measure, and argue with.</p>
+    <p class="lede">Each study pairs an interactive map with the text, and with a bank of questions
+    built on three levels.</p>
 
     <div class="levels">
       <div class="level">
@@ -37,7 +36,7 @@
       <div class="level">
         <span class="q-tag">2</span>
         <h4>Why is it there?</h4>
-        <p>The processes that put things in their places — rivers, rainfall, roads, borders, money, and power.</p>
+        <p>The processes that put things in their places &mdash; rivers, rainfall, roads, borders, money, and power.</p>
       </div>
       <div class="level">
         <span class="q-tag">3</span>
@@ -52,92 +51,263 @@
     <p class="eyebrow">The Library</p>
     <h2>Studies</h2>
 
-    <div class="library">
-
-      <!-- ============ THE GRAPES OF WRATH ============ -->
-      <a class="card" href="steinbeck-grapes.html" style="--card-accent:#A83B24;">
-        <svg class="glyph" viewBox="0 0 260 56" role="img" aria-label="A route running west with stops along it">
-          <line x1="10" y1="40" x2="250" y2="18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="10"  cy="40" r="6" fill="currentColor"/>
-          <circle cx="70"  cy="34" r="4" fill="currentColor"/>
-          <circle cx="130" cy="28" r="4" fill="currentColor"/>
-          <circle cx="190" cy="23" r="4" fill="currentColor"/>
-          <circle cx="250" cy="18" r="6" fill="currentColor"/>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21" stroke-linecap="round"/>
         </svg>
-        <h3>The Grapes of Wrath</h3>
-        <p class="by">by Steinbeck</p>
-        <p class="route">Sallisaw, Oklahoma to the San Joaquin Valley — 1,650 miles of Route 66, thirteen stops, and a family carried west by drought.</p>
-        <span class="go">Open the study →</span>
-      </a>
-
-      <!-- ============ HUCKLEBERRY FINN ============ -->
-      <a class="card" href="twain-huckleberry.html" style="--card-accent:#9A6B2F;">
-        <svg class="glyph" viewBox="0 0 260 56" role="img" aria-label="A river winding southward with stops along it">
-          <path d="M14 8 C 60 20, 40 32, 90 34 S 150 22, 175 38 S 235 40, 248 50"
-                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="14"  cy="8"  r="6" fill="currentColor"/>
-          <circle cx="90"  cy="34" r="4" fill="currentColor"/>
-          <circle cx="175" cy="38" r="4" fill="currentColor"/>
-          <circle cx="248" cy="50" r="6" fill="currentColor"/>
-        </svg>
-        <h3>Adventures of Huckleberry Finn</h3>
-        <p class="by">by Twain</p>
-        <p class="route">Hannibal to the deep South by raft — and the missed turn at Cairo, where the river stopped carrying Jim toward freedom and started carrying him away from it.</p>
-        <span class="go">Open the study →</span>
-      </a>
-
-      <!-- ============ THE UNDERGROUND RAILROAD ============ -->
-      <a class="card" href="whitehead-railroad.html" style="--card-accent:#7D2B2B;">
-        <svg class="glyph" viewBox="0 0 260 56" role="img" aria-label="A rail line running north with crossties and stops">
-          <line x1="18" y1="50" x2="242" y2="8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-          <g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.75">
-            <line x1="38"  y1="52" x2="44"  y2="40"/>
-            <line x1="76"  y1="45" x2="82"  y2="33"/>
-            <line x1="114" y1="38" x2="120" y2="26"/>
-            <line x1="152" y1="31" x2="158" y2="19"/>
-            <line x1="190" y1="24" x2="196" y2="12"/>
-          </g>
-          <rect x="12" y="44" width="12" height="12" fill="currentColor"/>
-          <rect x="236" y="2" width="12" height="12" fill="currentColor"/>
-        </svg>
-        <h3>The Underground Railroad</h3>
-        <p class="by">by Whitehead</p>
-        <p class="route">Georgia to Indiana on a railroad that is literally underground — and a mother who never got past the swamp, one mile from where she started.</p>
-        <span class="go">Open the study →</span>
-      </a>
-
-      <!-- ============================================================
-           TO ADD A STUDY: copy one card block, change the four things
-           marked below, and drop it in above this comment.
-
-           <a class="card" href="AUTHOR-TITLE.html" style="--card-accent:#HEX;">
-             <svg class="glyph" viewBox="0 0 260 56"> … route glyph … </svg>
-             <h3>BOOK TITLE</h3>
-             <p class="by">by AUTHOR SURNAME</p>
-             <p class="route">One sentence: where it goes, and what the map reveals.</p>
-             <span class="go">Open the study →</span>
-           </a>
-
-           Use the book's own accent color from its theme block, so the card
-           and the study it opens agree with each other.
-           ============================================================ -->
-
+        <label for="search" class="visually-hidden"></label>
+        <input id="search" type="search" autocomplete="off"
+               placeholder="Search by title, author, state, or place&hellip;" aria-label="Search the studies" />
+      </div>
+      <select id="fRegion" class="filter" aria-label="Filter by region"></select>
+      <select id="fForm" class="filter" aria-label="Filter by kind of journey"></select>
+      <select id="fSort" class="filter" aria-label="Sort the studies">
+        <option value="author">Sort: Author</option>
+        <option value="title">Sort: Title</option>
+        <option value="region">Sort: Region</option>
+        <option value="year">Sort: Year</option>
+      </select>
     </div>
+
+    <p class="count" id="count" role="status"></p>
+    <div class="studies" id="studies"></div>
   </section>
 
 
   <footer class="colophon">
     <p class="smallcaps">About this project</p>
     <p>Storygrounds is built for the American literature classroom. Each study can be read straight
-    through, scrolled like a story, or projected for a class — hide the text and the map takes the
+    through, scrolled like a story, or projected for a class &mdash; hide the text and the map takes the
     whole screen, with arrow keys to step through the stops.</p>
     <p>Teachers can check the questions they want from any of the three levels and copy them out for
     a handout, a discussion guide, or an exit ticket.</p>
     <p>The three-level framework follows the geographic inquiry tradition of <em>what is where,
     why there, and why care?</em></p>
+    <p>This project was designed and created by Dr. Tom Baker. Learn more about his work at
+    <a href="https://tbaker.com">tbaker.com</a>.</p>
   </footer>
 
 </div>
+
+
+<script>
+/* =====================================================================
+   THE LIBRARY
+   ---------------------------------------------------------------------
+   To add a study, add one object to this list. Nothing else on the page
+   needs to change: the region and journey filters build themselves from
+   whatever values appear here.
+
+     file    the page to open. Omit it (or set ready:false) for a study
+             that is planned but not yet built — it will show as
+             "In development" and will not be clickable.
+     places  extra search terms — states, cities, rivers, regions.
+             Never displayed; only searched.
+     form    Road · River · Rail · Sea · Rooted   (Rooted = one place,
+             not a journey. Any new value gets its own filter option.)
+     accent  the book's accent color, matching its theme block.
+   ===================================================================== */
+var STUDIES = [
+
+  { file:   "steinbeck-grapes.html",
+    title:  "The Grapes of Wrath",
+    author: "Steinbeck",
+    year:   1939,
+    region: "West & Great Plains",
+    form:   "Road",
+    accent: "#A83B24",
+    ready:  true,
+    places: "Oklahoma Texas New Mexico Arizona California Route 66 Dust Bowl Sallisaw Bakersfield Mojave Weedpatch San Joaquin migration",
+    blurb:  "Sallisaw, Oklahoma to the San Joaquin Valley — 1,650 miles of Route 66, and a family carried west by drought." },
+
+  { file:   "twain-huckleberry.html",
+    title:  "Adventures of Huckleberry Finn",
+    author: "Twain",
+    year:   1884,
+    region: "The Mississippi",
+    form:   "River",
+    accent: "#9A6B2F",
+    ready:  true,
+    places: "Missouri Illinois Kentucky Tennessee Arkansas Mississippi River Hannibal Cairo Ohio River St. Louis slavery raft",
+    blurb:  "Hannibal to the deep South by raft — and the missed turn at Cairo, where the river stopped carrying Jim toward freedom and started carrying him away from it." },
+
+  { file:   "whitehead-railroad.html",
+    title:  "The Underground Railroad",
+    author: "Whitehead",
+    year:   2016,
+    region: "The South",
+    form:   "Rail",
+    accent: "#7D2B2B",
+    ready:  true,
+    places: "Georgia South Carolina North Carolina Tennessee Indiana Ouidah Middle Passage slavery cotton escape",
+    blurb:  "Georgia to Indiana on a railroad that is literally underground — and a mother who never got past the swamp, one mile from where she started." }
+
+  /* ---------------------------------------------------------------
+     TEMPLATE — copy, fill in, and add a comma to the line above.
+
+  ,{ file:   "cisneros-mangostreet.html",
+     title:  "The House on Mango Street",
+     author: "Cisneros",
+     year:   1984,
+     region: "Midwest",
+     form:   "Rooted",
+     accent: "#B5462F",
+     ready:  false,
+     places: "Chicago Illinois barrio neighborhood",
+     blurb:  "One Chicago block, and a girl learning what a house can mean." }
+
+     --------------------------------------------------------------- */
+];
+
+
+/* ---------- A small mark for each kind of journey ---------- */
+function markFor(form){
+  var s = '<svg class="mark" viewBox="0 0 34 34" fill="none" stroke="currentColor" aria-hidden="true">';
+  switch (form) {
+    case "River":
+      return s + '<path d="M4 6 C14 12, 6 18, 16 20 S 28 24, 30 30" stroke-width="2.5" stroke-linecap="round"/>'
+               + '<circle cx="4" cy="6" r="2.6" fill="currentColor" stroke="none"/>'
+               + '<circle cx="30" cy="30" r="2.6" fill="currentColor" stroke="none"/></svg>';
+    case "Rail":
+      return s + '<line x1="6" y1="29" x2="28" y2="5" stroke-width="2.5" stroke-linecap="round"/>'
+               + '<g stroke-width="1.8" stroke-linecap="round" opacity="0.8">'
+               + '<line x1="9" y1="29" x2="13" y2="24"/><line x1="15" y1="22" x2="19" y2="17"/>'
+               + '<line x1="21" y1="15" x2="25" y2="10"/></g>'
+               + '<rect x="3" y="27" width="5" height="5" fill="currentColor" stroke="none"/>'
+               + '<rect x="26" y="2" width="5" height="5" fill="currentColor" stroke="none"/></svg>';
+    case "Rooted":
+      return s + '<circle cx="17" cy="17" r="11" stroke-width="1.6" opacity="0.55"/>'
+               + '<circle cx="17" cy="17" r="6" stroke-width="2"/>'
+               + '<circle cx="17" cy="17" r="2.8" fill="currentColor" stroke="none"/></svg>';
+    case "Sea":
+      return s + '<path d="M3 22 q6 -6 12 0 t12 0" stroke-width="2.2" stroke-linecap="round"/>'
+               + '<path d="M3 28 q6 -6 12 0 t12 0" stroke-width="2.2" stroke-linecap="round" opacity="0.55"/>'
+               + '<circle cx="26" cy="9" r="3" fill="currentColor" stroke="none"/></svg>';
+    default: /* Road */
+      return s + '<line x1="4" y1="27" x2="30" y2="8" stroke-width="2.5" stroke-linecap="round"/>'
+               + '<circle cx="4"  cy="27" r="2.8" fill="currentColor" stroke="none"/>'
+               + '<circle cx="17" cy="17.5" r="2" fill="currentColor" stroke="none"/>'
+               + '<circle cx="30" cy="8"  r="2.8" fill="currentColor" stroke="none"/></svg>';
+  }
+}
+
+/* ---------- Build the filter menus from the data itself ---------- */
+function fillFilter(sel, label, values){
+  var opts = ['<option value="">' + label + ': All</option>'];
+  values.sort();
+  for (var i = 0; i < values.length; i++) {
+    opts.push('<option value="' + values[i] + '">' + values[i] + '</option>');
+  }
+  sel.innerHTML = opts.join("");
+}
+function uniq(key){
+  var seen = {}, out = [];
+  for (var i = 0; i < STUDIES.length; i++) {
+    var v = STUDIES[i][key];
+    if (v && !seen[v]) { seen[v] = 1; out.push(v); }
+  }
+  return out;
+}
+
+var elSearch  = document.getElementById("search");
+var elRegion  = document.getElementById("fRegion");
+var elForm    = document.getElementById("fForm");
+var elSort    = document.getElementById("fSort");
+var elStudies = document.getElementById("studies");
+var elCount   = document.getElementById("count");
+
+fillFilter(elRegion, "Region", uniq("region"));
+fillFilter(elForm,   "Journey", uniq("form"));
+
+/* ---------- Filter, sort, render ---------- */
+function haystack(s){
+  return (s.title + " " + s.author + " " + s.region + " " + s.form + " " +
+          (s.places || "") + " " + (s.blurb || "") + " " + (s.year || "")).toLowerCase();
+}
+
+function render(){
+  var q = elSearch.value.trim().toLowerCase();
+  var terms = q ? q.split(/\s+/) : [];
+  var region = elRegion.value;
+  var form = elForm.value;
+  var sort = elSort.value;
+
+  var rows = [];
+  for (var i = 0; i < STUDIES.length; i++) {
+    var s = STUDIES[i];
+    if (region && s.region !== region) continue;
+    if (form && s.form !== form) continue;
+    if (terms.length) {
+      var hay = haystack(s), ok = true;
+      for (var t = 0; t < terms.length; t++) {
+        if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
+      }
+      if (!ok) continue;
+    }
+    rows.push(s);
+  }
+
+  rows.sort(function(a, b){
+    if (sort === "year") return (a.year || 0) - (b.year || 0);
+    var x = String(a[sort] || "").toLowerCase();
+    var y = String(b[sort] || "").toLowerCase();
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
+
+  if (!rows.length) {
+    elStudies.innerHTML = '<p class="empty">No studies match that search yet.</p>';
+    elCount.textContent = "Showing 0 of " + STUDIES.length + " studies";
+    return;
+  }
+
+  var html = [];
+  for (var r = 0; r < rows.length; r++) {
+    var s = rows[r];
+    var live = s.ready !== false && s.file;
+    var tag  = live ? s.form : "In development";
+    html.push(
+      '<a class="study' + (live ? '' : ' pending') + '"' +
+        (live ? ' href="' + s.file + '"' : '') +
+        ' style="--card-accent:' + (s.accent || 'var(--accent)') + ';">' +
+        markFor(s.form) +
+        '<div class="body">' +
+          '<p class="title">' + s.title + '</p>' +
+          '<p class="by">by ' + s.author + '</p>' +
+          '<p class="route">' + (s.blurb || "") + '</p>' +
+        '</div>' +
+        '<div class="tags">' +
+          '<span>' + tag + '</span>' +
+          '<span>' + s.region + '</span>' +
+          (s.year ? '<span>' + s.year + '</span>' : '') +
+        '</div>' +
+      '</a>'
+    );
+  }
+  elStudies.innerHTML = html.join("");
+  elCount.textContent = "Showing " + rows.length + " of " + STUDIES.length +
+                        (STUDIES.length === 1 ? " study" : " studies");
+}
+
+elSearch.addEventListener("input", render);
+elRegion.addEventListener("change", render);
+elForm.addEventListener("change", render);
+elSort.addEventListener("change", render);
+
+/* Press "/" anywhere to jump to the search box. */
+document.addEventListener("keydown", function(e){
+  if (e.key === "/" && document.activeElement !== elSearch) {
+    e.preventDefault();
+    elSearch.focus();
+  }
+  if (e.key === "Escape" && document.activeElement === elSearch) {
+    elSearch.value = "";
+    render();
+  }
+});
+
+render();
+</script>
 
 </body>
 </html>

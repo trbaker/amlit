@@ -223,6 +223,23 @@
 }
 .colophon p{ font-size: 14.5px; color: var(--muted); max-width: 64ch; }
 
+/* The closing rule and use notice. */
+.rule-full{
+  border: none;
+  border-top: 3px solid var(--ink);
+  width: 100%;
+  margin: 34px 0 18px;
+}
+.notice{
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: 11.5px;
+  line-height: 1.9;
+  color: var(--muted);
+  max-width: none;
+}
+
 @media (max-width: 820px){
   .page{ padding: 40px 20px 64px; }
   .levels{ grid-template-columns: 1fr; }
@@ -322,6 +339,10 @@
     why there, and why care?</em></p>
     <p>This project was designed and created by Dr. Tom Baker. Learn more about his work at
     <a href="https://tbaker.com">tbaker.com</a>.</p>
+
+    <hr class="rule-full" />
+    <p class="notice">This resource is for educational use only. Data are approximate. No personally
+    identifiable information is collected by this resource.</p>
   </footer>
 
 </div>

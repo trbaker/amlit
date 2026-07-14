@@ -504,6 +504,10 @@ details.qgroup[open] summary::after{ content: "–"; }
   border-bottom: 1px solid rgba(0,0,0,.16);
   transition: background .12s ease, padding-left .12s ease;
 }
+/* Safety net: an SVG with only a viewBox fills its container by default.
+   Nothing in the library is ever allowed to grow past its box. */
+.study svg,
+.search-wrap svg{ max-width: 34px; max-height: 34px; }
 .study:hover,
 .study:focus-visible{
   background: var(--paper-deep);

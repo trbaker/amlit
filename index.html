@@ -28,7 +28,28 @@
   padding-bottom: 30px;
   margin-bottom: 46px;
 }
+
+/* The Storygrounds wordmark, standing in for the eyebrow and the title. */
+.wordmark{
+  display: block;
+  width: 200px;
+  height: auto;
+  max-width: 100%;
+  margin: 0 0 16px;
+}
 .lede{ font-size: 19px; max-width: 64ch; margin: 0 0 4px; }
+
+/* A note to teachers, sitting beneath the three levels. */
+.teachers{
+  margin: 26px 0 0;
+  padding: 18px 20px;
+  max-width: 78ch;
+  background: var(--paper-deep);
+  border-left: 4px solid var(--accent);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted);
+}
 
 /* The three levels, side by side */
 .levels{
@@ -205,9 +226,9 @@
 <div class="page">
 
   <header class="masthead">
-    <p class="eyebrow">Storygrounds: Place-based reading</p>
-    <h1>Storygrounds</h1>
-    <p class="subtitle">Reading a novel through the ground it stands on.</p>
+    <img class="wordmark" src="https://trbaker.github.io/amlit/img/title.png"
+         alt="Storygrounds: Place-based reading" width="200" />
+    <p class="subtitle">Reading a novel from the ground it stands on.</p>
     <p class="lede">Every one of these books happens <em>somewhere</em>. A family is driven off a
     farm and pointed down a numbered highway. A boy and a man drift south on a river that is carrying
     them the wrong way. Put those places on a map and the story stops being background and starts
@@ -232,6 +253,12 @@
         <p>Comparison, connection, and personal geography. The step where a map becomes an argument about the student's own world.</p>
       </div>
     </div>
+
+    <p class="teachers">Storygrounds offer an interactive map with key locations or routes in a
+    novel. Storygrounds are not lessons, but resources that can be combined with your planned
+    instruction to aid in widening the learner's gaze. Optional, spatial questions are provided to
+    help learners examine the reading through the lens of geography &mdash; offering a powerful
+    connection and perspective for considering other literary elements in the reading.</p>
   </header>
 
 

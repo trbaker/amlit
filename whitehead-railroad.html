@@ -66,10 +66,8 @@
     margin-right: 8px;
     vertical-align: -1px;
     border: 1px solid var(--ink);
+    /* Fill colors are set by the script, so the legend always matches the map. */
   }
-  #legend .sw-slave{ background: rgba(125,43,43,.30); }
-  #legend .sw-free { background: rgba(49,70,92,.18); }
-  #legend .sw-terr { background: rgba(87,91,94,.10); border-style: dashed; }
 
   @media (max-width: 900px){
     #legend{ top: auto; bottom: 12px; left: 12px; padding: 8px 10px 9px; }
@@ -85,9 +83,9 @@
   <div id="mapmsg" role="status"></div>
   <div id="legend" aria-label="Map legend">
     <p class="legend-title">The United States in 1854</p>
-    <p><span class="sw sw-slave"></span>Slavery legal</p>
-    <p><span class="sw sw-free"></span>Free state</p>
-    <p><span class="sw sw-terr"></span>Territory &mdash; still undecided</p>
+    <p><span class="sw" id="sw-slave"></span>Slavery legal</p>
+    <p><span class="sw" id="sw-free"></span>Free state</p>
+    <p><span class="sw" id="sw-terr"></span>Territory &mdash; still undecided</p>
   </div>
 </div>
 
@@ -234,7 +232,20 @@ var CONFIG = {
   /* Shade the 1854 states by whether slavery was legal there.
      This is the line Cora spends the whole novel trying to cross, so the map
      draws it. Set to false for plain outlines with no shading. */
-  shadeFreeAndSlave: true
+  shadeFreeAndSlave: true,
+
+  /* How much to cut the shading's transparency, 0 to 1.
+     0    = the base washes, as first drawn
+     0.30 = 30% less see-through, so the boundaries read more strongly  ← current
+     Raise it toward 1 for solid color; drop it to 0 for the lightest wash. */
+  lessTransparent: 0.30
+};
+
+/* Base transparency of each class before the reduction above is applied. */
+var BOUNDARY_FILL = {
+  "Slave state": { hex: null, alpha: 0.30 },   /* hex filled in from the theme below */
+  "Free state":  { hex: null, alpha: 0.18 },
+  "Territory":   { hex: null, alpha: 0.10 }
 };
 
 /* Slavery was legal in these fifteen states in 1854, and in the District of
@@ -531,16 +542,39 @@ function showMapMessage(title, html){
       };
     }
 
+    /* Cut the transparency of each wash by CONFIG.lessTransparent.
+       Transparency is (1 - alpha), so we shrink that and keep the rest. */
+    function firmer(alpha){
+      var transparency = 1 - alpha;
+      return 1 - (transparency * (1 - CONFIG.lessTransparent));
+    }
+
+    var aSlave = firmer(BOUNDARY_FILL["Slave state"].alpha);
+    var aFree  = firmer(BOUNDARY_FILL["Free state"].alpha);
+    var aTerr  = firmer(BOUNDARY_FILL["Territory"].alpha);
+
     var shaded = {
       type: "unique-value",
       valueExpression: classify,
       defaultSymbol: fill(C.ink, 0, false),
       uniqueValueInfos: [
-        { value: "Slave state", symbol: fill(C.accent, 0.30, false) },
-        { value: "Free state",  symbol: fill(C.cool,   0.18, false) },
-        { value: "Territory",   symbol: fill(C.muted,  0.10, true)  }
+        { value: "Slave state", symbol: fill(C.accent, aSlave, false) },
+        { value: "Free state",  symbol: fill(C.cool,   aFree,  false) },
+        { value: "Territory",   symbol: fill(C.muted,  aTerr,  true)  }
       ]
     };
+
+    /* Keep the legend swatches honest — they read the same numbers. */
+    function swatch(id, hex, alpha, dashed){
+      var el = document.getElementById(id);
+      if (!el) return;
+      var c = rgb(hex, alpha);
+      el.style.background = "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + c[3].toFixed(3) + ")";
+      if (dashed) el.style.borderStyle = "dashed";
+    }
+    swatch("sw-slave", C.accent, aSlave, false);
+    swatch("sw-free",  C.cool,   aFree,  false);
+    swatch("sw-terr",  C.muted,  aTerr,  true);
 
     var plain = {
       type: "simple",
@@ -636,7 +670,7 @@ function showMapMessage(title, html){
     }));
     westLayer.add(new Graphic({
       geometry: new Point({ longitude: WEST[WEST.length-1][0], latitude: WEST[WEST.length-1][1], spatialReference: SR }),
-      symbol: { type: "text", text: "WEST →", color: rgb(C.cool),
+      symbol: { type: "text", text: "WEST", color: rgb(C.cool),
         font: { size: 11, family: "sans-serif", weight: "bold" },
         xoffset: -8, yoffset: 8, horizontalAlignment: "right" }
     }));

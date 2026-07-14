@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One Mile Downstream — Mapping Into the Wild</title>
+<meta name="description" content="A Storygrounds map study of Chris McCandless's journey in Jon Krakauer's Into the Wild, with a three-level geographic questioning strategy for teachers." />
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="storymap.css?v=6" />
+
+<!-- Per-book theme: boreal green, oxidized metal, snowmelt -->
+<style>
+  :root{
+    --paper:      #FFFFFF;
+    --paper-deep: #E6E9E4;
+    --ink:        #1E2622;
+    --muted:      #5C655D;
+    --accent:     #A8482A;
+    --accent-2:   #8A9A5B;
+    --cool:       #3A6B7C;
+  }
+</style>
+</head>
+<body>
+
+<div id="map-wrap">
+  <div id="viewDiv"></div>
+  <div id="mapmsg" role="status"></div>
+</div>
+
+<button id="panelToggle" class="ctrl" type="button" aria-pressed="false">Hide text</button>
+<button id="fitBtn" class="ctrl" type="button">See the whole road</button>
+
+<div id="stepper" role="group" aria-label="Move through the stops">
+  <button id="prevBtn" class="ctrl" type="button" aria-label="Previous stop">◀</button>
+  <span id="stepCount">Stop 1 of 14</span>
+  <button id="nextBtn" class="ctrl" type="button" aria-label="Next stop">▶</button>
+</div>
+
+<div id="odometer" aria-live="polite"><span class="mi">1990&ndash;1992</span> · ATLANTA → THE STAMPEDE TRAIL</div>
+
+<main id="panel">
+
+  <header class="section" id="intro">
+    <p class="eyebrow"><a href="index.html" title="Back to the Storygrounds library">Storygrounds: Place-based reading</a></p>
+    <h1>One Mile Downstream</h1>
+    <p class="subtitle">Mapping Chris McCandless's road in Jon Krakauer's <em>Into the Wild</em> (1996)</p>
+    <hr class="rule" />
+    <p>In May 1990 a young man graduated from Emory University with honors, gave away the twenty-four
+    thousand dollars in his savings account, told his family nothing, and drove west. Two years later
+    a moose hunter found his body in an abandoned bus on a trail in interior Alaska. He was
+    twenty-four years old.</p>
+    <p>This study is not an argument about whether he was brave or foolish — people have been having
+    that argument for thirty years, and students should be allowed to have it too. It is an attempt
+    to put his two years on a map, because the map turns out to be the story.</p>
+    <p>On July 5, 1992, he tried to walk out. A river stopped him and he went back to the bus.
+    Less than a mile downstream from where he stood, strung across that same river, was a
+    hand-operated cable car that would have carried him to the other side. He had no map that showed
+    it. He never knew it was there.</p>
+    <p>Scroll down. Click any marker on the map to jump to that stop.</p>
+    <p><strong>Projecting for a class?</strong> Choose <em>Hide text</em> at the top of the map to give the map
+    the whole screen, then step through the stops with the arrows at the bottom.</p>
+  </header>
+
+  <section class="section" id="framework">
+    <p class="eyebrow">For the Teacher</p>
+    <h2>Three Levels of Geographic Questioning</h2>
+    <p><strong>A note before you begin.</strong> Chris McCandless was a real person who died, and his family
+    is still living. The questions below are written to let students argue honestly about his choices
+    without treating his death as a punchline or a parable. The most useful thing this map can do is
+    replace opinion with distance: how far, how deep, how cold, how close.</p>
+    <p>Each stop below carries one question from each level, and the banks here hold more.
+    Check the questions you want, then copy your selection for a handout, discussion guide, or exit ticket.
+    The sequence moves students from <em>location</em> to <em>explanation</em> to <em>meaning</em> — in the spirit of
+    the geographer's ladder: <em>what is where, why there, and why care?</em></p>
+
+    <details class="qgroup" open>
+      <summary><span class="q-tag">1</span> What's where?</summary>
+      <div class="q-body">
+        <p class="q-intro">Location, description, and spatial vocabulary — reading the map itself.</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q1a" data-g="1" /><label for="q1a">Trace the whole route in order. How many states does he pass through, and how many times does he double back over ground he has already covered?</label></li>
+          <li><input type="checkbox" id="q1b" data-g="1" /><label for="q1b">Find the bus. Measure the distance from it to the nearest highway, the nearest town, and the nearest building of any kind. Write the three numbers down before you say another word about how remote he was.</label></li>
+          <li><input type="checkbox" id="q1c" data-g="1" /><label for="q1c">He crossed the Teklanika River in April and could not cross it in July. Find the crossing. Is it the same place both times?</label></li>
+          <li><input type="checkbox" id="q1d" data-g="1" /><label for="q1d">Measure the distance from where he turned back at the river to the gauging station downstream. Say the number out loud.</label></li>
+          <li><input type="checkbox" id="q1e" data-g="1" /><label for="q1e">Follow the canoe: where does the Colorado River begin on this map, and where does it end? Does it reach the sea?</label></li>
+          <li><input type="checkbox" id="q1f" data-g="1" /><label for="q1f">Which is farther north — the bus, or Fairbanks? Which is farther from a road?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="qgroup">
+      <summary><span class="q-tag">2</span> Why is it there?</summary>
+      <div class="q-body">
+        <p class="q-intro">Spatial reasoning — the processes that put things in their places.</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q2a" data-g="2" /><label for="q2a">Why was the Teklanika a shallow ford in April and an impassable torrent in July? Explain snowmelt, glacial runoff, and why a northern river runs highest in high summer rather than in spring rain.</label></li>
+          <li><input type="checkbox" id="q2b" data-g="2" /><label for="q2b">Why didn't he know the cable tram was there? What was on the map he carried, and what kind of map would have shown it? Find a topographic map of that river and look for the gauging station yourself.</label></li>
+          <li><input type="checkbox" id="q2c" data-g="2" /><label for="q2c">Why is interior Alaska so hard to walk out of, even over short distances? Consider braided rivers, the absence of bridges, muskeg, and what a river does to a valley with no road in it.</label></li>
+          <li><input type="checkbox" id="q2d" data-g="2" /><label for="q2d">Why was there a bus out there at all? Who put it there, and what was it for before he found it?</label></li>
+          <li><input type="checkbox" id="q2e" data-g="2" /><label for="q2e">Why does a place twenty miles from a highway feel like the ends of the earth? What actually makes somewhere remote — distance, terrain, season, or knowledge?</label></li>
+          <li><input type="checkbox" id="q2f" data-g="2" /><label for="q2f">Why did the State of Alaska airlift the bus out by helicopter in 2020? What had the place become, and why was that a problem?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="qgroup">
+      <summary><span class="q-tag">3</span> What's the larger relationship — and the relationship to me?</summary>
+      <div class="q-body">
+        <p class="q-intro">Connection, comparison, and personal geography — why care?</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q3a" data-g="3" /><label for="q3a">He was one mile from a way across the river and did not know it. What, exactly, does a map give a person? Name three things, and then say what he lost by not having one.</label></li>
+          <li><input type="checkbox" id="q3b" data-g="3" /><label for="q3b">Was he brave, reckless, or both? People have argued about this for thirty years. Make your case using the map — distances, seasons, terrain — rather than your feelings about him.</label></li>
+          <li><input type="checkbox" id="q3c" data-g="3" /><label for="q3c">The Joads were driven west. Huck and Jim were running. Cora was hunted. McCandless <em>chose</em> to go. Does choosing a journey change what it means?</label></li>
+          <li><input type="checkbox" id="q3d" data-g="3" /><label for="q3d">Where near you is a place that feels wild but isn't? Find its edges on a map — the road, the fence, the houses just out of sight. What makes it feel remote?</label></li>
+          <li><input type="checkbox" id="q3e" data-g="3" /><label for="q3e">After the book, people began hiking to the bus, and some of them drowned in the same river. What does it mean that a story can make a place dangerous?</label></li>
+          <li><input type="checkbox" id="q3f" data-g="3" /><label for="q3f">He gave away his savings and burned the cash in his wallet to be free of things. A map is a thing. What is the difference between what he was trying to escape and what he actually needed?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <button id="copyBtn" type="button">Copy selected questions</button><span id="copyMsg" role="status"></span>
+  </section>
+
+  <div id="stops"></div>
+
+  <section class="section foot" id="closing">
+    <p class="eyebrow">After the Map</p>
+    <h2>What the Map Would Have Told Him</h2>
+    <p>That the river runs highest in July. That a gauging station sits a mile downstream with a
+    cable and a basket. That the highway is twenty miles off. That there are cabins within a walk of
+    the bus. None of this makes him a fool — plenty of experienced people have died in that country —
+    and none of it makes the book less worth reading. It simply means that the thing standing between
+    him and the rest of his life was information, and information about places is what a map is.</p>
+    <p>That is worth sitting with, in a course where students are being asked to read literature with
+    maps in their hands.</p>
+    <hr class="rule" />
+    <p class="smallcaps">Teacher notes — read before assigning</p>
+    <small>Chris McCandless was a real person who died in 1992 at twenty-four, and members of his family are living. The material here is written to let students judge his choices honestly without turning his death into a joke or a moral lesson with a tidy answer. Krakauer's own book is a defense of him against exactly that.</small>
+    <small>The cause of death is not fully settled. Starvation is the consensus; Krakauer has argued over the years that a toxin in wild potato seeds contributed, and that argument remains contested. Students should be told it is contested rather than handed one version.</small>
+    <small>Locations are approximate. The bus site is well documented; the exact points where he attempted the July crossing and where the gauging station stood are placed here from Krakauer's descriptions and are best treated as "about here" rather than surveyed. The hand tram is described in the book as being less than a mile downstream of his crossing.</small>
+    <small>Bus 142 was lifted out by helicopter by the Alaska Army National Guard in June 2020, after years of hikers being injured and at least two drowning in the Teklanika while trying to reach it. It was moved to the University of Alaska Museum of the North in Fairbanks. Anyone in your class who starts talking about going to see it should be told this, and told about the river.</small>
+    <small>The author is <strong>Jon</strong> Krakauer.</small>
+    <small>The three-level questioning framework follows the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
+  </section>
+</main>
+
+
+<!-- ===================================================================
+     PART 1 — Content and reading panel. No dependencies.
+     =================================================================== -->
+<script>
+/* Terrain with labels: this is a 1990s road trip through named American
+   places, and learners need the names. The relief matters too — it is what
+   makes the Alaska Range and the Colorado delta legible at a glance. */
+var CONFIG = {
+  terrainUrl: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer",
+  labelsUrl:  "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer"
+};
+
+var CSSVARS = getComputedStyle(document.documentElement);
+function tok(name){ return CSSVARS.getPropertyValue(name).trim(); }
+function rgb(hex, alpha){
+  hex = hex.replace("#", "");
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return [ parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16),
+           parseInt(hex.substr(4,2),16), alpha === undefined ? 1 : alpha ];
+}
+var C = {
+  paper:  tok("--paper"),
+  ink:    tok("--ink"),
+  accent: tok("--accent"),
+  muted:  tok("--muted"),
+  cool:   tok("--cool")
+};
+
+/* Two years of road, generalized. He hitchhiked, so this is the shape of the
+   journey, not a turn-by-turn record. */
+var PATH = [
+  [-84.324,33.790],  /* 0  Emory University, Atlanta */
+  [-90.000,34.500],
+  [-97.000,35.200],
+  [-104.000,35.500],
+  [-110.000,35.800],
+  [-114.300,36.020],  /* 5  Detrital Wash, Lake Mead — the car drowns */
+  [-117.500,37.500],
+  [-120.000,39.300],
+  [-119.000,43.000],
+  [-112.000,45.000],
+  [-104.000,44.500],
+  [-97.720,44.160],   /* 11 Carthage, South Dakota */
+  [-102.000,40.000],
+  [-109.000,36.500],
+  [-114.480,34.720],  /* 14 Topock, Arizona — the canoe */
+  [-114.600,33.500],
+  [-114.700,32.500],
+  [-114.500,31.680],  /* 17 Golfo de Santa Clara, Mexico */
+  [-114.600,33.000],
+  [-114.570,35.150],  /* 19 Bullhead City, Arizona */
+  [-115.000,34.000],
+  [-115.460,33.260],  /* 21 Slab City, Niland, California */
+  [-115.950,33.300],  /* 22 Salton City — Ronald Franz */
+  [-110.000,38.000],
+  [-104.000,42.000],
+  [-97.720,44.160],   /* 25 Carthage again — the last ordinary place */
+  [-110.000,49.000],
+  [-120.000,55.000],
+  [-130.000,60.000],
+  [-140.000,63.000],
+  [-147.720,64.840],  /* 30 Fairbanks, Alaska */
+  [-149.030,63.873],  /* 31 the Stampede Trail head */
+  [-149.280,63.878],  /* 32 the Teklanika crossing */
+  [-149.768,63.868]   /* 33 Bus 142 */
+];
+
+/* The hand tram at the gauging station — downstream, and unknown to him. */
+var TRAM = [ [-149.280,63.878], [-149.288,63.884], [-149.296,63.891] ];
+
+var STOPS = [
+
+{ pi:0, zoom:12, when:"May 1990",
+  name:"Emory University, Atlanta", region:"The last day of the old life", ch:"Chapters 2 & 11–12",
+  text:"He graduates with honors. He has $24,292 in a savings account meant for law school, and he gives every dollar of it to OXFAM. He does not tell his parents he is leaving, and he does not tell them where he is going, because he has not decided. He gets into a secondhand yellow Datsun and drives west. His family will not hear from him again.",
+  q1:"Find Atlanta. Which direction does he drive, and what is the first major landform in his way?",
+  q2:"Why does a person leave from a university rather than from home? What does a campus have in common with a trailhead?",
+  q3:"He gives away everything he owns except a car and a few books. What would you have to give away to leave, and what would you refuse to?" },
+
+{ pi:5, zoom:11, when:"July 1990",
+  name:"Detrital Wash, Lake Mead", region:"Where the car drowns", ch:"Chapter 4",
+  text:"He drives the Datsun down a dry wash in the desert outside Lake Mead. A flash flood comes down it — the way flash floods do, out of a storm miles away — and drowns the engine. He cannot restart it. So he strips the plates, buries what he does not want to carry, takes the last $123 from his wallet, and burns it in a small fire on the sand. From here he walks and hitchhikes. From here he is Alexander Supertramp.",
+  q1:"Find the wash. It has no water in it on the map. Where is the water that flooded it coming from?",
+  q2:"Why does a dry desert channel become the most dangerous place in the landscape during a storm? Explain a flash flood to someone who has never seen rain run off bare rock.",
+  q3:"He burns his money on purpose. Not loses it — burns it. What is he trying to make impossible?" },
+
+{ pi:11, zoom:12, when:"September 1990",
+  name:"Carthage, South Dakota", region:"The grain elevator", ch:"Chapters 2 & 6",
+  text:"He works for Wayne Westerberg at a grain elevator in a town of a few hundred people, and he is good at it — a hard worker, well liked, remembered fondly by everyone who met him. This is the closest he comes to having a place. He will come back here. Of all the people in this book, Westerberg is the one who seems to understand that the boy is not running toward anything so much as away.",
+  q1:"Locate Carthage. What is the land doing around it, and what is grown there?",
+  q2:"Why is there a grain elevator in a town this small? What does a railroad have to do with where grain gets stored?",
+  q3:"He is happy here and he leaves anyway. Is there a place you have left that you were happy in? What pulled you off?" },
+
+{ pi:14, zoom:11, when:"October 1990",
+  name:"Topock, Arizona", region:"He buys a canoe", ch:"Chapter 4",
+  text:"On an impulse he buys a secondhand aluminum canoe and decides to paddle the Colorado River all the way to the Gulf of California — a journey he has not planned, in a boat he has never used, on a river he does not know. He goes through Lake Havasu, through the Imperial Valley, through a system of dams and locks and irrigation canals, and he keeps going south past the border.",
+  q1:"Trace the Colorado south from Topock. How many reservoirs does it pass through before it leaves the United States?",
+  q2:"Why is the lower Colorado a chain of lakes rather than a river? What is all that water for, and where does most of it actually end up?",
+  q3:"He decides to paddle to Mexico the way you might decide to walk to the corner. What is the difference between spontaneity and recklessness — and can you tell which is which before the outcome?" },
+
+{ pi:17, zoom:9, when:"December 1990",
+  name:"Golfo de Santa Clara, Mexico", region:"The river that does not arrive", ch:"Chapter 4",
+  text:"He reaches the Gulf of California, but he does it by getting lost first — the Colorado delta is a maze of irrigation canals and mudflats where the river, drained by everything upstream, no longer runs cleanly to the sea. Duck hunters have to tow him out of a dead-end channel. He camps on the beach, is nearly blown out to sea, and abandons the canoe. Then he starts walking north.",
+  q1:"Find where the Colorado is supposed to meet the Gulf. Does the blue line on the map actually connect?",
+  q2:"Why doesn't the Colorado reach the sea most years? Follow the water back upstream and name what takes it.",
+  q3:"He set out to paddle a river to the ocean and found that the river does not get there anymore. What else that you were taught exists turns out to be missing when you go and look?" },
+
+{ pi:19, zoom:12, when:"Early 1991",
+  name:"Bullhead City, Arizona", region:"He flips burgers", ch:"Chapter 5",
+  text:"For a few months the wanderer works at a McDonald's, rents a place to sleep, opens a bank account, and is by all accounts a slightly odd but perfectly ordinary employee whose co-workers complain that he never wears socks. It is the most conventional stretch of his two years, and he clearly hates it. He tells no one who he is.",
+  q1:"Locate Bullhead City. What is on the other side of the river from it, and why is that town there?",
+  q2:"Why did a town of this size have so many service jobs in 1991? Look at what is directly across the Colorado.",
+  q3:"He can live in the ordinary world perfectly well. He just does not want to. Does that make his choice stronger or weaker?" },
+
+{ pi:21, zoom:12, when:"Winter 1991–92",
+  name:"Slab City, Niland, California", region:"A town with no town in it", ch:"Chapters 5 & 6",
+  text:"He winters at the Slabs — the concrete foundations of an abandoned military base near the Salton Sea, where several thousand people park trailers on land nobody charges rent for. He sells leather belts. He is taken in by Jan Burres, who feeds him and worries about him and recognizes something in him she has seen in her own runaway son. He is, by every account, good company.",
+  q1:"Find the Salton Sea. Is it a lake, and if so, where does its water come from and where does it go?",
+  q2:"Why does a settlement grow on an abandoned base with no water, no power, and no law? What does free land do?",
+  q3:"He is generous, funny, and beloved by nearly everyone he meets on this road — and he will not call his parents. Hold both of those facts at once. What do you make of him?" },
+
+{ pi:22, zoom:11, when:"March 1992",
+  name:"Salton City — Ronald Franz", region:"The old man who wanted to adopt him", ch:"Chapters 6 & 18",
+  text:"An eighty-year-old leatherworker named Ron Franz, who lost his own wife and son to a drunk driver decades before, picks him up hitchhiking and slowly comes to love him. Franz asks whether he might adopt him. The boy deflects, gently, and says they can discuss it when he gets back from Alaska. Franz drives him north to the highway and watches him walk away. When Franz learns, months later, that the boy is dead, he stops believing in God.",
+  q1:"Find Salton City on the map. Now find Fairbanks. Franz drove him to the start of that.",
+  q2:"Why do so many of the people who help him live at the margins — the Slabs, a trailer, a grain elevator, a desert town? What kind of place produces people who pick up hitchhikers?",
+  q3:"An old man asks to be his family and he says not yet. What is he protecting, and what does it cost the people who love him?" },
+
+{ pi:25, zoom:12, when:"April 1992",
+  name:"Carthage, Again", region:"The last ordinary place", ch:"Chapters 6 & 7",
+  text:"He returns to Westerberg's grain elevator for a few weeks to earn money for Alaska. He is cheerful, he works hard, he talks about the trip constantly. Westerberg thinks he is underprepared and says so. He leaves on April 15. The last anyone in the ordinary world sees of him, he is walking north with a rucksack.",
+  q1:"Trace the road from Carthage to Fairbanks. Roughly how far is it, and through how many countries?",
+  q2:"Why does the road north go through Canada? Look at the map and say why there is no other way to drive to Alaska.",
+  q3:"Everyone who knows anything tells him he is not ready. He goes anyway. When have you been warned and gone anyway — and how did you decide the warning was wrong?" },
+
+{ pi:30, zoom:11, when:"April 1992",
+  name:"Fairbanks, Alaska", region:"The last town", ch:"Chapter 4",
+  text:"He buys a ten-pound bag of rice, a used .22 rifle with four hundred rounds, a pair of rubber boots, a few paperbacks, and a cheap road map of the state. He does not buy a compass. He does not buy a topographic map. He does not tell anyone where he is going, and he does not intend to be found.",
+  q1:"Find Fairbanks. How far is it from the bus, and in which direction?",
+  q2:"Why is Fairbanks the last real town in that direction? What is the road network north and west of it, and why is it so thin?",
+  q3:"He buys food, a gun, and boots. He does not buy a map. Look at the list again and say what it tells you about what he thought the danger was." },
+
+{ pi:31, zoom:11, when:"April 28, 1992",
+  name:"The Stampede Trail", region:"Where the ride ends", ch:"Chapter 1",
+  text:"An electrician named Jim Gallien picks him up outside Fairbanks, drives him out the Stampede Road, and spends the whole trip becoming quietly alarmed. The boy's boots are wrong. His pack is too light. He has almost no food and no real map. Gallien offers him his own boots, offers to drive him to Anchorage and buy him proper gear, offers to come back for him. The boy refuses all of it, thanks him, and walks off into the snow. Gallien watches him go and takes a photograph.",
+  q1:"Find the trailhead. What is the last road he stands on, and where does that road go?",
+  q2:"Why is it called the Stampede Trail? Who built it, and what were they hoping to reach?",
+  q3:"A stranger offers him boots and he says no. What is he defending? Is it the same thing you defend when you refuse help?" },
+
+{ pi:33, zoom:12, when:"April–August 1992",
+  name:"Fairbanks Bus 142", region:"One hundred and thirteen days", ch:"Chapters 1, 16–18",
+  text:"He walks about twenty miles in and finds an abandoned city bus, hauled out here decades earlier by a road crew and left as a shelter for hunters. He moves in. He hunts squirrels and ptarmigan and porcupine. He shoots a moose and loses most of the meat to flies because he does not know how to preserve it, and it grieves him — he writes that it was one of the greatest tragedies of his life. He reads. He is happy for a long time. And he stays too long.",
+  q1:"Measure it: how far is the bus from the trailhead, from the highway, and from the nearest cabin? Do it before you decide how far away he was.",
+  q2:"Why was a bus out here at all? Ask who needed a road through this country, why they gave up, and what they left behind.",
+  q3:"He is twenty miles from a highway and it may as well be the far side of the moon. What turns a distance into a barrier?" },
+
+{ pi:32, zoom:13, when:"July 5, 1992", keepRun:true,
+  name:"The Teklanika River", region:"The way out, closed", ch:"Chapter 18",
+  text:"After more than two months he decides to walk out. He gets to the Teklanika — the river he waded across in April, when it was a knee-deep braid of channels over gravel — and finds a single grey torrent of snowmelt, waist-deep and moving fast enough to take a man off his feet. It is July. The high country is melting. This is the river at its annual worst, and he has arrived at exactly the wrong moment. He writes in his journal that he is scared, and he turns around, and he walks back to the bus.",
+  q1:"Find the crossing. It is the same river he forded in April. What has changed between April and July?",
+  q2:"Why is a northern river highest in midsummer? Explain where the water is in April, and what the sun spends June doing to it.",
+  q3:"He was not trapped by a wall or a cliff or a storm. He was trapped by a season. What does it mean to be defeated by a calendar?" },
+
+{ pi:32, zoom:14, center:[-149.288,63.884], when:"July 5, 1992", keepRun:true,
+  name:"The Hand Tram, One Mile Downstream", region:"What the map would have shown", ch:"Chapter 18",
+  text:"Look at the line running downstream. Less than a mile from where he stood and turned back, the U.S. Geological Survey had a river gauging station, and strung across the Teklanika at that station was a steel cable with a hand-operated basket — a tram, built precisely so that a person could get across this river when it was running like this. It was there the whole time. It is on the topographic map of that quadrangle. He was carrying a road map of Alaska. He did not know. He walked back to the bus, and he died there about six weeks later.",
+  q1:"Measure the distance from the crossing to the tram. Now measure how long it would have taken him to walk it.",
+  q2:"Why is a gauging station there? Who put a cable across a river in the middle of nowhere, and what were they measuring — and what does it tell you that the answer is 'the river's height'?",
+  q3:"This is the sentence this whole project exists for: he died, in part, because he did not have a map. Say what a map actually is, now, in your own words." }
+
+];
+
+var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function shieldSVG(n){
+  return '<svg class="shield" viewBox="0 0 46 50" role="img" aria-label="Stop ' + n + '">' +
+    '<path d="M23 3 L43 44 H3 Z" fill="' + C.paper + '" stroke="' + C.ink + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<text x="23" y="24" text-anchor="middle" font-size="7" font-family="Oswald, Arial" fill="' + C.ink + '" letter-spacing="1">STOP</text>' +
+    '<text x="23" y="40" text-anchor="middle" font-size="14" font-family="Oswald, Arial" font-weight="600" fill="' + C.accent + '">' + n + '</text>' +
+    '</svg>';
+}
+
+(function buildStops(){
+  var host = document.getElementById("stops");
+  for (var i = 0; i < STOPS.length; i++) {
+    var s = STOPS[i];
+    var sec = document.createElement("section");
+    sec.className = "section stop";
+    sec.id = "stop-" + i;
+    sec.setAttribute("data-stop", String(i));
+    sec.innerHTML =
+      '<div class="stop-head">' + shieldSVG(i + 1) + '<h3>' + s.name + '</h3></div>' +
+      '<p class="meta smallcaps">' + s.when + '<span class="sep">·</span>' + s.region +
+        '<span class="sep">·</span>' + s.ch + '</p>' +
+      '<p>' + s.text + '</p>' +
+      '<div class="stop-qs">' +
+        '<p><span class="lbl g1">1 · What\'s where?</span>' + s.q1 + '</p>' +
+        '<p><span class="lbl g2">2 · Why is it there?</span>' + s.q2 + '</p>' +
+        '<p><span class="lbl g3">3 · Relationship to me</span>' + s.q3 + '</p>' +
+      '</div>';
+    host.appendChild(sec);
+  }
+})();
+
+document.getElementById("copyBtn").addEventListener("click", function(){
+  var groups = { 1:"WHAT'S WHERE?", 2:"WHY IS IT THERE?", 3:"WHAT'S THE LARGER RELATIONSHIP — AND THE RELATIONSHIP TO ME?" };
+  var picked = { 1:[], 2:[], 3:[] };
+  var boxes = document.querySelectorAll('.q-list input[type=checkbox]:checked');
+  for (var i = 0; i < boxes.length; i++) {
+    var lab = document.querySelector('label[for="' + boxes[i].id + '"]');
+    picked[boxes[i].getAttribute("data-g")].push(lab.textContent.trim());
+  }
+  var out = "GEOGRAPHIC QUESTIONS — INTO THE WILD\n\n", count = 0, gs = [1,2,3];
+  for (var g = 0; g < gs.length; g++) {
+    var key = gs[g];
+    if (!picked[key].length) continue;
+    out += groups[key] + "\n";
+    for (var j = 0; j < picked[key].length; j++) { out += "  " + (j+1) + ". " + picked[key][j] + "\n"; count++; }
+    out += "\n";
+  }
+  var msg = document.getElementById("copyMsg");
+  if (!count) { msg.textContent = "Check at least one question first."; return; }
+  var text = out.trim();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + ".";
+    }).catch(function(){ fallbackCopy(text, msg, count); });
+  } else { fallbackCopy(text, msg, count); }
+});
+function fallbackCopy(text, msg, count){
+  var ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + "."; }
+  catch (e) { msg.textContent = "Couldn't reach the clipboard — select the text and copy it by hand."; }
+  document.body.removeChild(ta);
+}
+
+function showMapMessage(title, html){
+  var box = document.getElementById("mapmsg");
+  box.innerHTML = "<h4>" + title + "</h4>" + html;
+  box.style.display = "block";
+}
+</script>
+
+<script src="https://js.arcgis.com/4.30/"></script>
+
+<!-- ===================================================================
+     PART 2 — The map.
+     =================================================================== -->
+<script>
+(function initMap(){
+
+  if (location.protocol === "file:") {
+    showMapMessage("The map needs to be online",
+      "<p>This page was opened straight from a folder on the computer, and the map can't load that way.</p>" +
+      "<p>Put the page on the web — or open it through a local web address — and the map will appear. " +
+      "Everything else on the page works as it is.</p>");
+    return;
+  }
+  if (typeof require === "undefined") {
+    showMapMessage("The map didn't load",
+      "<p>The page couldn't reach the mapping service. Check the internet connection, " +
+      "turn off any content blocker for this page, and reload.</p>");
+    return;
+  }
+
+  require([
+    "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/Basemap", "esri/layers/TileLayer",
+    "esri/layers/GraphicsLayer", "esri/Graphic",
+    "esri/geometry/Point", "esri/geometry/Polyline"
+  ], function(esriConfig, Map, MapView, Basemap, TileLayer,
+              GraphicsLayer, Graphic, Point, Polyline){
+
+    var terrainWithLabels = new Basemap({
+      baseLayers:      [ new TileLayer({ url: CONFIG.terrainUrl }) ],
+      referenceLayers: [ new TileLayer({ url: CONFIG.labelsUrl  }) ],
+      title: "Terrain with labels",
+      id: "terrain-with-labels"
+    });
+
+    var map = new Map({ basemap: terrainWithLabels });
+    var view = new MapView({
+      container: "viewDiv", map: map,
+      center: [-112.0, 45.0], zoom: 3,
+      constraints: { snapToZoom: false },
+      popup: { dockEnabled: false, defaultPopupTemplateEnabled: false }
+    });
+
+    view.when(function(){ view.ui.move("zoom", "bottom-left"); },
+      function(){ showMapMessage("The map couldn't start",
+        "<p>This browser may not support the graphics the map needs. Updating the browser usually fixes it.</p>"); });
+
+    var SR = { wkid: 4326 };
+    var roadLayer    = new GraphicsLayer();   /* the whole two years, faint */
+    var tramLayer    = new GraphicsLayer();   /* the mile he didn't know about */
+    var walkedLayer  = new GraphicsLayer();   /* road behind him */
+    var stopLayer    = new GraphicsLayer();
+    map.addMany([roadLayer, tramLayer, walkedLayer, stopLayer]);
+
+    roadLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [PATH], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.muted, 0.6), width: 2.5, style: "dash" }
+    }));
+
+    /* The tram — shown only at the last stop. */
+    tramLayer.visible = false;
+    tramLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [TRAM], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.cool, 0.95), width: 5, style: "short-dot", cap: "round" }
+    }));
+    tramLayer.add(new Graphic({
+      geometry: new Point({ longitude: TRAM[TRAM.length-1][0], latitude: TRAM[TRAM.length-1][1], spatialReference: SR }),
+      symbol: { type: "text", text: "HAND TRAM ACROSS THE RIVER", color: rgb(C.cool),
+        font: { size: 11, family: "sans-serif", weight: "bold" },
+        haloColor: [255,255,255,0.9], haloSize: 1.8,
+        xoffset: 8, yoffset: 8, horizontalAlignment: "left" }
+    }));
+
+    var walked = new Graphic({
+      geometry: new Polyline({ paths: [[PATH[0], PATH[0]]], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.accent), width: 4.5, cap: "round", join: "round" }
+    });
+    walkedLayer.add(walked);
+
+    function symbolFor(active){
+      return { type: "simple-marker", style: "circle", size: active ? 20 : 13,
+        color: active ? rgb(C.accent) : rgb(C.paper),
+        outline: { color: rgb(C.ink), width: active ? 2.5 : 2 } };
+    }
+    function labelFor(i, active){
+      return { type: "text", text: String(i + 1),
+        color: active ? rgb(C.paper) : rgb(C.ink),
+        font: { size: active ? 11 : 8, family: "sans-serif", weight: "bold" }, yoffset: -4 };
+    }
+
+    var markers = [], labels = [];
+    for (var i = 0; i < STOPS.length; i++) {
+      var s = STOPS[i];
+      var pt = new Point({ longitude: PATH[s.pi][0], latitude: PATH[s.pi][1], spatialReference: SR });
+      var attrs = { stopIndex: i, name: s.name, when: s.when };
+      markers.push(new Graphic({
+        geometry: pt, attributes: attrs, symbol: symbolFor(false),
+        popupTemplate: { title: "Stop " + (i + 1) + " · {name}", content: "<b>{when}</b><br/><br/>" + s.text }
+      }));
+      labels.push(new Graphic({ geometry: pt, attributes: attrs, symbol: labelFor(i, false) }));
+      stopLayer.addMany([markers[i], labels[i]]);
+    }
+
+    var TRAM_STOP = STOPS.length - 1;
+
+    var odometer = document.getElementById("odometer");
+    var stepCount = document.getElementById("stepCount");
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
+    var activeIndex = -1;
+
+    function activate(i, scrollPanel){
+      if (i === activeIndex || i < 0 || i >= STOPS.length) return;
+      activeIndex = i;
+
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) {
+        if (Number(els[k].getAttribute("data-stop")) === i) els[k].classList.add("active");
+        else els[k].classList.remove("active");
+      }
+      for (var m = 0; m < markers.length; m++) {
+        markers[m].symbol = symbolFor(m === i);
+        labels[m].symbol = labelFor(m, m === i);
+      }
+
+      var s = STOPS[i];
+      tramLayer.visible = (i === TRAM_STOP);
+
+      /* keepRun holds the line where it was: the walk back to the river is a
+         retreat, not new ground. */
+      if (!s.keepRun) {
+        var run = PATH.slice(0, s.pi + 1);
+        if (run.length < 2) run = [PATH[0], PATH[0]];
+        walked.geometry = new Polyline({ paths: [run], spatialReference: SR });
+      }
+
+      odometer.innerHTML = '<span class="mi">' + s.when.toUpperCase() + '</span> · ' + s.name.toUpperCase();
+
+      stepCount.textContent = "Stop " + (i + 1) + " of " + STOPS.length;
+      prevBtn.disabled = (i === 0);
+      nextBtn.disabled = (i === STOPS.length - 1);
+
+      view.goTo({ center: s.center || PATH[s.pi], zoom: s.zoom },
+                { duration: prefersReduced ? 0 : 1500, easing: "in-out-cubic" }).catch(function(){});
+
+      if (scrollPanel && !document.body.classList.contains("map-only")) {
+        var el = document.getElementById("stop-" + i);
+        if (el) el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
+      }
+    }
+
+    function fitRoute(){
+      activeIndex = -1;
+      tramLayer.visible = false;
+      view.goTo({ center: [-112.0, 45.0], zoom: window.innerWidth < 900 ? 2 : 3 },
+                { duration: prefersReduced ? 0 : 1200 }).catch(function(){});
+      odometer.innerHTML = '<span class="mi">1990&ndash;1992</span> · ATLANTA → THE STAMPEDE TRAIL';
+      for (var m = 0; m < markers.length; m++) {
+        markers[m].symbol = symbolFor(false);
+        labels[m].symbol = labelFor(m, false);
+      }
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) els[k].classList.remove("active");
+      stepCount.textContent = "Stop 1 of " + STOPS.length;
+      prevBtn.disabled = true;
+      nextBtn.disabled = false;
+    }
+    document.getElementById("fitBtn").addEventListener("click", fitRoute);
+
+    view.on("click", function(evt){
+      view.hitTest(evt, { include: stopLayer }).then(function(res){
+        for (var i = 0; i < res.results.length; i++) {
+          var g = res.results[i].graphic;
+          if (g && g.attributes && typeof g.attributes.stopIndex === "number") {
+            activate(g.attributes.stopIndex, true);
+            return;
+          }
+        }
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) activate(Number(entries[i].target.getAttribute("data-stop")), false);
+        }
+      }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+      var stopEls = document.querySelectorAll(".stop");
+      for (var j = 0; j < stopEls.length; j++) io.observe(stopEls[j]);
+
+      var ioIntro = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
+        for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) fitRoute();
+      }, { rootMargin: "-30% 0px -60% 0px" });
+      ioIntro.observe(document.getElementById("intro"));
+    }
+
+    var toggle = document.getElementById("panelToggle");
+    var savedScroll = 0;
+    function setPanel(hidden){
+      if (hidden) {
+        savedScroll = window.pageYOffset || document.documentElement.scrollTop;
+        document.body.classList.add("map-only");
+        toggle.textContent = "Show text";
+        toggle.setAttribute("aria-pressed", "true");
+        if (activeIndex < 0) activate(0, false);
+      } else {
+        document.body.classList.remove("map-only");
+        toggle.textContent = "Hide text";
+        toggle.setAttribute("aria-pressed", "false");
+        window.scrollTo(0, savedScroll);
+        if (activeIndex >= 0) {
+          var el = document.getElementById("stop-" + activeIndex);
+          if (el) el.scrollIntoView({ behavior: "auto", block: "center" });
+        }
+      }
+    }
+    toggle.addEventListener("click", function(){
+      setPanel(!document.body.classList.contains("map-only"));
+    });
+
+    prevBtn.addEventListener("click", function(){ activate(activeIndex - 1, false); });
+    nextBtn.addEventListener("click", function(){ activate(activeIndex + 1, false); });
+
+    document.addEventListener("keydown", function(e){
+      if (!document.body.classList.contains("map-only")) return;
+      if (e.key === "ArrowRight") { activate(activeIndex + 1, false); e.preventDefault(); }
+      if (e.key === "ArrowLeft")  { activate(activeIndex - 1, false); e.preventDefault(); }
+      if (e.key === "Escape")     { setPanel(false); }
+    });
+
+    prevBtn.disabled = true;
+
+  }, function(){
+    showMapMessage("The map didn't load",
+      "<p>Part of the mapping service couldn't be reached. Check the connection and reload.</p>");
+  });
+})();
+</script>
+</body>
+</html>

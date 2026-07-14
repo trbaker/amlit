@@ -234,18 +234,18 @@ var CONFIG = {
      draws it. Set to false for plain outlines with no shading. */
   shadeFreeAndSlave: true,
 
-  /* How much to cut the shading's transparency, 0 to 1.
-     0    = the base washes, as first drawn
-     0.30 = 30% less see-through, so the boundaries read more strongly  ← current
-     Raise it toward 1 for solid color; drop it to 0 for the lightest wash. */
-  lessTransparent: 0.30
+  /* How solid the shading is, as a fraction of the base washes below.
+     1.00 = the base washes
+     0.40 = 60% more transparent, so the terrain reads through clearly  ← current
+     0.00 = no fill at all; outlines only. */
+  fillOpacity: 0.40
 };
 
-/* Base transparency of each class before the reduction above is applied. */
+/* The base washes, before fillOpacity is applied. */
 var BOUNDARY_FILL = {
-  "Slave state": { hex: null, alpha: 0.30 },   /* hex filled in from the theme below */
-  "Free state":  { hex: null, alpha: 0.18 },
-  "Territory":   { hex: null, alpha: 0.10 }
+  "Slave state": 0.30,
+  "Free state":  0.18,
+  "Territory":   0.10
 };
 
 /* Slavery was legal in these fifteen states in 1854, and in the District of
@@ -542,16 +542,12 @@ function showMapMessage(title, html){
       };
     }
 
-    /* Cut the transparency of each wash by CONFIG.lessTransparent.
-       Transparency is (1 - alpha), so we shrink that and keep the rest. */
-    function firmer(alpha){
-      var transparency = 1 - alpha;
-      return 1 - (transparency * (1 - CONFIG.lessTransparent));
-    }
+    /* One dial: scale every wash by CONFIG.fillOpacity. */
+    function wash(cls){ return BOUNDARY_FILL[cls] * CONFIG.fillOpacity; }
 
-    var aSlave = firmer(BOUNDARY_FILL["Slave state"].alpha);
-    var aFree  = firmer(BOUNDARY_FILL["Free state"].alpha);
-    var aTerr  = firmer(BOUNDARY_FILL["Territory"].alpha);
+    var aSlave = wash("Slave state");
+    var aFree  = wash("Free state");
+    var aTerr  = wash("Territory");
 
     var shaded = {
       type: "unique-value",

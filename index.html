@@ -6,156 +6,102 @@
 <title>The Road West — Mapping The Grapes of Wrath</title>
 <meta name="description" content="An interactive literary-geography StoryMap of the Joad family's journey in John Steinbeck's The Grapes of Wrath, with a three-level geographic questioning strategy for teachers." />
 
-<!-- ArcGIS Maps SDK for JavaScript (CDN) -->
 <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
-<script src="https://js.arcgis.com/4.30/"></script>
-
-<!-- Typefaces: WPA-poster condensed gothic + literary serif -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
 
 <style>
-/* ============ Design tokens: 1930s road-atlas palette ============ */
 :root{
-  --paper:      #EAE0CC;  /* dust-bone page */
-  --paper-deep: #DFD1B6;  /* card / inset */
-  --ink:        #26201A;  /* umber ink */
-  --dust:       #B8905A;  /* ochre dust */
-  --denim:      #41607D;  /* faded workwear blue */
-  --road:       #A83B24;  /* atlas highway red */
-  --panel-w: 500px;
-  --display: "Oswald", "Arial Narrow", sans-serif;
-  --serif: "Source Serif 4", Georgia, serif;
+  --paper:#EAE0CC; --paper-deep:#DFD1B6; --ink:#26201A;
+  --dust:#B8905A; --denim:#41607D; --road:#A83B24;
+  --panel-w:500px;
+  --display:"Oswald","Arial Narrow",sans-serif;
+  --serif:"Source Serif 4",Georgia,serif;
 }
 *{ box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
 @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
-body{
-  margin:0; background:var(--paper); color:var(--ink);
-  font-family:var(--serif); font-size:17px; line-height:1.65;
-}
+body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.65; }
 a{ color:var(--denim); }
 :focus-visible{ outline:3px solid var(--denim); outline-offset:2px; }
 
-/* ============ Layout: fixed map, scrolling panel ============ */
-#map-wrap{
-  position:fixed; top:0; right:0; bottom:0; left:var(--panel-w);
-  background:#cfc4ab;
-}
-#viewDiv{ position:absolute; inset:0; }
-#panel{
-  position:relative; z-index:5; width:var(--panel-w);
-  background:var(--paper);
-  border-right:3px solid var(--ink);
-  box-shadow: 6px 0 24px rgba(38,32,26,.25);
-}
+/* Safari-safe: explicit offsets, no `inset` shorthand */
+#map-wrap{ position:fixed; top:0; right:0; bottom:0; left:var(--panel-w); background:#cfc4ab; }
+#viewDiv{ position:absolute; top:0; right:0; bottom:0; left:0; }
+#panel{ position:relative; z-index:5; width:var(--panel-w); background:var(--paper);
+        border-right:3px solid var(--ink); box-shadow:6px 0 24px rgba(38,32,26,.25); }
 .section{ padding:56px 44px; border-bottom:1px solid rgba(38,32,26,.18); }
 
-/* ============ Roadside odometer sign (signature) ============ */
-#odometer{
-  position:fixed; z-index:6; top:18px; right:18px;
-  background:var(--ink); color:var(--paper);
-  font-family:var(--display); font-weight:500; letter-spacing:.14em;
-  font-size:13px; text-transform:uppercase;
+/* Diagnostics banner — visible only when the map fails */
+#mapmsg{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  max-width:min(80%,460px); background:var(--paper); border:3px solid var(--road);
+  padding:20px 22px; font-size:15px; line-height:1.5; display:none; z-index:10;
+  box-shadow:4px 6px 0 rgba(38,32,26,.35);
+}
+#mapmsg h4{ font-family:var(--display); text-transform:uppercase; letter-spacing:.1em;
+            font-size:14px; margin:0 0 8px; color:var(--road); }
+#mapmsg code{ background:var(--paper-deep); padding:1px 5px; font-size:13px; word-break:break-word; }
+
+#odometer{ position:fixed; z-index:6; top:18px; right:18px; background:var(--ink); color:var(--paper);
+  font-family:var(--display); font-weight:500; letter-spacing:.14em; font-size:13px; text-transform:uppercase;
   padding:10px 14px 9px; border:2px solid var(--paper);
   box-shadow:0 0 0 3px var(--ink), 3px 5px 0 rgba(38,32,26,.35);
-  max-width:min(46vw, 340px); text-align:center; pointer-events:none;
-}
+  max-width:min(46vw,340px); text-align:center; pointer-events:none; }
 #odometer .mi{ color:var(--dust); font-weight:600; }
 
-/* Fit-route button */
-#fitBtn{
-  position:fixed; z-index:6; bottom:26px; right:18px;
-  font-family:var(--display); font-weight:500; letter-spacing:.1em;
-  text-transform:uppercase; font-size:12px;
-  background:var(--paper); color:var(--ink);
-  border:2px solid var(--ink); padding:9px 14px; cursor:pointer;
-}
+#fitBtn{ position:fixed; z-index:6; bottom:26px; right:18px; font-family:var(--display); font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; font-size:12px; background:var(--paper); color:var(--ink);
+  border:2px solid var(--ink); padding:9px 14px; cursor:pointer; }
 #fitBtn:hover{ background:var(--ink); color:var(--paper); }
 
-/* ============ Panel header ============ */
-.eyebrow{
-  font-family:var(--display); font-weight:500; text-transform:uppercase;
-  letter-spacing:.22em; font-size:12px; color:var(--road); margin:0 0 14px;
-}
-h1{
-  font-family:var(--display); font-weight:600; text-transform:uppercase;
-  font-size: clamp(34px, 4vw, 46px); line-height:1.02; letter-spacing:.01em;
-  margin:0 0 10px;
-}
+.eyebrow{ font-family:var(--display); font-weight:500; text-transform:uppercase; letter-spacing:.22em;
+  font-size:12px; color:var(--road); margin:0 0 14px; }
+h1{ font-family:var(--display); font-weight:600; text-transform:uppercase; font-size:clamp(34px,4vw,46px);
+  line-height:1.02; margin:0 0 10px; }
 .subtitle{ font-size:19px; font-style:italic; margin:0 0 22px; color:#4a3f33; }
 .rule{ border:none; border-top:3px solid var(--ink); width:64px; margin:26px 0; }
-.smallcaps{
-  font-family:var(--display); text-transform:uppercase; letter-spacing:.16em;
-  font-size:12.5px; font-weight:500;
-}
+.smallcaps{ font-family:var(--display); text-transform:uppercase; letter-spacing:.16em; font-size:12.5px; font-weight:500; }
 .byline{ color:#5a4d3d; }
 
-/* ============ Question framework ============ */
-h2{
-  font-family:var(--display); font-weight:600; text-transform:uppercase;
-  font-size:24px; letter-spacing:.03em; margin:0 0 12px;
-}
-details.qgroup{
-  background:var(--paper-deep); border:2px solid var(--ink); margin:14px 0;
-}
-details.qgroup summary{
-  cursor:pointer; padding:13px 16px; font-family:var(--display);
-  font-weight:600; text-transform:uppercase; letter-spacing:.08em; font-size:15px;
-  list-style:none; display:flex; align-items:center; gap:10px;
-}
+h2{ font-family:var(--display); font-weight:600; text-transform:uppercase; font-size:24px; margin:0 0 12px; }
+details.qgroup{ background:var(--paper-deep); border:2px solid var(--ink); margin:14px 0; }
+details.qgroup summary{ cursor:pointer; padding:13px 16px; font-family:var(--display); font-weight:600;
+  text-transform:uppercase; letter-spacing:.08em; font-size:15px; list-style:none; display:flex; align-items:center; gap:10px; }
 details.qgroup summary::-webkit-details-marker{ display:none; }
 details.qgroup summary::after{ content:"+"; margin-left:auto; font-size:20px; }
 details.qgroup[open] summary::after{ content:"–"; }
-.q-tag{
-  display:inline-block; min-width:22px; text-align:center; padding:2px 6px;
-  border:2px solid var(--ink); font-size:12px; background:var(--paper);
-}
+.q-tag{ display:inline-block; min-width:22px; text-align:center; padding:2px 6px; border:2px solid var(--ink);
+  font-size:12px; background:var(--paper); }
 details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,26,.25); }
 .q-list{ list-style:none; margin:10px 0 0; padding:0; }
 .q-list li{ display:flex; gap:10px; align-items:flex-start; margin:0 0 12px; font-size:15.5px; line-height:1.5; }
-.q-list input[type=checkbox]{
-  margin-top:4px; width:16px; height:16px; accent-color:var(--road); flex:0 0 auto;
-}
-#copyBtn{
-  font-family:var(--display); text-transform:uppercase; letter-spacing:.1em;
-  font-size:13px; font-weight:500; background:var(--road); color:var(--paper);
-  border:2px solid var(--ink); padding:10px 16px; cursor:pointer; margin-top:8px;
-}
+.q-list input[type=checkbox]{ margin-top:4px; width:16px; height:16px; accent-color:var(--road); flex:0 0 auto; }
+#copyBtn{ font-family:var(--display); text-transform:uppercase; letter-spacing:.1em; font-size:13px; font-weight:500;
+  background:var(--road); color:var(--paper); border:2px solid var(--ink); padding:10px 16px; cursor:pointer; margin-top:8px; }
 #copyBtn:hover{ filter:brightness(1.1); }
 #copyMsg{ font-size:13.5px; margin-left:10px; color:var(--denim); }
 
-/* ============ Stops ============ */
 .stop{ min-height:72vh; display:flex; flex-direction:column; justify-content:center;
-       border-left:6px solid transparent; transition:border-color .3s, background .3s; }
+  border-left:6px solid transparent; transition:border-color .3s, background .3s; }
 .stop.active{ border-left-color:var(--road); background:linear-gradient(90deg, rgba(168,59,36,.06), transparent 60%); }
 .stop-head{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
 .shield{ flex:0 0 auto; width:46px; height:50px; }
-.shield text{ font-family:var(--display); font-weight:600; }
-.stop h3{
-  font-family:var(--display); font-weight:600; text-transform:uppercase;
-  font-size:22px; line-height:1.1; margin:0;
-}
+.stop h3{ font-family:var(--display); font-weight:600; text-transform:uppercase; font-size:22px; line-height:1.1; margin:0; }
 .stop .meta{ margin:2px 0 14px; color:#5a4d3d; }
 .stop .meta .sep{ color:var(--dust); padding:0 6px; }
 .stop-qs{ margin-top:18px; border-top:1px dashed var(--dust); padding-top:14px; }
 .stop-qs p{ margin:0 0 10px; font-size:15px; line-height:1.5; }
-.stop-qs .lbl{
-  font-family:var(--display); font-size:11px; text-transform:uppercase;
-  letter-spacing:.12em; font-weight:600; padding:2px 7px; margin-right:8px;
-  border:1.5px solid var(--ink); white-space:nowrap;
-}
+.stop-qs .lbl{ font-family:var(--display); font-size:11px; text-transform:uppercase; letter-spacing:.12em;
+  font-weight:600; padding:2px 7px; margin-right:8px; border:1.5px solid var(--ink); white-space:nowrap; }
 .lbl.g1{ background:var(--paper-deep); }
 .lbl.g2{ background:var(--dust); color:var(--ink); }
 .lbl.g3{ background:var(--denim); color:var(--paper); border-color:var(--ink); }
-
-/* ============ Footer / credits ============ */
 .foot small{ display:block; margin-top:6px; color:#5a4d3d; }
 
-/* ============ Mobile ============ */
-@media (max-width: 900px){
-  :root{ --panel-w: 100%; }
+@media (max-width:900px){
+  :root{ --panel-w:100%; }
   #map-wrap{ left:0; height:44vh; bottom:auto; }
   #panel{ width:100%; margin-top:44vh; border-right:none; border-top:3px solid var(--ink); }
   #odometer{ top:10px; right:10px; font-size:11px; padding:8px 10px 7px; }
@@ -163,22 +109,20 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
   .section{ padding:40px 22px; }
   .stop{ min-height:62vh; }
 }
-@media (prefers-reduced-motion: reduce){
-  .stop{ transition:none; }
-}
+@media (prefers-reduced-motion: reduce){ .stop{ transition:none; } }
 </style>
 </head>
 <body>
 
 <div id="map-wrap" aria-label="Interactive map of the Joad family's route">
   <div id="viewDiv"></div>
+  <div id="mapmsg" role="status"></div>
 </div>
-<div id="odometer" aria-live="polite"><span class="mi">MILE 0000</span> · SALLISAW, OKLA.</div>
+<div id="odometer" aria-live="polite"><span class="mi">U.S. 66</span> · SALLISAW → THE SAN JOAQUIN</div>
 <button id="fitBtn" type="button" title="Zoom to the full route">Fit whole route</button>
 
 <main id="panel">
 
-  <!-- ============ TITLE ============ -->
   <header class="section" id="intro">
     <p class="eyebrow">A Literary Geography StoryMap</p>
     <h1>The Road West</h1>
@@ -190,10 +134,9 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     1,650 miles away.</p>
     <p>Scroll down. As you read, the map follows the family west, and the red line of the highway
     draws itself stop by stop. Click any marker on the map to jump to that stop in the story.</p>
-    <p class="smallcaps byline">Built for classroom use · Map data drawn as a client-side graphics layer · ArcGIS Maps SDK for JavaScript</p>
+    <p class="smallcaps byline">Built for classroom use · Route drawn client-side as an ArcGIS GraphicsLayer · No sign-in required</p>
   </header>
 
-  <!-- ============ QUESTIONING STRATEGY ============ -->
   <section class="section" id="framework">
     <p class="eyebrow">For the Teacher</p>
     <h2>Three Levels of Geographic Questioning</h2>
@@ -208,11 +151,11 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
         <p style="font-size:14.5px; margin:10px 0 0;"><em>Location, description, and spatial vocabulary — reading the map itself.</em></p>
         <ul class="q-list">
           <li><input type="checkbox" id="q1a" data-g="1" /><label for="q1a">Which states does the Joad family cross between Sallisaw and the San Joaquin Valley? List them in the order traveled.</label></li>
-          <li><input type="checkbox" id="q1b" data-g="1" /><label for="q1b">Name the three major rivers the family crosses (hint: New Mexico has two of them at its edges) and locate each on the map.</label></li>
+          <li><input type="checkbox" id="q1b" data-g="1" /><label for="q1b">Name the three major rivers the family crosses and locate each on the map.</label></li>
           <li><input type="checkbox" id="q1c" data-g="1" /><label for="q1c">Using the map's scale, estimate the distance from Sallisaw to Bakersfield. How far apart are the towns along the desert stretches compared with Oklahoma?</label></li>
-          <li><input type="checkbox" id="q1d" data-g="1" /><label for="q1d">Where does the land rise and fall along the route? Find the highest stop and the lowest, and describe the landform regions in between (plains, plateau, desert, mountain pass, valley).</label></li>
+          <li><input type="checkbox" id="q1d" data-g="1" /><label for="q1d">Where does the land rise and fall along the route? Find the highest stop and the lowest, and describe the landform regions in between.</label></li>
           <li><input type="checkbox" id="q1e" data-g="1" /><label for="q1e">Where is Weedpatch Camp relative to Bakersfield? Which direction and about how far?</label></li>
-          <li><input type="checkbox" id="q1f" data-g="1" /><label for="q1f">Switch the basemap in your mind to climate: which stops sit in humid country, which in semi-arid, and which in true desert?</label></li>
+          <li><input type="checkbox" id="q1f" data-g="1" /><label for="q1f">Which stops sit in humid country, which in semi-arid, and which in true desert?</label></li>
         </ul>
       </div>
     </details>
@@ -238,10 +181,10 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
         <p style="font-size:14.5px; margin:10px 0 0;"><em>Connection, comparison, and personal geography — why care?</em></p>
         <ul class="q-list">
           <li><input type="checkbox" id="q3a" data-g="3" /><label for="q3a">Compare the Joads' migration with another American migration — the Great Migration, the Trail of Tears, or migration into your own community today. What pushes people out, and what pulls them somewhere else?</label></li>
-          <li><input type="checkbox" id="q3b" data-g="3" /><label for="q3b">Map your own family's road: what routes did the people who raised you (or their parents) travel to get where you live now, and why?</label></li>
+          <li><input type="checkbox" id="q3b" data-g="3" /><label for="q3b">Map your own family's road: what routes did the people who raised you travel to get where you live now, and why?</label></li>
           <li><input type="checkbox" id="q3c" data-g="3" /><label for="q3c">Trace one item from your last meal back to where it was grown. Does any of your food come from the same valley the Joads were trying to reach?</label></li>
           <li><input type="checkbox" id="q3d" data-g="3" /><label for="q3d">Where in the world today are drought, flood, or heat pushing people to move? How are those journeys like and unlike the Joads'?</label></li>
-          <li><input type="checkbox" id="q3e" data-g="3" /><label for="q3e">Weedpatch Camp still stands, and the school beside it still serves farmworker families. What does that continuity — same place, new families — suggest about how much has changed since 1939?</label></li>
+          <li><input type="checkbox" id="q3e" data-g="3" /><label for="q3e">Weedpatch Camp still stands, and the school beside it still serves farmworker families. What does that continuity suggest about how much has changed since 1939?</label></li>
           <li><input type="checkbox" id="q3f" data-g="3" /><label for="q3f">The word "Okie" was used on this road as an insult. What labels get attached to newcomers where you live, and what work do those labels do?</label></li>
         </ul>
       </div>
@@ -250,10 +193,8 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     <button id="copyBtn" type="button">Copy selected questions</button><span id="copyMsg" role="status"></span>
   </section>
 
-  <!-- ============ STOPS (built by script) ============ -->
   <div id="stops"></div>
 
-  <!-- ============ CLOSING ============ -->
   <section class="section foot" id="closing">
     <p class="eyebrow">After the Map</p>
     <h2>Where the Road Ends</h2>
@@ -265,136 +206,94 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     <hr class="rule" />
     <p class="smallcaps">Teacher notes</p>
     <small>Route and mileages are generalized from the novel's chapter references to U.S. 66 and are approximate; the Hooper Ranch and the boxcar camp are fictional places set here at their approximate Tulare-basin location.</small>
-    <small>All map features are drawn client-side as an ArcGIS <code>GraphicsLayer</code> — no hosted services or credentials required. See the README to add an ArcGIS API key for Esri basemaps.</small>
+    <small>All map features are drawn client-side as an ArcGIS <code>GraphicsLayer</code> — no hosted services or credentials required.</small>
     <small>Question framework adapted from the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
   </section>
 </main>
 
+<!-- ===================================================================
+     PART 1 — Data and story panel. Runs with NO dependencies.
+     If the ArcGIS SDK never loads, everything below still renders.
+     =================================================================== -->
 <script>
-/* =====================================================================
-   CONFIG — optional ArcGIS access
-   Leave apiKey empty to use the OpenStreetMap basemap (no key needed).
-   Paste a free ArcGIS Location Platform API key to use Esri basemaps.
-   ===================================================================== */
 const CONFIG = {
-  apiKey: "",                          // e.g. "AAPK1234…"
+  apiKey: "",                          // optional; leave "" to use OpenStreetMap
   esriBasemap: "arcgis/topographic",   // used only when apiKey is set
   fallbackBasemap: "osm"
 };
 
-/* =====================================================================
-   DATA — the Joad route as coordinates (lon, lat).
-   `path` is the generalized U.S. 66 alignment; each stop points into it,
-   so the red "traveled" line can be rebuilt as the reader scrolls.
-   ===================================================================== */
 const PATH = [
-  [-94.787, 35.460], // 0 Sallisaw
-  [-95.523, 35.470], //   Checotah
-  [-95.981, 35.440], //   Henryetta
-  [-96.680, 35.470], //   Paden
-  [-97.516, 35.468], // 4 Oklahoma City
-  [-97.632, 35.505], // 5 Bethany
-  [-97.955, 35.532], //   El Reno
-  [-98.967, 35.509], //   Clinton
-  [-99.404, 35.412], //   Elk City
-  [-100.249,35.214], //   Shamrock, Tex.
-  [-101.831,35.199], // 10 Amarillo
-  [-102.428,35.243], //   Vega
-  [-103.725,35.172], //   Tucumcari
-  [-104.682,34.939], // 13 Santa Rosa
-  [-105.669,35.007], //   Clines Corners
-  [-106.650,35.084], // 15 Albuquerque
-  [-107.851,35.147], //   Grants
-  [-108.743,35.528], //   Gallup
-  [-110.158,34.902], //   Holbrook
-  [-110.697,35.024], //   Winslow
-  [-111.651,35.198], // 20 Flagstaff
-  [-112.874,35.326], //   Seligman
-  [-114.053,35.189], //   Kingman
-  [-114.614,34.848], // 23 Needles / Colorado River
-  [-116.161,34.721], //   Ludlow
-  [-116.889,34.864], // 25 Daggett (inspection)
-  [-117.017,34.896], //   Barstow
-  [-118.174,35.053], //   Mojave
-  [-118.549,35.132], // 28 Tehachapi Pass
-  [-119.019,35.373], // 29 Bakersfield
-  [-118.914,35.239], // 30 Weedpatch / Arvin camp
-  [-119.292,35.968]  // 31 Pixley — cotton, boxcars, flood
+  [-94.787,35.460],[-95.523,35.470],[-95.981,35.440],[-96.680,35.470],
+  [-97.516,35.468],[-97.632,35.505],[-97.955,35.532],[-98.967,35.509],
+  [-99.404,35.412],[-100.249,35.214],[-101.831,35.199],[-102.428,35.243],
+  [-103.725,35.172],[-104.682,34.939],[-105.669,35.007],[-106.650,35.084],
+  [-107.851,35.147],[-108.743,35.528],[-110.158,34.902],[-110.697,35.024],
+  [-111.651,35.198],[-112.874,35.326],[-114.053,35.189],[-114.614,34.848],
+  [-116.161,34.721],[-116.889,34.864],[-117.017,34.896],[-118.174,35.053],
+  [-118.549,35.132],[-119.019,35.373],[-118.914,35.239],[-119.292,35.968]
 ];
 
 const STOPS = [
-{ pi:0,  zoom:11, miles:0, name:"Sallisaw, Oklahoma", region:"Sequoyah County", ch:"Chapters 1–10",
+{ pi:0, zoom:11, miles:0, name:"Sallisaw, Oklahoma", region:"Sequoyah County", ch:"Chapters 1–10",
   text:"Home — and the loss of it. Drought and dust have broken the tenant farms, and a tractor has put the Joads off land their family worked for generations. Tom returns from McAlester prison to find the house shoved off its foundation. The family sells what it can, buys a secondhand Hudson converted into a truck, and studies a handbill promising work picking fruit in California.",
   q1:"Locate Sallisaw. Which part of Oklahoma is it in, and how close is it to the true Dust Bowl core in the Panhandle?",
   q2:"Why were tenant farmers — rather than landowners — the first people forced off this land when drought and banks squeezed the cotton economy?",
   q3:"What would make your family leave home? List three pushes and three pulls, then compare them with the Joads'." },
-
-{ pi:4,  zoom:10, miles:200, name:"Oklahoma City", region:"Joining Route 66", ch:"Chapters 12–13",
+{ pi:4, zoom:10, miles:200, name:"Oklahoma City", region:"Joining Route 66", ch:"Chapters 12–13",
   text:"At Oklahoma City the family truck merges into the great migrant stream. Steinbeck pauses the Joads' story in Chapter 12 to describe Highway 66 itself — the 'mother road' — as a river of families flowing west, town by town, gas station by gas station, from the Mississippi to Bakersfield.",
   q1:"Trace Route 66 across the map from here to Bakersfield. Which towns does it string together like beads?",
   q2:"Why does a single numbered highway matter so much in 1938? What did U.S. 66 offer a migrant family that back roads could not?",
   q3:"What is the 'mother road' of your own life — the route your family uses to reach work, family, or safety? What flows along it?" },
-
-{ pi:5,  zoom:11, miles:210, name:"Bethany, Oklahoma", region:"First night on the road", ch:"Chapter 13",
+{ pi:5, zoom:11, miles:210, name:"Bethany, Oklahoma", region:"First night on the road", ch:"Chapter 13",
   text:"Just west of Oklahoma City the Joads camp beside Ivy and Sairy Wilson, strangers who become road-family. That night Grampa — who had to be drugged to leave the farm at all — suffers a stroke and dies. The family buries him beside the road with a note in a jar, because a pauper's funeral would cost money they need for gasoline.",
   q1:"How far did the family travel on day one? Measure Sallisaw to Bethany along the route.",
   q2:"Why does leaving the land kill Grampa, in the logic of the novel? What is Steinbeck saying about the bond between people and place?",
   q3:"Is there a place whose loss would wound someone in your family the way leaving Sallisaw wounds Grampa? Where is it?" },
-
 { pi:10, zoom:9, miles:470, name:"Amarillo & the Texas Panhandle", region:"Crossing the Llano Estacado", ch:"Chapters 13 & 16",
   text:"The road runs straight and shadeless across the high, flat Panhandle — the Llano Estacado. Heat, wind, and distance wear on the truck, which has become the family's whole world: home, lifeboat, and largest asset rolled into one overloaded machine.",
   q1:"Describe the terrain around Amarillo using the map. What natural features are missing here that were present in eastern Oklahoma?",
   q2:"Why is this land flat, dry, and nearly treeless? What does elevation and rain-shadow geography have to do with it?",
   q3:"The truck is the family's most valuable possession. What single object does your household most depend on to keep life running — and what happens where you live when it fails?" },
-
 { pi:13, zoom:10, miles:640, name:"Santa Rosa, New Mexico", region:"Crossing the Pecos", ch:"Chapter 16",
   text:"Near the Pecos River crossing the Wilsons' touring car throws a connecting rod. Tom and Al hunt the part in a wrecking yard run by a one-eyed man, and the family faces its first hard arithmetic of the road: repair costs, dwindling cash, and the question of whether to split up or hold together. They hold together.",
   q1:"Find the Pecos River. Where does it rise, and where does it go after Santa Rosa?",
-  q2:"Why do wrecking yards, tourist camps, and repair shops cluster along Route 66 by 1938? Who is the migration an economy *for*?",
+  q2:"Why do wrecking yards, tourist camps, and repair shops cluster along Route 66 by 1938? Who is the migration an economy for?",
   q3:"When money runs short on a journey, who profits and who pays? Where do you see that same roadside economy today?" },
-
 { pi:15, zoom:10, miles:755, name:"Albuquerque, New Mexico", region:"The Rio Grande", ch:"Chapter 16",
   text:"The route drops into the Rio Grande valley at Albuquerque, then climbs again into the uplands of western New Mexico. The family is now in country utterly unlike home — mesas, pueblos, mountain distances — a reminder that 'the West' is many landscapes, not one.",
   q1:"Locate the Rio Grande. Which two countries and how many U.S. states does it touch?",
   q2:"Why did Albuquerque grow exactly here — what do a river crossing, a rail line, and later a highway have in common?",
-  q3:"The Joads pass through communities far older than Oklahoma's farms, including pueblos along the Rio Grande. Whose migrations shaped the place where you live, and in what order?" },
-
+  q3:"The Joads pass through communities far older than Oklahoma's farms. Whose migrations shaped the place where you live, and in what order?" },
 { pi:20, zoom:9, miles:1075, name:"Flagstaff & the High Country", region:"Arizona at 7,000 feet", ch:"Chapters 16–18",
   text:"West of Gallup the road climbs past the Painted Desert, through Holbrook and Winslow, into ponderosa pine country near Flagstaff — cool air and timber at seven thousand feet, an astonishment to a family from the dusty plains. Ahead, the road must fall all the way down to the Colorado River and the worst desert of the journey.",
   q1:"Compare elevations: Sallisaw, Amarillo, Flagstaff, Needles. Sketch the route's elevation profile from the map.",
   q2:"Why are there pine forests here in the middle of the arid Southwest? What does altitude do to temperature and rainfall?",
   q3:"Where is the nearest place to you where the landscape changes that dramatically within a day's drive? What causes the change?" },
-
 { pi:23, zoom:10, miles:1290, name:"Needles & the Colorado River", region:"The California line", ch:"Chapter 18",
   text:"The family reaches the Colorado River — green water at the edge of a white-hot desert — and camps to rest and bathe. Here the journey exacts new prices: Noah walks away down the river and out of the story; a deputy sneers the word 'Okie' at Ma; and Granma, worn past recovering, begins to fail. California is across the water, but it is not yet a welcome.",
   q1:"The Colorado River forms the border here. Trace it upstream and downstream: what canyon lies above, and what sea (barely) receives it below?",
   q2:"Why is a river in the desert both a border and a magnet? Why do inspection and policing concentrate at crossings like this one?",
   q3:"The word 'Okie' turns a place of origin into an insult. What place-based labels — fair or unfair — attach to people in your region?" },
-
 { pi:25, zoom:9, miles:1435, name:"Daggett & the Mojave Crossing", region:"Night desert, inspection station", ch:"Chapter 18",
   text:"The family crosses the Mojave at night to spare the engine and the old people. At the agricultural inspection station in Daggett, Ma refuses to unload the truck, pleading a sick grandmother — concealing that Granma has already died beside her during the crossing. She spends the desert night lying next to death so the family can reach the valley whole.",
   q1:"Measure the distance from Needles to Barstow. How many towns interrupt it? What does that emptiness mean for a 1938 truck?",
   q2:"Why does California inspect produce and plants at its border — what is the state protecting, and why is agriculture worth protecting that way?",
   q3:"Ma trades her own grief for the family's arrival. Who in the migrations you know of — historical or in your own family — absorbed the cost so others could get through?" },
-
 { pi:28, zoom:10, miles:1540, name:"Tehachapi Pass", region:"First sight of the valley", ch:"Chapter 18",
   text:"At dawn the truck tops the Tehachapi grade and the San Joaquin Valley opens below — green orchards, vineyards, and farmhouses laid out like the promised land the handbills described. It is the novel's most breathtaking view, and the family receives it at the moment of its deepest loss: they descend to bury Granma among strangers.",
   q1:"Find the pass. Which two mountain systems pinch together here, and what do they separate?",
   q2:"Why does the green begin so abruptly below the pass? Where does the valley's water actually come from, if not from rain?",
   q3:"Steinbeck places the best view and the worst grief in the same scene. Recall a place you first saw from above — did the view match what you found when you got down into it?" },
-
 { pi:29, zoom:10, miles:1580, name:"Bakersfield & the Hooverville", region:"Arrival without welcome", ch:"Chapters 19–20",
   text:"Granma is given a pauper's burial in Bakersfield — the fate the family spent its savings to spare Grampa. The Joads land in a roadside Hooverville: a shantytown of families exactly like them, where handbills have summoned five workers for every job. Wages fall, deputies burn camps, Connie abandons Rose of Sharon, and Casy is taken by the police in Tom's place.",
   q1:"Hoovervilles appeared at the edges of many towns. Why at the edges? What determines where the poorest people are allowed to stop?",
   q2:"Why did growers circulate more handbills than there were jobs? Work out what an oversupply of pickers does to the price of picking.",
-  q3:"Where at the edge of your own city or town do newcomers with the least money live today? What put that neighborhood *there*?" },
-
+  q3:"Where at the edge of your own city or town do newcomers with the least money live today? What put that neighborhood there?" },
 { pi:30, zoom:12, miles:1595, name:"Weedpatch Camp (Arvin Federal Camp)", region:"A working democracy", ch:"Chapters 22–26",
   text:"South of Bakersfield the family finds the Arvin Federal Government Camp — clean water, toilets, Saturday dances, and committees of migrants governing themselves. For a few chapters the Joads are treated as citizens rather than a problem. But dignity is not employment: there is still no steady work, and hunger finally drives them back onto the road. The camp is real — it still stands at Weedpatch, and the school beside it still serves farmworker children.",
-  q1:"Locate Weedpatch relative to Bakersfield and to the crops around it. What is grown in these fields today? (The map's imagery can help.)",
+  q1:"Locate Weedpatch relative to Bakersfield and to the crops around it. What is grown in these fields today?",
   q2:"Why did the federal government build camps here, in the fields, instead of leaving housing to the growers or the towns?",
   q3:"This camp still shelters farmworker families almost ninety years later. What does it mean that the place outlived the novel — and the problem outlived them both?" },
-
 { pi:31, zoom:10, miles:1650, name:"The Tulare Basin — Peaches, Boxcars, Flood", region:"The road ends in water", ch:"Chapters 26–30",
   text:"North of Weedpatch the family takes strike-breaking work at a peach ranch, where Casy — now an organizer — is killed and Tom strikes down his killer and becomes a fugitive. The Joads pick cotton and winter in a boxcar camp until the rains come and the creek rises. In the flooded barn where the novel ends, Rose of Sharon, having lost her own child, gives what she has left to a starving stranger. (The ranch and camp are fictional; the map places them in their approximate Tulare-basin setting.)",
   q1:"Why does this basin flood? Find the rivers that drain into it and notice what the basin lacks: an outlet to the sea.",
@@ -402,177 +301,276 @@ const STOPS = [
   q3:"The novel ends with one migrant family feeding a stranger. What networks — formal or informal — feed and shelter people where you live when everything else fails?" }
 ];
 
-/* =====================================================================
-   MAP — everything below draws as a client-side GraphicsLayer.
-   ===================================================================== */
-const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-require([
-  "esri/config","esri/Map","esri/views/MapView","esri/layers/GraphicsLayer","esri/Graphic"
-], (esriConfig, Map, MapView, GraphicsLayer, Graphic) => {
-
-  let basemap = CONFIG.fallbackBasemap;
-  if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.esriBasemap; }
-
-  const map = new Map({ basemap });
-  const view = new MapView({
-    container:"viewDiv", map,
-    center:[-106.5, 35.2], zoom:5,
-    constraints:{ snapToZoom:false },
-    popup:{ dockEnabled:false, defaultPopupTemplateEnabled:false }
-  });
-  view.ui.move("zoom", "bottom-left");
-
-  const routeLayer   = new GraphicsLayer({ title:"Route 66 (generalized)" });
-  const traveledLayer= new GraphicsLayer({ title:"Miles traveled" });
-  const stopLayer    = new GraphicsLayer({ title:"Story stops" });
-  map.addAll([routeLayer, traveledLayer, stopLayer]);
-
-  /* Full route: faint dashed umber line (the road not yet driven) */
-  routeLayer.add(new Graphic({
-    geometry:{ type:"polyline", paths:[PATH] },
-    symbol:{ type:"simple-line", color:[93,77,58,0.7], width:2.5, style:"dash" }
-  }));
-
-  /* Progressive red line, rebuilt on scroll */
-  let traveledGraphic = new Graphic({
-    geometry:{ type:"polyline", paths:[[PATH[0]]] },
-    symbol:{ type:"simple-line", color:[168,59,36,1], width:4.5, style:"solid", cap:"round", join:"round" }
-  });
-  traveledLayer.add(traveledGraphic);
-
-  function symbolFor(i, active){
-    return {
-      type:"simple-marker", style:"circle",
-      size: active ? 20 : 13,
-      color: active ? [168,59,36,1] : [234,224,204,1],
-      outline:{ color:[38,32,26,1], width: active ? 2.5 : 2 }
-    };
+/* ---- Build the story panel immediately, map or no map ---- */
+function shieldSVG(n){
+  return '<svg class="shield" viewBox="0 0 46 50" role="img" aria-label="Stop ' + n + '">' +
+    '<path d="M23 2 C17 6 8 7 3 6 C3 20 5 36 23 48 C41 36 43 20 43 6 C38 7 29 6 23 2 Z" fill="#EAE0CC" stroke="#26201A" stroke-width="2.5"/>' +
+    '<text x="23" y="21" text-anchor="middle" font-size="9" font-family="Oswald, Arial" fill="#26201A" letter-spacing="1">STOP</text>' +
+    '<text x="23" y="38" text-anchor="middle" font-size="16" font-family="Oswald, Arial" font-weight="600" fill="#A83B24">' + n + '</text>' +
+    '</svg>';
+}
+(function buildStops(){
+  var host = document.getElementById("stops");
+  for (var i = 0; i < STOPS.length; i++) {
+    var s = STOPS[i];
+    var sec = document.createElement("section");
+    sec.className = "section stop";
+    sec.id = "stop-" + i;
+    sec.setAttribute("data-stop", String(i));
+    sec.innerHTML =
+      '<div class="stop-head">' + shieldSVG(i+1) + '<h3>' + s.name + '</h3></div>' +
+      '<p class="meta smallcaps">' + s.ch + '<span class="sep">·</span>' + s.region +
+        '<span class="sep">·</span>≈ mile ' + s.miles.toLocaleString() + '</p>' +
+      '<p>' + s.text + '</p>' +
+      '<div class="stop-qs">' +
+        '<p><span class="lbl g1">1 · What\'s where?</span>' + s.q1 + '</p>' +
+        '<p><span class="lbl g2">2 · Why is it there?</span>' + s.q2 + '</p>' +
+        '<p><span class="lbl g3">3 · Relationship to me</span>' + s.q3 + '</p>' +
+      '</div>';
+    host.appendChild(sec);
   }
-  function labelFor(i, active){
-    return {
-      type:"text", text:String(i+1),
-      color: active ? [234,224,204,1] : [38,32,26,1],
-      font:{ size: active ? 11 : 8, family:"Oswald, Arial", weight:"bold" },
-      yoffset:-4
-    };
+})();
+
+/* ---- Copy selected questions (independent of the map) ---- */
+document.getElementById("copyBtn").addEventListener("click", function(){
+  var groups = { 1:"WHAT'S WHERE?", 2:"WHY IS IT THERE?", 3:"WHAT'S THE LARGER RELATIONSHIP — AND THE RELATIONSHIP TO ME?" };
+  var picked = { 1:[], 2:[], 3:[] };
+  var boxes = document.querySelectorAll('.q-list input[type=checkbox]:checked');
+  for (var i = 0; i < boxes.length; i++) {
+    var cb = boxes[i];
+    var lab = document.querySelector('label[for="' + cb.id + '"]');
+    picked[cb.getAttribute("data-g")].push(lab.textContent.trim());
   }
-
-  const markerGraphics = [], labelGraphics = [];
-  STOPS.forEach((s, i) => {
-    const pt = { type:"point", longitude:PATH[s.pi][0], latitude:PATH[s.pi][1] };
-    const attrs = { stopIndex:i, name:s.name, ch:s.ch, miles:s.miles };
-    const marker = new Graphic({
-      geometry:pt, attributes:attrs, symbol:symbolFor(i,false),
-      popupTemplate:{
-        title:`Stop ${i+1} · {name}`,
-        content:`<b>{ch}</b> · about mile {miles} from Sallisaw.<br/><br/>${s.text}`
-      }
-    });
-    const label = new Graphic({ geometry:pt, attributes:attrs, symbol:labelFor(i,false) });
-    markerGraphics.push(marker); labelGraphics.push(label);
-    stopLayer.addMany([marker, label]);
-  });
-
-  /* Map click → scroll the story to that stop */
-  view.on("click", (evt) => {
-    view.hitTest(evt, { include: stopLayer }).then((res) => {
-      const g = res.results.find(r => r.graphic && r.graphic.attributes && r.graphic.attributes.stopIndex !== undefined);
-      if (g) document.getElementById("stop-" + g.graphic.attributes.stopIndex)
-               .scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block:"center" });
-    });
-  });
-
-  /* ---------- Build the stop sections in the panel ---------- */
-  const shieldSVG = (n) => `
-    <svg class="shield" viewBox="0 0 46 50" role="img" aria-label="Stop ${n}">
-      <path d="M23 2 C17 6 8 7 3 6 C3 20 5 36 23 48 C41 36 43 20 43 6 C38 7 29 6 23 2 Z"
-            fill="#EAE0CC" stroke="#26201A" stroke-width="2.5"/>
-      <text x="23" y="21" text-anchor="middle" font-size="9" fill="#26201A" letter-spacing="1">STOP</text>
-      <text x="23" y="38" text-anchor="middle" font-size="16" fill="#A83B24">${n}</text>
-    </svg>`;
-
-  const stopsHost = document.getElementById("stops");
-  STOPS.forEach((s, i) => {
-    const sec = document.createElement("section");
-    sec.className = "section stop"; sec.id = "stop-" + i; sec.dataset.stop = i;
-    sec.innerHTML = `
-      <div class="stop-head">${shieldSVG(i+1)}<h3>${s.name}</h3></div>
-      <p class="meta smallcaps">${s.ch}<span class="sep">·</span>${s.region}<span class="sep">·</span>≈ mile ${s.miles.toLocaleString()}</p>
-      <p>${s.text}</p>
-      <div class="stop-qs">
-        <p><span class="lbl g1">1 · What's where?</span>${s.q1}</p>
-        <p><span class="lbl g2">2 · Why is it there?</span>${s.q2}</p>
-        <p><span class="lbl g3">3 · Relationship to me</span>${s.q3}</p>
-      </div>`;
-    stopsHost.appendChild(sec);
-  });
-
-  /* ---------- Scroll driving: odometer, red line, camera ---------- */
-  const odometer = document.getElementById("odometer");
-  let activeIndex = -1;
-
-  function activate(i){
-    if (i === activeIndex) return;
-    activeIndex = i;
-
-    document.querySelectorAll(".stop").forEach(el =>
-      el.classList.toggle("active", Number(el.dataset.stop) === i));
-
-    markerGraphics.forEach((g, k) => { g.symbol = symbolFor(k, k === i); });
-    labelGraphics.forEach((g, k) => { g.symbol = labelFor(k, k === i); });
-
-    const s = STOPS[i];
-    traveledGraphic.geometry = { type:"polyline", paths:[ PATH.slice(0, s.pi + 1) ] };
-
-    odometer.innerHTML = `<span class="mi">MILE ${String(s.miles).padStart(4,"0")}</span> · ${s.name.toUpperCase()}`;
-
-    view.goTo(
-      { center: PATH[s.pi], zoom: s.zoom },
-      { duration: prefersReduced ? 0 : 1400, easing:"in-out-cubic" }
-    ).catch(()=>{ /* interrupted by user — fine */ });
-  }
-
-  function fitRoute(){
-    activeIndex = -1;
-    view.goTo({ center:[-106.5,35.2], zoom: window.innerWidth < 900 ? 4 : 5 },
-              { duration: prefersReduced ? 0 : 1200 }).catch(()=>{});
-    odometer.innerHTML = `<span class="mi">U.S. 66</span> · SALLISAW → THE SAN JOAQUIN`;
-  }
-  document.getElementById("fitBtn").addEventListener("click", fitRoute);
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) activate(Number(e.target.dataset.stop)); });
-  }, { rootMargin:"-42% 0px -42% 0px", threshold:0 });
-  document.querySelectorAll(".stop").forEach(el => io.observe(el));
-
-  const ioIntro = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) fitRoute(); });
-  }, { rootMargin:"-30% 0px -60% 0px" });
-  ioIntro.observe(document.getElementById("intro"));
-});
-
-/* ---------- Copy selected questions (works without the map) ---------- */
-document.getElementById("copyBtn").addEventListener("click", () => {
-  const groups = { 1:"WHAT'S WHERE?", 2:"WHY IS IT THERE?", 3:"WHAT'S THE LARGER RELATIONSHIP — AND THE RELATIONSHIP TO ME?" };
-  const picked = { 1:[], 2:[], 3:[] };
-  document.querySelectorAll('.q-list input[type=checkbox]:checked').forEach(cb => {
-    picked[cb.dataset.g].push(document.querySelector(`label[for="${cb.id}"]`).textContent.trim());
-  });
-  let out = "GEOGRAPHIC QUESTIONS — THE GRAPES OF WRATH\n\n";
-  let count = 0;
-  for (const g of [1,2,3]) {
-    if (!picked[g].length) continue;
-    out += groups[g] + "\n";
-    picked[g].forEach((q,i) => { out += `  ${i+1}. ${q}\n`; count++; });
+  var out = "GEOGRAPHIC QUESTIONS — THE GRAPES OF WRATH\n\n";
+  var count = 0, gs = [1,2,3];
+  for (var g = 0; g < gs.length; g++) {
+    var key = gs[g];
+    if (!picked[key].length) continue;
+    out += groups[key] + "\n";
+    for (var j = 0; j < picked[key].length; j++) { out += "  " + (j+1) + ". " + picked[key][j] + "\n"; count++; }
     out += "\n";
   }
-  const msg = document.getElementById("copyMsg");
+  var msg = document.getElementById("copyMsg");
   if (!count) { msg.textContent = "Check at least one question first."; return; }
-  navigator.clipboard.writeText(out.trim())
-    .then(() => { msg.textContent = `Copied ${count} question${count>1?"s":""}.`; })
-    .catch(() => { msg.textContent = "Couldn't reach the clipboard — select and copy manually."; });
+  var text = out.trim();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      msg.textContent = "Copied " + count + " question" + (count>1?"s":"") + ".";
+    }).catch(function(){ fallbackCopy(text, msg, count); });
+  } else {
+    fallbackCopy(text, msg, count);
+  }
 });
+function fallbackCopy(text, msg, count){
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed"; ta.style.left = "-9999px";
+  document.body.appendChild(ta); ta.select();
+  try {
+    document.execCommand("copy");
+    msg.textContent = "Copied " + count + " question" + (count>1?"s":"") + ".";
+  } catch (e) {
+    msg.textContent = "Couldn't reach the clipboard — select and copy manually.";
+  }
+  document.body.removeChild(ta);
+}
+
+/* ---- Diagnostics helper ---- */
+function showMapMessage(title, html){
+  var box = document.getElementById("mapmsg");
+  box.innerHTML = "<h4>" + title + "</h4>" + html;
+  box.style.display = "block";
+}
+window.addEventListener("error", function(e){
+  if (e && e.message && /require|esri/i.test(String(e.message))) {
+    showMapMessage("Map script error", "<p>" + String(e.message) + "</p>");
+  }
+});
+</script>
+
+<!-- PART 2 — the SDK. If this fails, everything above still works. -->
+<script src="https://js.arcgis.com/4.30/"></script>
+
+<!-- PART 3 — the map, guarded. -->
+<script>
+(function initMap(){
+  if (location.protocol === "file:") {
+    showMapMessage("Open this over http, not file://", 
+      "<p>Safari blocks the network requests the ArcGIS SDK needs when a page is opened directly from disk. " +
+      "The story text works, but the map cannot load.</p>" +
+      "<p>In Terminal, from this folder, run:<br><code>python3 -m http.server 8000</code><br>" +
+      "then open <code>http://localhost:8000</code>. On GitHub Pages this is never an issue.</p>");
+    return;
+  }
+  if (typeof require === "undefined") {
+    showMapMessage("The ArcGIS SDK didn't load",
+      "<p>The page couldn't reach <code>js.arcgis.com</code>. Check for a content blocker, an offline connection, " +
+      "or a strict network filter, then reload.</p>");
+    return;
+  }
+
+  require([
+    "esri/config","esri/Map","esri/views/MapView",
+    "esri/layers/GraphicsLayer","esri/Graphic",
+    "esri/geometry/Point","esri/geometry/Polyline"
+  ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
+
+    var basemap = CONFIG.fallbackBasemap;
+    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.esriBasemap; }
+
+    var map = new Map({ basemap: basemap });
+    var view = new MapView({
+      container: "viewDiv",
+      map: map,
+      center: [-106.5, 35.2],
+      zoom: 5,
+      constraints: { snapToZoom: false },
+      popup: { dockEnabled: false, defaultPopupTemplateEnabled: false }
+    });
+
+    view.when(function(){
+      view.ui.move("zoom", "bottom-left");
+    }, function(err){
+      showMapMessage("The map view failed to start",
+        "<p>" + (err && err.message ? err.message : "Unknown error") + "</p>" +
+        "<p>This usually means WebGL is unavailable. In Safari, check " +
+        "<em>Settings → Advanced → Show features for web developers</em>, then " +
+        "<em>Develop → Experimental Features</em>, and make sure WebGL is enabled. " +
+        "Updating Safari also resolves it.</p>");
+    });
+
+    var routeLayer    = new GraphicsLayer({ title: "Route 66 (generalized)" });
+    var traveledLayer = new GraphicsLayer({ title: "Miles traveled" });
+    var stopLayer     = new GraphicsLayer({ title: "Story stops" });
+    map.addMany([routeLayer, traveledLayer, stopLayer]);
+
+    // Explicit geometry constructors — no reliance on autocasting.
+    routeLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [PATH], spatialReference: { wkid: 4326 } }),
+      symbol: { type: "simple-line", color: [93,77,58,0.7], width: 2.5, style: "dash" }
+    }));
+
+    var traveledGraphic = new Graphic({
+      geometry: new Polyline({ paths: [[PATH[0], PATH[0]]], spatialReference: { wkid: 4326 } }),
+      symbol: { type: "simple-line", color: [168,59,36,1], width: 4.5, style: "solid", cap: "round", join: "round" }
+    });
+    traveledLayer.add(traveledGraphic);
+
+    function symbolFor(active){
+      return { type: "simple-marker", style: "circle",
+        size: active ? 20 : 13,
+        color: active ? [168,59,36,1] : [234,224,204,1],
+        outline: { color: [38,32,26,1], width: active ? 2.5 : 2 } };
+    }
+    function labelFor(i, active){
+      return { type: "text", text: String(i+1),
+        color: active ? [234,224,204,1] : [38,32,26,1],
+        font: { size: active ? 11 : 8, family: "sans-serif", weight: "bold" },
+        yoffset: -4 };
+    }
+
+    var markerGraphics = [], labelGraphics = [];
+    for (var i = 0; i < STOPS.length; i++) {
+      var s = STOPS[i];
+      var pt = new Point({ longitude: PATH[s.pi][0], latitude: PATH[s.pi][1], spatialReference: { wkid: 4326 } });
+      var attrs = { stopIndex: i, name: s.name, ch: s.ch, miles: s.miles };
+      var marker = new Graphic({
+        geometry: pt, attributes: attrs, symbol: symbolFor(false),
+        popupTemplate: {
+          title: "Stop " + (i+1) + " · {name}",
+          content: "<b>{ch}</b> · about mile {miles} from Sallisaw.<br/><br/>" + s.text
+        }
+      });
+      var label = new Graphic({ geometry: pt, attributes: attrs, symbol: labelFor(i, false) });
+      markerGraphics.push(marker);
+      labelGraphics.push(label);
+      stopLayer.addMany([marker, label]);
+    }
+
+    view.on("click", function(evt){
+      view.hitTest(evt, { include: stopLayer }).then(function(res){
+        for (var i = 0; i < res.results.length; i++) {
+          var g = res.results[i].graphic;
+          if (g && g.attributes && typeof g.attributes.stopIndex === "number") {
+            var el = document.getElementById("stop-" + g.attributes.stopIndex);
+            if (el) el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
+            return;
+          }
+        }
+      });
+    });
+
+    var odometer = document.getElementById("odometer");
+    var activeIndex = -1;
+
+    function activate(i){
+      if (i === activeIndex) return;
+      activeIndex = i;
+
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) {
+        if (Number(els[k].getAttribute("data-stop")) === i) els[k].classList.add("active");
+        else els[k].classList.remove("active");
+      }
+      for (var m = 0; m < markerGraphics.length; m++) {
+        markerGraphics[m].symbol = symbolFor(m === i);
+        labelGraphics[m].symbol = labelFor(m, m === i);
+      }
+
+      var s = STOPS[i];
+      var driven = PATH.slice(0, s.pi + 1);
+      if (driven.length < 2) driven = [PATH[0], PATH[0]];   // a polyline needs 2+ vertices
+      traveledGraphic.geometry = new Polyline({ paths: [driven], spatialReference: { wkid: 4326 } });
+
+      var mi = String(s.miles);
+      while (mi.length < 4) mi = "0" + mi;
+      odometer.innerHTML = '<span class="mi">MILE ' + mi + '</span> · ' + s.name.toUpperCase();
+
+      view.goTo({ center: PATH[s.pi], zoom: s.zoom },
+                { duration: prefersReduced ? 0 : 1400, easing: "in-out-cubic" })
+          .catch(function(){});
+    }
+
+    function fitRoute(){
+      activeIndex = -1;
+      view.goTo({ center: [-106.5, 35.2], zoom: window.innerWidth < 900 ? 4 : 5 },
+                { duration: prefersReduced ? 0 : 1200 }).catch(function(){});
+      odometer.innerHTML = '<span class="mi">U.S. 66</span> · SALLISAW → THE SAN JOAQUIN';
+    }
+    document.getElementById("fitBtn").addEventListener("click", fitRoute);
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function(entries){
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) activate(Number(entries[i].target.getAttribute("data-stop")));
+        }
+      }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+      var stopEls = document.querySelectorAll(".stop");
+      for (var j = 0; j < stopEls.length; j++) io.observe(stopEls[j]);
+
+      var ioIntro = new IntersectionObserver(function(entries){
+        for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) fitRoute();
+      }, { rootMargin: "-30% 0px -60% 0px" });
+      ioIntro.observe(document.getElementById("intro"));
+    } else {
+      // Very old Safari: fall back to a scroll handler.
+      window.addEventListener("scroll", function(){
+        var els = document.querySelectorAll(".stop"), mid = window.innerHeight / 2, best = -1, bestD = Infinity;
+        for (var i = 0; i < els.length; i++) {
+          var r = els[i].getBoundingClientRect();
+          var d = Math.abs((r.top + r.bottom) / 2 - mid);
+          if (d < bestD) { bestD = d; best = Number(els[i].getAttribute("data-stop")); }
+        }
+        if (best >= 0) activate(best);
+      });
+    }
+  }, function(err){
+    showMapMessage("A map module failed to load",
+      "<p>" + (err && err.message ? err.message : "Unknown error") + "</p>");
+  });
+})();
 </script>
 </body>
 </html>

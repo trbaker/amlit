@@ -25,6 +25,57 @@
     --accent-2:   #8E7A4E;
     --cool:       #31465C;
   }
+
+  /* Legend for the 1854 boundaries. Rides the panel edge, like the toggle,
+     and hides itself if the boundary layer fails to load. */
+  #legend{
+    display: none;
+    position: fixed;
+    z-index: 7;
+    top: 64px;
+    left: calc(var(--panel-w) + 16px);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 10px 13px 11px;
+    box-shadow: 3px 4px 0 rgba(0,0,0,.3);
+    transition: left .35s ease;
+    max-width: 210px;
+  }
+  #legend p{
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  #legend .legend-title{
+    font-family: var(--display);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    white-space: normal;
+  }
+  #legend .sw{
+    display: inline-block;
+    width: 15px; height: 12px;
+    margin-right: 8px;
+    vertical-align: -1px;
+    border: 1px solid var(--ink);
+  }
+  #legend .sw-slave{ background: rgba(125,43,43,.30); }
+  #legend .sw-free { background: rgba(49,70,92,.18); }
+  #legend .sw-terr { background: rgba(87,91,94,.10); border-style: dashed; }
+
+  @media (max-width: 900px){
+    #legend{ top: auto; bottom: 12px; left: 12px; padding: 8px 10px 9px; }
+    #legend p{ font-size: 11.5px; line-height: 1.75; }
+  }
+  @media (prefers-reduced-motion: reduce){ #legend{ transition: none; } }
 </style>
 </head>
 <body>
@@ -32,6 +83,12 @@
 <div id="map-wrap">
   <div id="viewDiv"></div>
   <div id="mapmsg" role="status"></div>
+  <div id="legend" aria-label="Map legend">
+    <p class="legend-title">The United States in 1854</p>
+    <p><span class="sw sw-slave"></span>Slavery legal</p>
+    <p><span class="sw sw-free"></span>Free state</p>
+    <p><span class="sw sw-terr"></span>Territory &mdash; still undecided</p>
+  </div>
 </div>
 
 <button id="panelToggle" class="ctrl" type="button" aria-pressed="false">Hide text</button>
@@ -67,6 +124,13 @@
   <section class="section" id="framework">
     <p class="eyebrow">For the Teacher</p>
     <h2>Three Levels of Geographic Questioning</h2>
+    <p><strong>A note on this map.</strong> The boundaries shown are from <strong>1854</strong>, not from today.
+    There are no modern highways, no modern city labels, and no modern state lines — only terrain and the
+    borders as they stood at the time. States are shaded by whether slavery was legal in them; the western
+    territories, still undecided, are left unshaded and outlined in dashes. Several states on a present-day
+    map do not exist yet. Tell students this before they begin, and then ask them what it changes.</p>
+    <p>The shading is the whole book in one image: Cora is trying to get from the red into the blue, and the
+    train keeps surfacing in the red.</p>
     <p>Each stop below carries one question from each level, and the banks here hold more.
     Check the questions you want, then copy your selection for a handout, discussion guide, or exit ticket.
     The sequence moves students from <em>location</em> to <em>explanation</em> to <em>meaning</em> — in the spirit of
@@ -83,6 +147,7 @@
           <li><input type="checkbox" id="q1d" data-g="1" /><label for="q1d">Where were the free states in 1850, and where was the line? Find the Ohio River on the map and say what it separated.</label></li>
           <li><input type="checkbox" id="q1e" data-g="1" /><label for="q1e">Map the routes of the <em>real</em> Underground Railroad. Did all of them run north? Look for the ones that ran south, to Mexico and to Spanish Florida.</label></li>
           <li><input type="checkbox" id="q1f" data-g="1" /><label for="q1f">Where is the Valentine farm, and what free state is it in? Does being in a free state make Cora safe?</label></li>
+          <li><input type="checkbox" id="q1g" data-g="1" /><label for="q1g">This map shows the country as it stood in 1854. Compare it with a map of today: which states do you know that are not here yet? What is drawn in their place?</label></li>
         </ul>
       </div>
     </details>
@@ -98,6 +163,7 @@
           <li><input type="checkbox" id="q2d" data-g="2" /><label for="q2d">The novel's South Carolina, North Carolina, and Indiana are not historical portraits. Each one relocates a real American atrocity into a place and a decade where it did not happen. Identify them, then map where and when each actually occurred.</label></li>
           <li><input type="checkbox" id="q2e" data-g="2" /><label for="q2e">Why was a prosperous Black farming community in a free state still a target? Look up the destruction of Black towns and districts — Tulsa, Rosewood, Wilmington — and locate them.</label></li>
           <li><input type="checkbox" id="q2f" data-g="2" /><label for="q2f">Why does the last tunnel go nowhere? If a railroad has no terminus, what does that say about where the country was actually prepared to take her?</label></li>
+          <li><input type="checkbox" id="q2g" data-g="2" /><label for="q2g">1854 is the year of the Kansas-Nebraska Act, which tore up the old line between slave and free territory and left the question to a vote — and to violence. Find the western territories on this map. Why did where the line fell matter so much to people living a thousand miles away?</label></li>
         </ul>
       </div>
     </details>
@@ -136,6 +202,7 @@
     <p class="smallcaps">Teacher notes — read before assigning</p>
     <small><strong>This is not a historical novel, and the map is not a historical map.</strong> Whitehead writes speculative history: the literal railroad is his invention, and the states Cora passes through are deliberate anachronisms. South Carolina's benevolent doctors performing forced sterilizations and running a secret syphilis study compress the real 20th-century Tuskegee study and decades of coerced sterilization. North Carolina's total ban on Black people, enforced by a road of hanged bodies, gathers together lynching, sundown towns, and expulsion. Indiana's destroyed Black farming community echoes Tulsa, Rosewood, and Wilmington. Students should be told this plainly, and then asked to go find the real events and the real places.</small>
     <small>The Randall plantation, Griffin, the Valentine farm, and the stations are inventions. They are placed here in the regions the novel implies — Georgia's cotton belt, the South Carolina midlands, the North Carolina piedmont, middle Tennessee, and southern Indiana. Distances and station locations are approximate.</small>
+    <small>The base of this map is terrain only — no modern roads, labels, or state lines, which would show learners a country that did not yet exist. The political boundaries are the <strong>1854</strong> states and territories. The shading is not part of that source data: it is applied here, classifying each state by whether slavery was legal in it in 1854. The territories are left unshaded because in 1854 they were precisely the open question. Note that the novel is set loosely in this period rather than in a fixed year, and that Whitehead's states are inventions in any case — the map shows the real country the story is arguing with.</small>
     <small>The real Underground Railroad kept almost no records and drew almost no maps, for the obvious reason. What is mapped today is reconstructed from testimony, court records, and the memoirs of the people who survived it.</small>
     <small>The three-level questioning framework follows the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
   </section>
@@ -146,11 +213,38 @@
      PART 1 — Content and reading panel. No dependencies.
      =================================================================== -->
 <script>
+/* ---------------------------------------------------------------------
+   THE MAP BENEATH THE STORY
+   This study deliberately avoids a modern basemap. Present-day highways,
+   city labels, and state lines are anachronisms here — they show learners
+   a country that did not yet exist. Instead:
+     · the ground is bare terrain, with no labels, no roads, no borders
+     · the only political boundaries come from an 1854 layer, drawn on top
+   --------------------------------------------------------------------- */
 var CONFIG = {
-  apiKey: "",
-  styledBasemap: "arcgis/topographic",
-  freeBasemap: "osm"
+
+  /* Terrain with no labels. Needs no key and no account.
+     Swap in World_Shaded_Relief for pure relief with no land cover at all. */
+  terrainUrl: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer",
+
+  /* United States states and territories as they stood in 1854. */
+  boundaryUrl: "https://services.arcgis.com/BG6nSlhZSAWtExvp/arcgis/rest/services/1854_US_states_and_territories/FeatureServer/0",
+  boundaryYear: 1854,
+
+  /* Shade the 1854 states by whether slavery was legal there.
+     This is the line Cora spends the whole novel trying to cross, so the map
+     draws it. Set to false for plain outlines with no shading. */
+  shadeFreeAndSlave: true
 };
+
+/* Slavery was legal in these fifteen states in 1854, and in the District of
+   Columbia. Every other state was free. Territories were the open question —
+   which is what the Kansas-Nebraska Act of 1854 set on fire. */
+var SLAVE_STATES_1854 = [
+  "Alabama", "Arkansas", "Delaware", "District of Columbia", "Florida",
+  "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "Missouri",
+  "North Carolina", "South Carolina", "Tennessee", "Texas", "Virginia"
+];
 
 var CSSVARS = getComputedStyle(document.documentElement);
 function tok(name){ return CSSVARS.getPropertyValue(name).trim(); }
@@ -383,14 +477,21 @@ function showMapMessage(title, html){
 
   require([
     "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/Basemap", "esri/layers/TileLayer", "esri/layers/FeatureLayer",
     "esri/layers/GraphicsLayer", "esri/Graphic",
     "esri/geometry/Point", "esri/geometry/Polyline"
-  ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
+  ], function(esriConfig, Map, MapView, Basemap, TileLayer, FeatureLayer,
+              GraphicsLayer, Graphic, Point, Polyline){
 
-    var basemap = CONFIG.freeBasemap;
-    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.styledBasemap; }
+    /* Bare terrain: relief and land cover, but no labels, no roads,
+       and no modern political boundaries. */
+    var terrain = new Basemap({
+      baseLayers: [ new TileLayer({ url: CONFIG.terrainUrl }) ],
+      title: "Terrain",
+      id: "terrain-no-labels"
+    });
 
-    var map = new Map({ basemap: basemap });
+    var map = new Map({ basemap: terrain });
     var view = new MapView({
       container: "viewDiv", map: map,
       center: [-84.5, 35.8], zoom: 5,
@@ -401,6 +502,91 @@ function showMapMessage(title, html){
     view.when(function(){ view.ui.move("zoom", "bottom-left"); },
       function(){ showMapMessage("The map couldn't start",
         "<p>This browser may not support the graphics the map needs. Updating the browser usually fixes it.</p>"); });
+
+    /* ---------------------------------------------------------------
+       THE 1854 BOUNDARIES
+       Sorts each polygon into slave state, free state, or territory, and
+       shades it accordingly — lightly, so the terrain still reads through.
+       --------------------------------------------------------------- */
+    var quoted = [];
+    for (var q = 0; q < SLAVE_STATES_1854.length; q++) {
+      quoted.push("'" + SLAVE_STATES_1854[q] + "'");
+    }
+    var classify =
+      "var slave = [" + quoted.join(", ") + "];" +
+      "var kind = DefaultValue($feature.RegionType, 'State');" +
+      "if (Upper(kind) != 'STATE') { return 'Territory'; }" +
+      "if (IndexOf(slave, Trim(DefaultValue($feature.STATE_NAME, ''))) > -1) { return 'Slave state'; }" +
+      "return 'Free state';";
+
+    function fill(hex, alpha, dashed){
+      return {
+        type: "simple-fill",
+        color: rgb(hex, alpha),
+        outline: {
+          color: rgb(C.ink, 0.7),
+          width: 1.2,
+          style: dashed ? "dash" : "solid"
+        }
+      };
+    }
+
+    var shaded = {
+      type: "unique-value",
+      valueExpression: classify,
+      defaultSymbol: fill(C.ink, 0, false),
+      uniqueValueInfos: [
+        { value: "Slave state", symbol: fill(C.accent, 0.30, false) },
+        { value: "Free state",  symbol: fill(C.cool,   0.18, false) },
+        { value: "Territory",   symbol: fill(C.muted,  0.10, true)  }
+      ]
+    };
+
+    var plain = {
+      type: "simple",
+      symbol: {
+        type: "simple-fill",
+        color: [0, 0, 0, 0],
+        outline: { color: rgb(C.ink, 0.75), width: 1.3 }
+      }
+    };
+
+    var bounds = new FeatureLayer({
+      url: CONFIG.boundaryUrl,
+      title: "United States, " + CONFIG.boundaryYear,
+      outFields: ["STATE_NAME", "RegionType"],
+      popupEnabled: false,
+
+      /* The service stops drawing below 1:155,000, which would make the
+         borders vanish at the closest stops. Draw at every scale. */
+      minScale: 0,
+      maxScale: 0,
+
+      renderer: CONFIG.shadeFreeAndSlave ? shaded : plain,
+
+      labelsVisible: true,
+      labelingInfo: [{
+        labelExpressionInfo: { expression: "$feature.STATE_NAME" },
+        symbol: {
+          type: "text",
+          color: rgb(C.ink, 0.9),
+          haloColor: [255, 255, 255, 0.85],
+          haloSize: 1.8,
+          font: { size: 10, family: "sans-serif", weight: "bold" }
+        },
+        labelPlacement: "always-horizontal"
+      }]
+    });
+
+    bounds.load().then(function(){
+      map.add(bounds, 0);                 /* beneath the route and the stops */
+      var legend = document.getElementById("legend");
+      if (legend && CONFIG.shadeFreeAndSlave) legend.style.display = "block";
+    }).catch(function(){
+      showMapMessage("The 1854 borders didn't load",
+        "<p>The terrain is showing, but the historical boundaries could not be reached. " +
+        "The route and the stops still work.</p>");
+    });
 
     var SR = { wkid: 4326 };
     var lineLayer     = new GraphicsLayer();   /* the whole line, faint */

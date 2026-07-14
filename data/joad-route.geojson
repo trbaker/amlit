@@ -1,0 +1,133 @@
+{
+  "type": "FeatureCollection",
+  "name": "joad_route_grapes_of_wrath",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "U.S. Route 66 — Joad family route (generalized)",
+        "novel": "The Grapes of Wrath",
+        "author": "John Steinbeck",
+        "note": "Generalized alignment of U.S. 66 from Sallisaw, OK to the southern San Joaquin Valley, CA. Approximate; intended for classroom use, not navigation."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-94.787, 35.460], [-95.523, 35.470], [-95.981, 35.440], [-96.680, 35.470],
+          [-97.516, 35.468], [-97.632, 35.505], [-97.955, 35.532], [-98.967, 35.509],
+          [-99.404, 35.412], [-100.249, 35.214], [-101.831, 35.199], [-102.428, 35.243],
+          [-103.725, 35.172], [-104.682, 34.939], [-105.669, 35.007], [-106.650, 35.084],
+          [-107.851, 35.147], [-108.743, 35.528], [-110.158, 34.902], [-110.697, 35.024],
+          [-111.651, 35.198], [-112.874, 35.326], [-114.053, 35.189], [-114.614, 34.848],
+          [-116.161, 34.721], [-116.889, 34.864], [-117.017, 34.896], [-118.174, 35.053],
+          [-118.549, 35.132], [-119.019, 35.373], [-118.914, 35.239], [-119.292, 35.968]
+        ]
+      }
+    },
+
+    { "type": "Feature",
+      "properties": { "stop": 1, "name": "Sallisaw, Oklahoma", "region": "Sequoyah County", "chapters": "Chapters 1–10", "miles_from_start": 0, "real_or_fictional": "real",
+        "summary": "Home, and the loss of it. Tom returns from prison to find the family tractored off the land. They buy a used Hudson and study a handbill promising fruit-picking work in California.",
+        "q1_whats_where": "Locate Sallisaw. Which part of Oklahoma is it in, and how close is it to the true Dust Bowl core in the Panhandle?",
+        "q2_why_there": "Why were tenant farmers — rather than landowners — the first people forced off this land when drought and banks squeezed the cotton economy?",
+        "q3_relationship": "What would make your family leave home? List three pushes and three pulls, then compare them with the Joads'." },
+      "geometry": { "type": "Point", "coordinates": [-94.787, 35.460] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 2, "name": "Oklahoma City", "region": "Joining Route 66", "chapters": "Chapters 12–13", "miles_from_start": 200, "real_or_fictional": "real",
+        "summary": "The family truck merges into the migrant stream. Chapter 12 leaves the Joads to describe Highway 66 itself — the 'mother road' — as a river of families flowing west.",
+        "q1_whats_where": "Trace Route 66 from here to Bakersfield. Which towns does it string together like beads?",
+        "q2_why_there": "Why does a single numbered highway matter so much in 1938? What did U.S. 66 offer a migrant family that back roads could not?",
+        "q3_relationship": "What is the 'mother road' of your own life — the route your family uses to reach work, family, or safety?" },
+      "geometry": { "type": "Point", "coordinates": [-97.516, 35.468] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 3, "name": "Bethany, Oklahoma", "region": "First night on the road", "chapters": "Chapter 13", "miles_from_start": 210, "real_or_fictional": "real",
+        "summary": "Camped beside the Wilsons, Grampa suffers a stroke and dies. He is buried beside the road with a note in a jar, because a funeral would cost gasoline money.",
+        "q1_whats_where": "How far did the family travel on day one? Measure Sallisaw to Bethany along the route.",
+        "q2_why_there": "Why does leaving the land kill Grampa, in the logic of the novel? What is Steinbeck saying about the bond between people and place?",
+        "q3_relationship": "Is there a place whose loss would wound someone in your family the way leaving Sallisaw wounds Grampa? Where is it?" },
+      "geometry": { "type": "Point", "coordinates": [-97.632, 35.505] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 4, "name": "Amarillo & the Texas Panhandle", "region": "Crossing the Llano Estacado", "chapters": "Chapters 13 & 16", "miles_from_start": 470, "real_or_fictional": "real",
+        "summary": "Straight, shadeless road across the high flat Panhandle. Heat and distance wear on the truck, which is home, lifeboat, and largest asset at once.",
+        "q1_whats_where": "Describe the terrain around Amarillo using the map. What natural features are missing here that were present in eastern Oklahoma?",
+        "q2_why_there": "Why is this land flat, dry, and nearly treeless? What do elevation and rain-shadow geography have to do with it?",
+        "q3_relationship": "The truck is the family's most valuable possession. What single object does your household most depend on — and what happens where you live when it fails?" },
+      "geometry": { "type": "Point", "coordinates": [-101.831, 35.199] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 5, "name": "Santa Rosa, New Mexico", "region": "Crossing the Pecos", "chapters": "Chapter 16", "miles_from_start": 640, "real_or_fictional": "real",
+        "summary": "The Wilsons' car throws a connecting rod. Tom and Al hunt the part in a wrecking yard. The family faces the road's hard arithmetic — and decides to hold together.",
+        "q1_whats_where": "Find the Pecos River. Where does it rise, and where does it go after Santa Rosa?",
+        "q2_why_there": "Why do wrecking yards, tourist camps, and repair shops cluster along Route 66 by 1938? Who is the migration an economy for?",
+        "q3_relationship": "When money runs short on a journey, who profits and who pays? Where do you see that same roadside economy today?" },
+      "geometry": { "type": "Point", "coordinates": [-104.682, 34.939] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 6, "name": "Albuquerque, New Mexico", "region": "The Rio Grande", "chapters": "Chapter 16", "miles_from_start": 755, "real_or_fictional": "real",
+        "summary": "The route drops into the Rio Grande valley, then climbs into the western uplands — mesas and mountain distances, a reminder that 'the West' is many landscapes, not one.",
+        "q1_whats_where": "Locate the Rio Grande. Which two countries and how many U.S. states does it touch?",
+        "q2_why_there": "Why did Albuquerque grow exactly here — what do a river crossing, a rail line, and later a highway have in common?",
+        "q3_relationship": "The Joads pass communities far older than Oklahoma's farms. Whose migrations shaped the place where you live, and in what order?" },
+      "geometry": { "type": "Point", "coordinates": [-106.650, 35.084] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 7, "name": "Flagstaff & the High Country", "region": "Arizona at 7,000 feet", "chapters": "Chapters 16–18", "miles_from_start": 1075, "real_or_fictional": "real",
+        "summary": "Past the Painted Desert into ponderosa pine at seven thousand feet — cool air and timber, an astonishment to a family from the plains. Ahead lies the drop to the Colorado.",
+        "q1_whats_where": "Compare elevations: Sallisaw, Amarillo, Flagstaff, Needles. Sketch the route's elevation profile.",
+        "q2_why_there": "Why are there pine forests here in the middle of the arid Southwest? What does altitude do to temperature and rainfall?",
+        "q3_relationship": "Where is the nearest place to you where the landscape changes that dramatically within a day's drive? What causes the change?" },
+      "geometry": { "type": "Point", "coordinates": [-111.651, 35.198] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 8, "name": "Needles & the Colorado River", "region": "The California line", "chapters": "Chapter 18", "miles_from_start": 1290, "real_or_fictional": "real",
+        "summary": "Green water at the edge of a white-hot desert. Noah walks away down the river; a deputy sneers 'Okie' at Ma; Granma begins to fail. California is across the water, but it is not a welcome.",
+        "q1_whats_where": "The Colorado forms the border here. Trace it upstream and downstream: what canyon lies above, and what sea (barely) receives it below?",
+        "q2_why_there": "Why is a river in the desert both a border and a magnet? Why do inspection and policing concentrate at crossings like this one?",
+        "q3_relationship": "The word 'Okie' turns a place of origin into an insult. What place-based labels attach to people in your region?" },
+      "geometry": { "type": "Point", "coordinates": [-114.614, 34.848] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 9, "name": "Daggett & the Mojave Crossing", "region": "Night desert, inspection station", "chapters": "Chapter 18", "miles_from_start": 1435, "real_or_fictional": "real",
+        "summary": "The family crosses the Mojave at night. At the agricultural inspection station Ma refuses to unload, pleading a sick grandmother — concealing that Granma has already died beside her.",
+        "q1_whats_where": "Measure Needles to Barstow. How many towns interrupt it? What does that emptiness mean for a 1938 truck?",
+        "q2_why_there": "Why does California inspect produce and plants at its border — what is the state protecting, and why is agriculture worth protecting that way?",
+        "q3_relationship": "Ma trades her own grief for the family's arrival. Who in the migrations you know of absorbed the cost so others could get through?" },
+      "geometry": { "type": "Point", "coordinates": [-116.889, 34.864] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 10, "name": "Tehachapi Pass", "region": "First sight of the valley", "chapters": "Chapter 18", "miles_from_start": 1540, "real_or_fictional": "real",
+        "summary": "At dawn the San Joaquin Valley opens below — orchards and vineyards, the promised land of the handbills. The family receives the view at the moment of its deepest loss.",
+        "q1_whats_where": "Find the pass. Which two mountain systems pinch together here, and what do they separate?",
+        "q2_why_there": "Why does the green begin so abruptly below the pass? Where does the valley's water actually come from, if not from rain?",
+        "q3_relationship": "Recall a place you first saw from above — did the view match what you found when you got down into it?" },
+      "geometry": { "type": "Point", "coordinates": [-118.549, 35.132] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 11, "name": "Bakersfield & the Hooverville", "region": "Arrival without welcome", "chapters": "Chapters 19–20", "miles_from_start": 1580, "real_or_fictional": "real",
+        "summary": "Granma gets a pauper's burial. The family lands in a roadside Hooverville where handbills have summoned five workers for every job. Connie leaves; Casy is arrested in Tom's place.",
+        "q1_whats_where": "Hoovervilles appeared at the edges of towns. Why at the edges? What determines where the poorest people are allowed to stop?",
+        "q2_why_there": "Why did growers circulate more handbills than there were jobs? What does an oversupply of pickers do to the price of picking?",
+        "q3_relationship": "Where at the edge of your own town do newcomers with the least money live today? What put that neighborhood there?" },
+      "geometry": { "type": "Point", "coordinates": [-119.019, 35.373] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 12, "name": "Weedpatch Camp (Arvin Federal Camp)", "region": "A working democracy", "chapters": "Chapters 22–26", "miles_from_start": 1595, "real_or_fictional": "real",
+        "summary": "Clean water, toilets, Saturday dances, and committees of migrants governing themselves. Dignity, but not employment — hunger drives the family back onto the road. The camp still stands.",
+        "q1_whats_where": "Locate Weedpatch relative to Bakersfield and to the crops around it. What is grown in these fields today?",
+        "q2_why_there": "Why did the federal government build camps here, in the fields, instead of leaving housing to the growers or the towns?",
+        "q3_relationship": "This camp still shelters farmworker families almost ninety years later. What does it mean that the place outlived the novel — and the problem outlived them both?" },
+      "geometry": { "type": "Point", "coordinates": [-118.914, 35.239] } },
+
+    { "type": "Feature",
+      "properties": { "stop": 13, "name": "The Tulare Basin — Peaches, Boxcars, Flood", "region": "The road ends in water", "chapters": "Chapters 26–30", "miles_from_start": 1650, "real_or_fictional": "fictional locations, approximate placement",
+        "summary": "Strike-breaking work at a peach ranch; Casy is killed and Tom becomes a fugitive. The family picks cotton and winters in a boxcar camp until the rains come and the creek rises.",
+        "q1_whats_where": "Why does this basin flood? Find the rivers that drain into it and notice what the basin lacks: an outlet to the sea.",
+        "q2_why_there": "Why are pickers housed in boxcars beside the cotton? Who decided that, and what does housing tied to a job cost the worker?",
+        "q3_relationship": "The novel ends with one migrant family feeding a stranger. What networks feed and shelter people where you live when everything else fails?" },
+      "geometry": { "type": "Point", "coordinates": [-119.292, 35.968] } }
+  ]
+}

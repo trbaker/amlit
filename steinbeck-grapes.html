@@ -4,127 +4,46 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The Road West — Mapping The Grapes of Wrath</title>
-<meta name="description" content="An interactive literary-geography StoryMap of the Joad family's journey in John Steinbeck's The Grapes of Wrath, with a three-level geographic questioning strategy for teachers." />
+<meta name="description" content="An interactive map study of the Joad family's journey in John Steinbeck's The Grapes of Wrath, with a three-level geographic questioning strategy for teachers." />
 
 <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
 
+<!-- Shared stylesheet for every book in the series -->
+<link rel="stylesheet" href="storymap.css" />
+
+<!-- Per-book theme. The defaults in storymap.css are already tuned to this
+     novel, so nothing is overridden here. For another book, paste one of the
+     theme recipes from the bottom of storymap.css into this block. -->
 <style>
-:root{
-  --paper:#EAE0CC; --paper-deep:#DFD1B6; --ink:#26201A;
-  --dust:#B8905A; --denim:#41607D; --road:#A83B24;
-  --panel-w:500px;
-  --display:"Oswald","Arial Narrow",sans-serif;
-  --serif:"Source Serif 4",Georgia,serif;
-}
-*{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
-@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
-body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); font-size:17px; line-height:1.65; }
-a{ color:var(--denim); }
-:focus-visible{ outline:3px solid var(--denim); outline-offset:2px; }
-
-/* Safari-safe: explicit offsets, no `inset` shorthand */
-#map-wrap{ position:fixed; top:0; right:0; bottom:0; left:var(--panel-w); background:#cfc4ab; }
-#viewDiv{ position:absolute; top:0; right:0; bottom:0; left:0; }
-#panel{ position:relative; z-index:5; width:var(--panel-w); background:var(--paper);
-        border-right:3px solid var(--ink); box-shadow:6px 0 24px rgba(38,32,26,.25); }
-.section{ padding:56px 44px; border-bottom:1px solid rgba(38,32,26,.18); }
-
-/* Diagnostics banner — visible only when the map fails */
-#mapmsg{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  max-width:min(80%,460px); background:var(--paper); border:3px solid var(--road);
-  padding:20px 22px; font-size:15px; line-height:1.5; display:none; z-index:10;
-  box-shadow:4px 6px 0 rgba(38,32,26,.35);
-}
-#mapmsg h4{ font-family:var(--display); text-transform:uppercase; letter-spacing:.1em;
-            font-size:14px; margin:0 0 8px; color:var(--road); }
-#mapmsg code{ background:var(--paper-deep); padding:1px 5px; font-size:13px; word-break:break-word; }
-
-#odometer{ position:fixed; z-index:6; top:18px; right:18px; background:var(--ink); color:var(--paper);
-  font-family:var(--display); font-weight:500; letter-spacing:.14em; font-size:13px; text-transform:uppercase;
-  padding:10px 14px 9px; border:2px solid var(--paper);
-  box-shadow:0 0 0 3px var(--ink), 3px 5px 0 rgba(38,32,26,.35);
-  max-width:min(46vw,340px); text-align:center; pointer-events:none; }
-#odometer .mi{ color:var(--dust); font-weight:600; }
-
-#fitBtn{ position:fixed; z-index:6; bottom:26px; right:18px; font-family:var(--display); font-weight:500;
-  letter-spacing:.1em; text-transform:uppercase; font-size:12px; background:var(--paper); color:var(--ink);
-  border:2px solid var(--ink); padding:9px 14px; cursor:pointer; }
-#fitBtn:hover{ background:var(--ink); color:var(--paper); }
-
-.eyebrow{ font-family:var(--display); font-weight:500; text-transform:uppercase; letter-spacing:.22em;
-  font-size:12px; color:var(--road); margin:0 0 14px; }
-h1{ font-family:var(--display); font-weight:600; text-transform:uppercase; font-size:clamp(34px,4vw,46px);
-  line-height:1.02; margin:0 0 10px; }
-.subtitle{ font-size:19px; font-style:italic; margin:0 0 22px; color:#4a3f33; }
-.rule{ border:none; border-top:3px solid var(--ink); width:64px; margin:26px 0; }
-.smallcaps{ font-family:var(--display); text-transform:uppercase; letter-spacing:.16em; font-size:12.5px; font-weight:500; }
-.byline{ color:#5a4d3d; }
-
-h2{ font-family:var(--display); font-weight:600; text-transform:uppercase; font-size:24px; margin:0 0 12px; }
-details.qgroup{ background:var(--paper-deep); border:2px solid var(--ink); margin:14px 0; }
-details.qgroup summary{ cursor:pointer; padding:13px 16px; font-family:var(--display); font-weight:600;
-  text-transform:uppercase; letter-spacing:.08em; font-size:15px; list-style:none; display:flex; align-items:center; gap:10px; }
-details.qgroup summary::-webkit-details-marker{ display:none; }
-details.qgroup summary::after{ content:"+"; margin-left:auto; font-size:20px; }
-details.qgroup[open] summary::after{ content:"–"; }
-.q-tag{ display:inline-block; min-width:22px; text-align:center; padding:2px 6px; border:2px solid var(--ink);
-  font-size:12px; background:var(--paper); }
-details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,26,.25); }
-.q-list{ list-style:none; margin:10px 0 0; padding:0; }
-.q-list li{ display:flex; gap:10px; align-items:flex-start; margin:0 0 12px; font-size:15.5px; line-height:1.5; }
-.q-list input[type=checkbox]{ margin-top:4px; width:16px; height:16px; accent-color:var(--road); flex:0 0 auto; }
-#copyBtn{ font-family:var(--display); text-transform:uppercase; letter-spacing:.1em; font-size:13px; font-weight:500;
-  background:var(--road); color:var(--paper); border:2px solid var(--ink); padding:10px 16px; cursor:pointer; margin-top:8px; }
-#copyBtn:hover{ filter:brightness(1.1); }
-#copyMsg{ font-size:13.5px; margin-left:10px; color:var(--denim); }
-
-.stop{ min-height:72vh; display:flex; flex-direction:column; justify-content:center;
-  border-left:6px solid transparent; transition:border-color .3s, background .3s; }
-.stop.active{ border-left-color:var(--road); background:linear-gradient(90deg, rgba(168,59,36,.06), transparent 60%); }
-.stop-head{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
-.shield{ flex:0 0 auto; width:46px; height:50px; }
-.stop h3{ font-family:var(--display); font-weight:600; text-transform:uppercase; font-size:22px; line-height:1.1; margin:0; }
-.stop .meta{ margin:2px 0 14px; color:#5a4d3d; }
-.stop .meta .sep{ color:var(--dust); padding:0 6px; }
-.stop-qs{ margin-top:18px; border-top:1px dashed var(--dust); padding-top:14px; }
-.stop-qs p{ margin:0 0 10px; font-size:15px; line-height:1.5; }
-.stop-qs .lbl{ font-family:var(--display); font-size:11px; text-transform:uppercase; letter-spacing:.12em;
-  font-weight:600; padding:2px 7px; margin-right:8px; border:1.5px solid var(--ink); white-space:nowrap; }
-.lbl.g1{ background:var(--paper-deep); }
-.lbl.g2{ background:var(--dust); color:var(--ink); }
-.lbl.g3{ background:var(--denim); color:var(--paper); border-color:var(--ink); }
-.foot small{ display:block; margin-top:6px; color:#5a4d3d; }
-
-@media (max-width:900px){
-  :root{ --panel-w:100%; }
-  #map-wrap{ left:0; height:44vh; bottom:auto; }
-  #panel{ width:100%; margin-top:44vh; border-right:none; border-top:3px solid var(--ink); }
-  #odometer{ top:10px; right:10px; font-size:11px; padding:8px 10px 7px; }
-  #fitBtn{ bottom:auto; top:calc(44vh - 52px); right:10px; }
-  .section{ padding:40px 22px; }
-  .stop{ min-height:62vh; }
-}
-@media (prefers-reduced-motion: reduce){ .stop{ transition:none; } }
+  /* :root { --accent: #A83B24; } */
 </style>
 </head>
 <body>
 
-<div id="map-wrap" aria-label="Interactive map of the Joad family's route">
+<div id="map-wrap">
   <div id="viewDiv"></div>
   <div id="mapmsg" role="status"></div>
 </div>
+
+<button id="panelToggle" class="ctrl" type="button" aria-pressed="false">Hide text</button>
+<button id="fitBtn" class="ctrl" type="button">Fit whole route</button>
+
+<div id="stepper" role="group" aria-label="Move through the stops">
+  <button id="prevBtn" class="ctrl" type="button" aria-label="Previous stop">◀</button>
+  <span id="stepCount">Stop 1 of 13</span>
+  <button id="nextBtn" class="ctrl" type="button" aria-label="Next stop">▶</button>
+</div>
+
 <div id="odometer" aria-live="polite"><span class="mi">U.S. 66</span> · SALLISAW → THE SAN JOAQUIN</div>
-<button id="fitBtn" type="button" title="Zoom to the full route">Fit whole route</button>
 
 <main id="panel">
 
   <header class="section" id="intro">
-    <p class="eyebrow">A Literary Geography StoryMap</p>
+    <p class="eyebrow">A Literary Geography Study</p>
     <h1>The Road West</h1>
     <p class="subtitle">Mapping the Joad family's journey in John Steinbeck's <em>The Grapes of Wrath</em> (1939)</p>
     <hr class="rule" />
@@ -134,7 +53,8 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     1,650 miles away.</p>
     <p>Scroll down. As you read, the map follows the family west, and the red line of the highway
     draws itself stop by stop. Click any marker on the map to jump to that stop in the story.</p>
-    <p class="smallcaps byline">Built for classroom use · Route drawn client-side as an ArcGIS GraphicsLayer · No sign-in required</p>
+    <p><strong>Projecting for a class?</strong> Choose <em>Hide text</em> at the top of the map to give the map
+    the whole screen, then step through the stops with the arrows at the bottom.</p>
   </header>
 
   <section class="section" id="framework">
@@ -148,7 +68,7 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     <details class="qgroup" open>
       <summary><span class="q-tag">1</span> What's where?</summary>
       <div class="q-body">
-        <p style="font-size:14.5px; margin:10px 0 0;"><em>Location, description, and spatial vocabulary — reading the map itself.</em></p>
+        <p class="q-intro">Location, description, and spatial vocabulary — reading the map itself.</p>
         <ul class="q-list">
           <li><input type="checkbox" id="q1a" data-g="1" /><label for="q1a">Which states does the Joad family cross between Sallisaw and the San Joaquin Valley? List them in the order traveled.</label></li>
           <li><input type="checkbox" id="q1b" data-g="1" /><label for="q1b">Name the three major rivers the family crosses and locate each on the map.</label></li>
@@ -163,7 +83,7 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     <details class="qgroup">
       <summary><span class="q-tag">2</span> Why is it there?</summary>
       <div class="q-body">
-        <p style="font-size:14.5px; margin:10px 0 0;"><em>Spatial reasoning — the processes that put things in their places.</em></p>
+        <p class="q-intro">Spatial reasoning — the processes that put things in their places.</p>
         <ul class="q-list">
           <li><input type="checkbox" id="q2a" data-g="2" /><label for="q2a">Why did the Dust Bowl strike the southern Great Plains in particular? Connect climate, soils, the plow-up of grassland, and 1930s drought.</label></li>
           <li><input type="checkbox" id="q2b" data-g="2" /><label for="q2b">Why does Route 66 follow this particular corridor west — what do terrain, water, railroad lines, and existing towns have to do with where a highway goes?</label></li>
@@ -178,7 +98,7 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     <details class="qgroup">
       <summary><span class="q-tag">3</span> What's the larger relationship — and the relationship to me?</summary>
       <div class="q-body">
-        <p style="font-size:14.5px; margin:10px 0 0;"><em>Connection, comparison, and personal geography — why care?</em></p>
+        <p class="q-intro">Connection, comparison, and personal geography — why care?</p>
         <ul class="q-list">
           <li><input type="checkbox" id="q3a" data-g="3" /><label for="q3a">Compare the Joads' migration with another American migration — the Great Migration, the Trail of Tears, or migration into your own community today. What pushes people out, and what pulls them somewhere else?</label></li>
           <li><input type="checkbox" id="q3b" data-g="3" /><label for="q3b">Map your own family's road: what routes did the people who raised you travel to get where you live now, and why?</label></li>
@@ -205,24 +125,27 @@ details.qgroup .q-body{ padding:4px 16px 16px; border-top:1px solid rgba(38,32,2
     class discussion to end — or to begin.</p>
     <hr class="rule" />
     <p class="smallcaps">Teacher notes</p>
-    <small>Route and mileages are generalized from the novel's chapter references to U.S. 66 and are approximate; the Hooper Ranch and the boxcar camp are fictional places set here at their approximate Tulare-basin location.</small>
-    <small>All map features are drawn client-side as an ArcGIS <code>GraphicsLayer</code> — no hosted services or credentials required.</small>
-    <small>Question framework adapted from the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
+    <small>The route and the mileages are generalized from the novel's references to U.S. 66, and are approximate.</small>
+    <small>Sallisaw, Bethany, Santa Rosa, Needles, Daggett, Bakersfield, and the Weedpatch camp are real places named or clearly implied in the novel. The peach ranch, the boxcar camp, and the final barn are Steinbeck's inventions, placed here at their approximate setting in the Tulare basin.</small>
+    <small>Steinbeck never dates the novel precisely; it is set in the mid-to-late 1930s.</small>
+    <small>The three-level questioning framework follows the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
   </section>
 </main>
 
+
 <!-- ===================================================================
-     PART 1 — Data and story panel. Runs with NO dependencies.
-     If the ArcGIS SDK never loads, everything below still renders.
+     PART 1 — Content and reading panel. No dependencies.
+     Everything here renders whether or not the map is available.
      =================================================================== -->
 <script>
-const CONFIG = {
-  apiKey: "",                          // optional; leave "" to use OpenStreetMap
-  esriBasemap: "arcgis/topographic",   // used only when apiKey is set
-  fallbackBasemap: "osm"
+/* Optional map key. Leave blank for the free basemap; see the README. */
+var CONFIG = {
+  apiKey: "",
+  styledBasemap: "arcgis/topographic",
+  freeBasemap: "osm"
 };
 
-const PATH = [
+var PATH = [
   [-94.787,35.460],[-95.523,35.470],[-95.981,35.440],[-96.680,35.470],
   [-97.516,35.468],[-97.632,35.505],[-97.955,35.532],[-98.967,35.509],
   [-99.404,35.412],[-100.249,35.214],[-101.831,35.199],[-102.428,35.243],
@@ -233,7 +156,7 @@ const PATH = [
   [-118.549,35.132],[-119.019,35.373],[-118.914,35.239],[-119.292,35.968]
 ];
 
-const STOPS = [
+var STOPS = [
 { pi:0, zoom:11, miles:0, name:"Sallisaw, Oklahoma", region:"Sequoyah County", ch:"Chapters 1–10",
   text:"Home — and the loss of it. Drought and dust have broken the tenant farms, and a tractor has put the Joads off land their family worked for generations. Tom returns from McAlester prison to find the house shoved off its foundation. The family sells what it can, buys a secondhand Hudson converted into a truck, and studies a handbill promising work picking fruit in California.",
   q1:"Locate Sallisaw. Which part of Oklahoma is it in, and how close is it to the true Dust Bowl core in the Panhandle?",
@@ -295,7 +218,7 @@ const STOPS = [
   q2:"Why did the federal government build camps here, in the fields, instead of leaving housing to the growers or the towns?",
   q3:"This camp still shelters farmworker families almost ninety years later. What does it mean that the place outlived the novel — and the problem outlived them both?" },
 { pi:31, zoom:10, miles:1650, name:"The Tulare Basin — Peaches, Boxcars, Flood", region:"The road ends in water", ch:"Chapters 26–30",
-  text:"North of Weedpatch the family takes strike-breaking work at a peach ranch, where Casy — now an organizer — is killed and Tom strikes down his killer and becomes a fugitive. The Joads pick cotton and winter in a boxcar camp until the rains come and the creek rises. In the flooded barn where the novel ends, Rose of Sharon, having lost her own child, gives what she has left to a starving stranger. (The ranch and camp are fictional; the map places them in their approximate Tulare-basin setting.)",
+  text:"North of Weedpatch the family takes strike-breaking work at a peach ranch, where Casy — now an organizer — is killed and Tom strikes down his killer and becomes a fugitive. The Joads pick cotton and winter in a boxcar camp until the rains come and the creek rises. In the flooded barn where the novel ends, Rose of Sharon, having lost her own child, gives what she has left to a starving stranger. (The ranch and camp are Steinbeck's inventions; the map places them in their approximate Tulare-basin setting.)",
   q1:"Why does this basin flood? Find the rivers that drain into it and notice what the basin lacks: an outlet to the sea.",
   q2:"Why are the pickers housed in boxcars beside the cotton? Who decided that, and what does housing tied to a job cost the worker?",
   q3:"The novel ends with one migrant family feeding a stranger. What networks — formal or informal — feed and shelter people where you live when everything else fails?" }
@@ -303,7 +226,7 @@ const STOPS = [
 
 var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ---- Build the story panel immediately, map or no map ---- */
+/* ---- Build the stop cards ---- */
 function shieldSVG(n){
   return '<svg class="shield" viewBox="0 0 46 50" role="img" aria-label="Stop ' + n + '">' +
     '<path d="M23 2 C17 6 8 7 3 6 C3 20 5 36 23 48 C41 36 43 20 43 6 C38 7 29 6 23 2 Z" fill="#EAE0CC" stroke="#26201A" stroke-width="2.5"/>' +
@@ -320,7 +243,7 @@ function shieldSVG(n){
     sec.id = "stop-" + i;
     sec.setAttribute("data-stop", String(i));
     sec.innerHTML =
-      '<div class="stop-head">' + shieldSVG(i+1) + '<h3>' + s.name + '</h3></div>' +
+      '<div class="stop-head">' + shieldSVG(i + 1) + '<h3>' + s.name + '</h3></div>' +
       '<p class="meta smallcaps">' + s.ch + '<span class="sep">·</span>' + s.region +
         '<span class="sep">·</span>≈ mile ' + s.miles.toLocaleString() + '</p>' +
       '<p>' + s.text + '</p>' +
@@ -333,18 +256,16 @@ function shieldSVG(n){
   }
 })();
 
-/* ---- Copy selected questions (independent of the map) ---- */
+/* ---- Copy selected questions ---- */
 document.getElementById("copyBtn").addEventListener("click", function(){
   var groups = { 1:"WHAT'S WHERE?", 2:"WHY IS IT THERE?", 3:"WHAT'S THE LARGER RELATIONSHIP — AND THE RELATIONSHIP TO ME?" };
   var picked = { 1:[], 2:[], 3:[] };
   var boxes = document.querySelectorAll('.q-list input[type=checkbox]:checked');
   for (var i = 0; i < boxes.length; i++) {
-    var cb = boxes[i];
-    var lab = document.querySelector('label[for="' + cb.id + '"]');
-    picked[cb.getAttribute("data-g")].push(lab.textContent.trim());
+    var lab = document.querySelector('label[for="' + boxes[i].id + '"]');
+    picked[boxes[i].getAttribute("data-g")].push(lab.textContent.trim());
   }
-  var out = "GEOGRAPHIC QUESTIONS — THE GRAPES OF WRATH\n\n";
-  var count = 0, gs = [1,2,3];
+  var out = "GEOGRAPHIC QUESTIONS — THE GRAPES OF WRATH\n\n", count = 0, gs = [1,2,3];
   for (var g = 0; g < gs.length; g++) {
     var key = gs[g];
     if (!picked[key].length) continue;
@@ -357,7 +278,7 @@ document.getElementById("copyBtn").addEventListener("click", function(){
   var text = out.trim();
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(function(){
-      msg.textContent = "Copied " + count + " question" + (count>1?"s":"") + ".";
+      msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + ".";
     }).catch(function(){ fallbackCopy(text, msg, count); });
   } else {
     fallbackCopy(text, msg, count);
@@ -366,59 +287,54 @@ document.getElementById("copyBtn").addEventListener("click", function(){
 function fallbackCopy(text, msg, count){
   var ta = document.createElement("textarea");
   ta.value = text;
-  ta.style.position = "fixed"; ta.style.left = "-9999px";
-  document.body.appendChild(ta); ta.select();
-  try {
-    document.execCommand("copy");
-    msg.textContent = "Copied " + count + " question" + (count>1?"s":"") + ".";
-  } catch (e) {
-    msg.textContent = "Couldn't reach the clipboard — select and copy manually.";
-  }
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + "."; }
+  catch (e) { msg.textContent = "Couldn't reach the clipboard — select the text and copy it by hand."; }
   document.body.removeChild(ta);
 }
 
-/* ---- Diagnostics helper ---- */
+/* ---- Message shown only if the map can't load ---- */
 function showMapMessage(title, html){
   var box = document.getElementById("mapmsg");
   box.innerHTML = "<h4>" + title + "</h4>" + html;
   box.style.display = "block";
 }
-window.addEventListener("error", function(e){
-  if (e && e.message && /require|esri/i.test(String(e.message))) {
-    showMapMessage("Map script error", "<p>" + String(e.message) + "</p>");
-  }
-});
 </script>
 
-<!-- PART 2 — the SDK. If this fails, everything above still works. -->
 <script src="https://js.arcgis.com/4.30/"></script>
 
-<!-- PART 3 — the map, guarded. -->
+<!-- ===================================================================
+     PART 2 — The map. Guarded, so a failure here never takes the
+     reading panel down with it.
+     =================================================================== -->
 <script>
 (function initMap(){
+
   if (location.protocol === "file:") {
-    showMapMessage("Open this over http, not file://", 
-      "<p>Safari blocks the network requests the ArcGIS SDK needs when a page is opened directly from disk. " +
-      "The story text works, but the map cannot load.</p>" +
-      "<p>In Terminal, from this folder, run:<br><code>python3 -m http.server 8000</code><br>" +
-      "then open <code>http://localhost:8000</code>. On GitHub Pages this is never an issue.</p>");
+    showMapMessage("The map needs to be online",
+      "<p>This page was opened straight from a folder on the computer, and the map can't load that way.</p>" +
+      "<p>Put the page on the web — or open it through a local web address — and the map will appear. " +
+      "Everything else on the page works as it is.</p>");
     return;
   }
   if (typeof require === "undefined") {
-    showMapMessage("The ArcGIS SDK didn't load",
-      "<p>The page couldn't reach <code>js.arcgis.com</code>. Check for a content blocker, an offline connection, " +
-      "or a strict network filter, then reload.</p>");
+    showMapMessage("The map didn't load",
+      "<p>The page couldn't reach the mapping service. Check the internet connection, " +
+      "turn off any content blocker for this page, and reload.</p>");
     return;
   }
 
   require([
-    "esri/config","esri/Map","esri/views/MapView",
-    "esri/layers/GraphicsLayer","esri/Graphic",
-    "esri/geometry/Point","esri/geometry/Polyline"
+    "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/layers/GraphicsLayer", "esri/Graphic",
+    "esri/geometry/Point", "esri/geometry/Polyline"
   ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
 
-    var basemap = CONFIG.fallbackBasemap;
-    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.esriBasemap; }
+    var basemap = CONFIG.freeBasemap;
+    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.styledBasemap; }
 
     var map = new Map({ basemap: basemap });
     var view = new MapView({
@@ -433,20 +349,16 @@ window.addEventListener("error", function(e){
     view.when(function(){
       view.ui.move("zoom", "bottom-left");
     }, function(err){
-      showMapMessage("The map view failed to start",
-        "<p>" + (err && err.message ? err.message : "Unknown error") + "</p>" +
-        "<p>This usually means WebGL is unavailable. In Safari, check " +
-        "<em>Settings → Advanced → Show features for web developers</em>, then " +
-        "<em>Develop → Experimental Features</em>, and make sure WebGL is enabled. " +
-        "Updating Safari also resolves it.</p>");
+      showMapMessage("The map couldn't start",
+        "<p>This browser may not support the graphics the map needs.</p>" +
+        "<p>Updating the browser usually fixes it. " + (err && err.message ? err.message : "") + "</p>");
     });
 
-    var routeLayer    = new GraphicsLayer({ title: "Route 66 (generalized)" });
-    var traveledLayer = new GraphicsLayer({ title: "Miles traveled" });
-    var stopLayer     = new GraphicsLayer({ title: "Story stops" });
+    var routeLayer    = new GraphicsLayer();
+    var traveledLayer = new GraphicsLayer();
+    var stopLayer     = new GraphicsLayer();
     map.addMany([routeLayer, traveledLayer, stopLayer]);
 
-    // Explicit geometry constructors — no reliance on autocasting.
     routeLayer.add(new Graphic({
       geometry: new Polyline({ paths: [PATH], spatialReference: { wkid: 4326 } }),
       symbol: { type: "simple-line", color: [93,77,58,0.7], width: 2.5, style: "dash" }
@@ -454,7 +366,7 @@ window.addEventListener("error", function(e){
 
     var traveledGraphic = new Graphic({
       geometry: new Polyline({ paths: [[PATH[0], PATH[0]]], spatialReference: { wkid: 4326 } }),
-      symbol: { type: "simple-line", color: [168,59,36,1], width: 4.5, style: "solid", cap: "round", join: "round" }
+      symbol: { type: "simple-line", color: [168,59,36,1], width: 4.5, cap: "round", join: "round" }
     });
     traveledLayer.add(traveledGraphic);
 
@@ -465,7 +377,7 @@ window.addEventListener("error", function(e){
         outline: { color: [38,32,26,1], width: active ? 2.5 : 2 } };
     }
     function labelFor(i, active){
-      return { type: "text", text: String(i+1),
+      return { type: "text", text: String(i + 1),
         color: active ? [234,224,204,1] : [38,32,26,1],
         font: { size: active ? 11 : 8, family: "sans-serif", weight: "bold" },
         yoffset: -4 };
@@ -476,37 +388,26 @@ window.addEventListener("error", function(e){
       var s = STOPS[i];
       var pt = new Point({ longitude: PATH[s.pi][0], latitude: PATH[s.pi][1], spatialReference: { wkid: 4326 } });
       var attrs = { stopIndex: i, name: s.name, ch: s.ch, miles: s.miles };
-      var marker = new Graphic({
+      markerGraphics.push(new Graphic({
         geometry: pt, attributes: attrs, symbol: symbolFor(false),
         popupTemplate: {
-          title: "Stop " + (i+1) + " · {name}",
+          title: "Stop " + (i + 1) + " · {name}",
           content: "<b>{ch}</b> · about mile {miles} from Sallisaw.<br/><br/>" + s.text
         }
-      });
-      var label = new Graphic({ geometry: pt, attributes: attrs, symbol: labelFor(i, false) });
-      markerGraphics.push(marker);
-      labelGraphics.push(label);
-      stopLayer.addMany([marker, label]);
+      }));
+      labelGraphics.push(new Graphic({ geometry: pt, attributes: attrs, symbol: labelFor(i, false) }));
+      stopLayer.addMany([markerGraphics[i], labelGraphics[i]]);
     }
 
-    view.on("click", function(evt){
-      view.hitTest(evt, { include: stopLayer }).then(function(res){
-        for (var i = 0; i < res.results.length; i++) {
-          var g = res.results[i].graphic;
-          if (g && g.attributes && typeof g.attributes.stopIndex === "number") {
-            var el = document.getElementById("stop-" + g.attributes.stopIndex);
-            if (el) el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
-            return;
-          }
-        }
-      });
-    });
-
+    /* ---------- Shared state ---------- */
     var odometer = document.getElementById("odometer");
+    var stepCount = document.getElementById("stepCount");
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
     var activeIndex = -1;
 
-    function activate(i){
-      if (i === activeIndex) return;
+    function activate(i, scrollPanel){
+      if (i === activeIndex || i < 0 || i >= STOPS.length) return;
       activeIndex = i;
 
       var els = document.querySelectorAll(".stop");
@@ -521,16 +422,24 @@ window.addEventListener("error", function(e){
 
       var s = STOPS[i];
       var driven = PATH.slice(0, s.pi + 1);
-      if (driven.length < 2) driven = [PATH[0], PATH[0]];   // a polyline needs 2+ vertices
+      if (driven.length < 2) driven = [PATH[0], PATH[0]];
       traveledGraphic.geometry = new Polyline({ paths: [driven], spatialReference: { wkid: 4326 } });
 
       var mi = String(s.miles);
       while (mi.length < 4) mi = "0" + mi;
       odometer.innerHTML = '<span class="mi">MILE ' + mi + '</span> · ' + s.name.toUpperCase();
 
+      stepCount.textContent = "Stop " + (i + 1) + " of " + STOPS.length;
+      prevBtn.disabled = (i === 0);
+      nextBtn.disabled = (i === STOPS.length - 1);
+
       view.goTo({ center: PATH[s.pi], zoom: s.zoom },
-                { duration: prefersReduced ? 0 : 1400, easing: "in-out-cubic" })
-          .catch(function(){});
+                { duration: prefersReduced ? 0 : 1400, easing: "in-out-cubic" }).catch(function(){});
+
+      if (scrollPanel && !document.body.classList.contains("map-only")) {
+        var el = document.getElementById("stop-" + i);
+        if (el) el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
+      }
     }
 
     function fitRoute(){
@@ -538,37 +447,92 @@ window.addEventListener("error", function(e){
       view.goTo({ center: [-106.5, 35.2], zoom: window.innerWidth < 900 ? 4 : 5 },
                 { duration: prefersReduced ? 0 : 1200 }).catch(function(){});
       odometer.innerHTML = '<span class="mi">U.S. 66</span> · SALLISAW → THE SAN JOAQUIN';
+      for (var m = 0; m < markerGraphics.length; m++) {
+        markerGraphics[m].symbol = symbolFor(false);
+        labelGraphics[m].symbol = labelFor(m, false);
+      }
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) els[k].classList.remove("active");
+      stepCount.textContent = "Stop 1 of " + STOPS.length;
+      prevBtn.disabled = true;
+      nextBtn.disabled = false;
     }
     document.getElementById("fitBtn").addEventListener("click", fitRoute);
 
+    /* ---------- Click a marker to open its stop ---------- */
+    view.on("click", function(evt){
+      view.hitTest(evt, { include: stopLayer }).then(function(res){
+        for (var i = 0; i < res.results.length; i++) {
+          var g = res.results[i].graphic;
+          if (g && g.attributes && typeof g.attributes.stopIndex === "number") {
+            activate(g.attributes.stopIndex, true);
+            return;
+          }
+        }
+      });
+    });
+
+    /* ---------- Scroll drives the map when the panel is open ---------- */
+    var io = null;
     if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function(entries){
+      io = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
         for (var i = 0; i < entries.length; i++) {
-          if (entries[i].isIntersecting) activate(Number(entries[i].target.getAttribute("data-stop")));
+          if (entries[i].isIntersecting) activate(Number(entries[i].target.getAttribute("data-stop")), false);
         }
       }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
       var stopEls = document.querySelectorAll(".stop");
       for (var j = 0; j < stopEls.length; j++) io.observe(stopEls[j]);
 
       var ioIntro = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
         for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) fitRoute();
       }, { rootMargin: "-30% 0px -60% 0px" });
       ioIntro.observe(document.getElementById("intro"));
-    } else {
-      // Very old Safari: fall back to a scroll handler.
-      window.addEventListener("scroll", function(){
-        var els = document.querySelectorAll(".stop"), mid = window.innerHeight / 2, best = -1, bestD = Infinity;
-        for (var i = 0; i < els.length; i++) {
-          var r = els[i].getBoundingClientRect();
-          var d = Math.abs((r.top + r.bottom) / 2 - mid);
-          if (d < bestD) { bestD = d; best = Number(els[i].getAttribute("data-stop")); }
-        }
-        if (best >= 0) activate(best);
-      });
     }
+
+    /* ---------- Hide / show the reading panel ---------- */
+    var toggle = document.getElementById("panelToggle");
+    var savedScroll = 0;
+
+    function setPanel(hidden){
+      if (hidden) {
+        savedScroll = window.pageYOffset || document.documentElement.scrollTop;
+        document.body.classList.add("map-only");
+        toggle.textContent = "Show text";
+        toggle.setAttribute("aria-pressed", "true");
+        if (activeIndex < 0) activate(0, false);   // give the stepper somewhere to start
+      } else {
+        document.body.classList.remove("map-only");
+        toggle.textContent = "Hide text";
+        toggle.setAttribute("aria-pressed", "false");
+        window.scrollTo(0, savedScroll);           // put the reader back where they were
+        if (activeIndex >= 0) {
+          var el = document.getElementById("stop-" + activeIndex);
+          if (el) el.scrollIntoView({ behavior: "auto", block: "center" });
+        }
+      }
+    }
+    toggle.addEventListener("click", function(){
+      setPanel(!document.body.classList.contains("map-only"));
+    });
+
+    prevBtn.addEventListener("click", function(){ activate(activeIndex - 1, false); });
+    nextBtn.addEventListener("click", function(){ activate(activeIndex + 1, false); });
+
+    /* Arrow keys drive the stepper in full-map mode. */
+    document.addEventListener("keydown", function(e){
+      if (!document.body.classList.contains("map-only")) return;
+      if (e.key === "ArrowRight") { activate(activeIndex + 1, false); e.preventDefault(); }
+      if (e.key === "ArrowLeft")  { activate(activeIndex - 1, false); e.preventDefault(); }
+      if (e.key === "Escape")     { setPanel(false); }
+    });
+
+    prevBtn.disabled = true;
+
   }, function(err){
-    showMapMessage("A map module failed to load",
-      "<p>" + (err && err.message ? err.message : "Unknown error") + "</p>");
+    showMapMessage("The map didn't load",
+      "<p>Part of the mapping service couldn't be reached. Check the connection and reload.</p>");
   });
 })();
 </script>

@@ -1,0 +1,405 @@
+/* ============================================================
+   storymap.css
+   A shared stylesheet for scroll-driven literary map studies.
+
+   Reuse across books: link this file, then override only the
+   theme tokens in a small <style> block on the page. Nothing
+   below the THEME section should need to change from book to book.
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   THEME — override these per book.
+   The defaults here are the 1930s road-atlas palette used for
+   The Grapes of Wrath. A different novel wants a different world:
+   see the recipes at the bottom of this file.
+   ------------------------------------------------------------ */
+:root{
+  /* Palette */
+  --paper:      #EAE0CC;   /* page background */
+  --paper-deep: #DFD1B6;   /* cards, insets, open panels */
+  --ink:        #26201A;   /* text, rules, outlines */
+  --muted:      #5A4D3D;   /* secondary text */
+  --accent:     #A83B24;   /* the signature color: active stop, route line */
+  --accent-2:   #B8905A;   /* secondary accent: dividers, numerals */
+  --cool:       #41607D;   /* the third voice: links, focus, one question group */
+
+  /* Type */
+  --display: "Oswald", "Arial Narrow", sans-serif;   /* headings, labels, signage */
+  --body:    "Source Serif 4", Georgia, serif;       /* reading text */
+
+  /* Layout */
+  --panel-w:    500px;   /* reading panel width; set to 0 when collapsed */
+  --map-h-sm:   44vh;    /* map height on narrow screens */
+  --pad:        56px 44px;
+  --pad-sm:     40px 22px;
+}
+
+/* Collapsed state: the panel steps aside and the map takes the room. */
+body.map-only{ --panel-w: 0px; }
+
+
+/* ------------------------------------------------------------
+   BASE
+   ------------------------------------------------------------ */
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+body{
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.65;
+}
+a{ color: var(--cool); }
+:focus-visible{ outline: 3px solid var(--cool); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } }
+
+
+/* ------------------------------------------------------------
+   LAYOUT — fixed map, scrolling reading panel
+   ------------------------------------------------------------ */
+#map-wrap{
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  left: var(--panel-w);
+  background: var(--paper-deep);
+  transition: left .35s ease;
+}
+#viewDiv{ position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+
+#panel{
+  position: relative;
+  z-index: 5;
+  width: var(--panel-w);
+  background: var(--paper);
+  border-right: 3px solid var(--ink);
+  box-shadow: 6px 0 24px rgba(0,0,0,.22);
+}
+body.map-only #panel{ display: none; }
+
+.section{
+  padding: var(--pad);
+  border-bottom: 1px solid rgba(0,0,0,.14);
+}
+
+@media (prefers-reduced-motion: reduce){
+  #map-wrap{ transition: none; }
+}
+
+
+/* ------------------------------------------------------------
+   CONTROLS — toggle, fit, stepper, odometer
+   ------------------------------------------------------------ */
+.ctrl{
+  font-family: var(--display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  padding: 9px 14px;
+  cursor: pointer;
+  line-height: 1;
+}
+.ctrl:hover{ background: var(--ink); color: var(--paper); }
+.ctrl[aria-pressed="true"]{ background: var(--ink); color: var(--paper); }
+
+/* Panel toggle rides the panel's edge and follows it when it collapses. */
+#panelToggle{
+  position: fixed;
+  z-index: 8;
+  top: 18px;
+  left: calc(var(--panel-w) + 16px);
+  transition: left .35s ease;
+}
+@media (prefers-reduced-motion: reduce){ #panelToggle{ transition: none; } }
+
+#fitBtn{ position: fixed; z-index: 7; bottom: 26px; right: 18px; }
+
+/* Stop stepper — only shown when the panel is collapsed. */
+#stepper{
+  position: fixed;
+  z-index: 7;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: stretch;
+  gap: 0;
+  box-shadow: 3px 5px 0 rgba(0,0,0,.3);
+}
+body.map-only #stepper{ display: flex; }
+#stepper .ctrl{ border-right-width: 0; }
+#stepper .ctrl:last-child{ border-right-width: 2px; }
+#stepper .ctrl:disabled{ opacity: .4; cursor: default; }
+#stepper .ctrl:disabled:hover{ background: var(--paper); color: var(--ink); }
+#stepCount{
+  display: flex;
+  align-items: center;
+  padding: 9px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  border-right-width: 0;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The roadside sign: current place and distance. */
+#odometer{
+  position: fixed;
+  z-index: 7;
+  top: 18px; right: 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--display);
+  font-weight: 500;
+  letter-spacing: .14em;
+  font-size: 13px;
+  text-transform: uppercase;
+  padding: 10px 14px 9px;
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 3px var(--ink), 3px 5px 0 rgba(0,0,0,.3);
+  max-width: min(46vw, 340px);
+  text-align: center;
+  pointer-events: none;
+}
+#odometer .mi{ color: var(--accent-2); font-weight: 600; }
+
+/* Shown only if the map cannot load. */
+#mapmsg{
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(80%, 440px);
+  background: var(--paper);
+  border: 3px solid var(--accent);
+  padding: 20px 22px;
+  font-size: 15px;
+  line-height: 1.5;
+  display: none;
+  z-index: 10;
+  box-shadow: 4px 6px 0 rgba(0,0,0,.3);
+}
+#mapmsg h4{
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: 14px;
+  margin: 0 0 8px;
+  color: var(--accent);
+}
+#mapmsg p{ margin: 0 0 10px; }
+#mapmsg p:last-child{ margin-bottom: 0; }
+
+
+/* ------------------------------------------------------------
+   TYPE
+   ------------------------------------------------------------ */
+.eyebrow{
+  font-family: var(--display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  font-size: 12px;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+h1{
+  font-family: var(--display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(34px, 4vw, 46px);
+  line-height: 1.02;
+  margin: 0 0 10px;
+}
+h2{
+  font-family: var(--display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 24px;
+  margin: 0 0 12px;
+}
+.subtitle{ font-size: 19px; font-style: italic; margin: 0 0 22px; color: var(--muted); }
+.rule{ border: none; border-top: 3px solid var(--ink); width: 64px; margin: 26px 0; }
+.smallcaps{
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.muted{ color: var(--muted); }
+
+
+/* ------------------------------------------------------------
+   QUESTION BANKS
+   ------------------------------------------------------------ */
+details.qgroup{
+  background: var(--paper-deep);
+  border: 2px solid var(--ink);
+  margin: 14px 0;
+}
+details.qgroup summary{
+  cursor: pointer;
+  padding: 13px 16px;
+  font-family: var(--display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 15px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+details.qgroup summary::-webkit-details-marker{ display: none; }
+details.qgroup summary::after{ content: "+"; margin-left: auto; font-size: 20px; }
+details.qgroup[open] summary::after{ content: "–"; }
+.q-tag{
+  display: inline-block;
+  min-width: 22px;
+  text-align: center;
+  padding: 2px 6px;
+  border: 2px solid var(--ink);
+  font-size: 12px;
+  background: var(--paper);
+}
+.q-body{ padding: 4px 16px 16px; border-top: 1px solid rgba(0,0,0,.2); }
+.q-intro{ font-size: 14.5px; margin: 10px 0 0; font-style: italic; }
+.q-list{ list-style: none; margin: 10px 0 0; padding: 0; }
+.q-list li{
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 12px;
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.q-list input[type=checkbox]{
+  margin-top: 4px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+}
+#copyBtn{
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--accent);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 10px 16px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+#copyBtn:hover{ filter: brightness(1.12); }
+#copyMsg{ font-size: 13.5px; margin-left: 10px; color: var(--cool); }
+
+
+/* ------------------------------------------------------------
+   STOPS
+   ------------------------------------------------------------ */
+.stop{
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 6px solid transparent;
+  transition: border-color .3s, background .3s;
+}
+.stop.active{
+  border-left-color: var(--accent);
+  background: linear-gradient(90deg, rgba(0,0,0,.05), transparent 60%);
+}
+.stop-head{ display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+.shield{ flex: 0 0 auto; width: 46px; height: 50px; }
+.stop h3{
+  font-family: var(--display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 22px;
+  line-height: 1.1;
+  margin: 0;
+}
+.stop .meta{ margin: 2px 0 14px; color: var(--muted); }
+.stop .meta .sep{ color: var(--accent-2); padding: 0 6px; }
+.stop-qs{ margin-top: 18px; border-top: 1px dashed var(--accent-2); padding-top: 14px; }
+.stop-qs p{ margin: 0 0 10px; font-size: 15px; line-height: 1.5; }
+.stop-qs .lbl{
+  font-family: var(--display);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 600;
+  padding: 2px 7px;
+  margin-right: 8px;
+  border: 1.5px solid var(--ink);
+  white-space: nowrap;
+}
+.lbl.g1{ background: var(--paper-deep); }
+.lbl.g2{ background: var(--accent-2); color: var(--ink); }
+.lbl.g3{ background: var(--cool); color: var(--paper); border-color: var(--ink); }
+
+.foot small{ display: block; margin-top: 6px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce){ .stop{ transition: none; } }
+
+
+/* ------------------------------------------------------------
+   NARROW SCREENS — map on top, reading below
+   ------------------------------------------------------------ */
+@media (max-width: 900px){
+  :root{ --panel-w: 100%; }
+
+  #map-wrap{ left: 0; height: var(--map-h-sm); bottom: auto; }
+  #panel{
+    width: 100%;
+    margin-top: var(--map-h-sm);
+    border-right: none;
+    border-top: 3px solid var(--ink);
+  }
+
+  body.map-only #map-wrap{ height: 100vh; bottom: 0; }
+
+  #panelToggle{ left: 12px; top: 12px; }
+  #odometer{ top: 12px; right: 12px; font-size: 11px; padding: 8px 10px 7px; }
+  #fitBtn{ bottom: auto; top: calc(var(--map-h-sm) - 52px); right: 12px; }
+  body.map-only #fitBtn{ bottom: 26px; top: auto; }
+
+  .section{ padding: var(--pad-sm); }
+  .stop{ min-height: 62vh; }
+}
+
+
+/* ============================================================
+   THEME RECIPES for other books in the series.
+   Paste one into a <style> block on that book's page, after the
+   link to this file. Only the tokens change; the layout, the
+   question banks, and the stop cards all carry over.
+
+   THE HOUSE ON MANGO STREET — Chicago brick, vacant lot, hope
+     --paper:#F2EDE6; --paper-deep:#E4DAcd; --ink:#2B2320;
+     --muted:#6A5C52; --accent:#B5462F; --accent-2:#C9A227; --cool:#3F6F73;
+
+   THEIR EYES WERE WATCHING GOD — muck, hurricane, horizon
+     --paper:#EFEAD8; --paper-deep:#DDD6BC; --ink:#22261F;
+     --muted:#5B6152; --accent:#8C5A2B; --accent-2:#A8A05C; --cool:#2F5B60;
+
+   THE UNDERGROUND RAILROAD — night, lantern, rail
+     --paper:#E7E3DC; --paper-deep:#D5D0C6; --ink:#1B1D1F;
+     --muted:#575B5E; --accent:#7D2B2B; --accent-2:#8E7A4E; --cool:#31465C;
+
+   ADVENTURES OF HUCKLEBERRY FINN — river light, raft, silt
+     --paper:#EDE8D5; --paper-deep:#DCD5BC; --ink:#2A2620;
+     --muted:#5E5648; --accent:#9A6B2F; --accent-2:#B9A05E; --cool:#4A6B5D;
+   ============================================================ */

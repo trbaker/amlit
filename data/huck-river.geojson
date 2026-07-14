@@ -1,0 +1,120 @@
+{
+  "type": "FeatureCollection",
+  "name": "huck_finn_river_route",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    { "type": "Feature",
+      "properties": { "name": "The raft's course down the Mississippi", "kind": "route",
+        "novel": "Adventures of Huckleberry Finn", "author": "Mark Twain",
+        "note": "Generalized course from St. Petersburg (Hannibal, MO) to the Phelps farm in the lower Mississippi valley. Approximate; for classroom use." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [-91.358,39.710],[-91.340,39.655],[-91.300,39.400],[-90.960,39.080],[-90.700,38.870],
+        [-90.190,38.630],[-90.300,38.200],[-90.100,37.600],[-89.600,37.200],[-89.176,36.985],
+        [-89.350,36.800],[-89.190,36.560],[-89.530,36.400],[-89.600,36.000],[-89.700,35.600],
+        [-90.050,35.130],[-90.400,34.800],[-90.590,34.530],[-90.900,34.100],[-91.050,33.600],
+        [-91.200,33.300],[-91.180,33.000],[-91.200,32.600],[-91.180,32.350] ] } },
+
+    { "type": "Feature",
+      "properties": { "name": "Up the Ohio — the escape they missed", "kind": "counterfactual",
+        "note": "From the confluence at Cairo, the Ohio runs north and east toward the free states. Turning here was Jim's plan. Fog took it from them." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [-89.176,36.985],[-88.500,37.100],[-87.600,37.400],[-86.500,37.700] ] } },
+
+    { "type": "Feature",
+      "properties": { "name": "Lighting out for the Territory — the escape never taken", "kind": "counterfactual",
+        "note": "Huck's closing intention: west, into Indian Territory (now Oklahoma), land taken from Native nations." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [-91.200,32.600],[-93.200,33.400],[-95.000,34.400],[-96.500,35.300] ] } },
+
+    { "type": "Feature", "properties": { "stop":1, "name":"St. Petersburg, Missouri", "region":"Twain's Hannibal", "chapters":"Chapters 1–7", "river_mile":0, "real_or_fictional":"fictional name for the real Hannibal",
+      "summary":"A slave state on the west bank, across from free Illinois. Huck stages his own murder and pushes a canoe into the current.",
+      "q1_whats_where":"Which two states face each other across the river here? Which is free and which is not?",
+      "q2_why_there":"Why did a town grow at this bend? What does a river give a Missouri town in the 1840s?",
+      "q3_relationship":"Huck escapes by making everyone believe he is dead. What does he give up along with his name?" },
+      "geometry": { "type":"Point", "coordinates":[-91.358,39.710] } },
+
+    { "type": "Feature", "properties": { "stop":2, "name":"Jackson's Island", "region":"Three miles down", "chapters":"Chapters 8–11", "river_mile":3, "real_or_fictional":"real",
+      "summary":"Huck watches his own funeral from the island, then finds Jim, who has run rather than be sold to New Orleans.",
+      "q1_whats_where":"How far is the island from the town? Why can Huck watch his own funeral from here?",
+      "q2_why_there":"Why is an island the one place where a runaway boy and a runaway man can meet as equals?",
+      "q3_relationship":"Both are running from being owned. Are those the same kind of running?" },
+      "geometry": { "type":"Point", "coordinates":[-91.340,39.655] } },
+
+    { "type": "Feature", "properties": { "stop":3, "name":"The Lights of St. Louis", "region":"The great city on the river", "chapters":"Chapter 12", "river_mile":110, "real_or_fictional":"real",
+      "summary":"The raft drifts past the largest city either has seen — awake at two in the morning, and entirely indifferent to them.",
+      "q1_whats_where":"Find St. Louis. Where does it sit relative to the confluence with the Missouri?",
+      "q2_why_there":"Why did the biggest city on the upper Mississippi grow here? What do two rivers meeting do for a port?",
+      "q3_relationship":"They travel at night and hide by day. What can you do at night in a big place that you could not do in daylight?" },
+      "geometry": { "type":"Point", "coordinates":[-90.190,38.630] } },
+
+    { "type": "Feature", "properties": { "stop":4, "name":"The Wrecked Steamboat", "region":"A storm, a ruin", "chapters":"Chapters 12–13", "river_mile":150, "real_or_fictional":"fictional",
+      "summary":"Aboard a steamboat broken on a rock, Huck and Jim find robbers, escape with their skiff, and Huck then tries to send help back to the men who would have killed him.",
+      "q1_whats_where":"Where do wrecks happen on a river? What is a snag, a bar, a rock?",
+      "q2_why_there":"What makes the Mississippi one of the most dangerous commercial waterways in the world in this era?",
+      "q3_relationship":"Huck risks himself to save murderers. What is he learning to trust instead of what he was taught?" },
+      "geometry": { "type":"Point", "coordinates":[-90.100,37.600] } },
+
+    { "type": "Feature", "properties": { "stop":5, "name":"The Fog", "region":"Above the mouth of the Ohio", "chapters":"Chapter 15", "river_mile":275, "real_or_fictional":"real conditions",
+      "summary":"Fog separates them. Huck pretends it was a dream; Jim, hurt, calls that behavior trash. Huck humbles himself and apologizes.",
+      "q1_whats_where":"How wide is the river here? Why can two people a hundred yards apart lose each other completely?",
+      "q2_why_there":"Why does fog form on a river at night? What does it do to sound and to direction?",
+      "q3_relationship":"This is the first time Huck humbles himself to a Black man. What has the river done to make it possible?" },
+      "geometry": { "type":"Point", "coordinates":[-89.600,37.200] } },
+
+    { "type": "Feature", "properties": { "stop":6, "name":"Cairo, Illinois — the Missed Turn", "region":"Where the Ohio meets the Mississippi", "chapters":"Chapter 16", "river_mile":290, "real_or_fictional":"real",
+      "summary":"THE HINGE OF THE NOVEL. Up the Ohio lie the free states. Fog hides the confluence; they drift past it. A raft cannot go back upstream. Every mile after this carries Jim deeper into slavery.",
+      "q1_whats_where":"Locate the confluence. Trace the Ohio east: which free states does it touch?",
+      "q2_why_there":"Why can't they simply turn around? What does a current do to a raft with no engine and no sail?",
+      "q3_relationship":"The most important event in this book is a place they did not reach. What does it mean that the moral catastrophe of the novel is a navigation error?" },
+      "geometry": { "type":"Point", "coordinates":[-89.176,36.985] } },
+
+    { "type": "Feature", "properties": { "stop":7, "name":"Run Down by a Steamboat", "region":"The raft is smashed", "chapters":"Chapter 16", "river_mile":310, "real_or_fictional":"fictional",
+      "summary":"A steamboat plows through the raft in the dark. Huck and Jim surface far apart, each believing the other is gone.",
+      "q1_whats_where":"Where in a channel does a steamboat run? Where does a raft drift? Why do those paths cross?",
+      "q2_why_there":"Why would a pilot not slow down? What was a raft worth, and what was a steamboat's cargo worth?",
+      "q3_relationship":"The only place Huck and Jim are free and equal has just been destroyed by the ordinary business of the country. Accident of plot, or argument?" },
+      "geometry": { "type":"Point", "coordinates":[-89.350,36.800] } },
+
+    { "type": "Feature", "properties": { "stop":8, "name":"The Grangerfords", "region":"The Kentucky shore", "chapters":"Chapters 17–18", "river_mile":350, "real_or_fictional":"fictional, Kentucky side",
+      "summary":"A gracious slaveholding family conducting a thirty-year feud nobody can explain. Buck Grangerford is shot dead in the shallows. Huck returns to the raft and calls it home.",
+      "q1_whats_where":"Which state is this shore? Where are the Shepherdsons in relation to the Grangerfords?",
+      "q2_why_there":"Why do feuds survive on a frontier? What does distance from courts and sheriffs do to how disputes get settled?",
+      "q3_relationship":"The most respectable people Huck meets are the most murderous. What is Twain saying by putting them on the shore and the runaways on the water?" },
+      "geometry": { "type":"Point", "coordinates":[-89.190,36.560] } },
+
+    { "type": "Feature", "properties": { "stop":9, "name":"The Duke and the Dauphin", "region":"The raft is boarded", "chapters":"Chapters 19–20", "river_mile":420, "real_or_fictional":"fictional",
+      "summary":"Two con men come aboard one step ahead of a mob. The raft stops being a refuge and becomes a stage for other people's frauds.",
+      "q1_whats_where":"How far have they come? Which states are on each bank at this point?",
+      "q2_why_there":"Why does a busy waterway full of strangers, and no telegraph, make a con man's life possible?",
+      "q3_relationship":"Huck goes along with the fraud to keep the peace. When have you done that, and what did it cost anyway?" },
+      "geometry": { "type":"Point", "coordinates":[-89.600,36.000] } },
+
+    { "type": "Feature", "properties": { "stop":10, "name":"Bricksville, Arkansas", "region":"A town falling into the river", "chapters":"Chapters 21–23", "river_mile":590, "real_or_fictional":"fictional",
+      "summary":"The riverbank is caving in, houses and all. Colonel Sherburn shoots the harmless drunk Boggs in the street, then faces down the lynch mob and shames it home.",
+      "q1_whats_where":"Find a sharp bend near here. Which bank is being cut away, and which is building up?",
+      "q2_why_there":"Why does a river erode the outside of a bend and deposit on the inside? Why is building on the wrong side of a meander a slow-motion mistake?",
+      "q3_relationship":"Twain lets the landscape pass judgment on this town. Can a place be complicit in what its people do?" },
+      "geometry": { "type":"Point", "coordinates":[-90.590,34.530] } },
+
+    { "type": "Feature", "properties": { "stop":11, "name":"The Wilks Town", "region":"Deep in slave country", "chapters":"Chapters 24–29", "river_mile":700, "real_or_fictional":"fictional",
+      "summary":"The con men impersonate a dead man's English brothers, sell the family's enslaved people apart from one another, and shrug. Huck finally acts, steals the gold back, and tells the truth.",
+      "q1_whats_where":"Where would a trader take people bought here? Find New Orleans and Memphis and measure both.",
+      "q2_why_there":"Why is a river town the natural place for a slave market? What does a fast downstream shipping route do to the trade in human beings?",
+      "q3_relationship":"Huck risks everything for white girls he has known three days, while Jim hides on the raft. How far has his conscience come, and how far has it still to go?" },
+      "geometry": { "type":"Point", "coordinates":[-91.200,33.300] } },
+
+    { "type": "Feature", "properties": { "stop":12, "name":"Pikesville & the Phelps Farm", "region":"Jim is sold for forty dollars", "chapters":"Chapters 31–43", "river_mile":800, "real_or_fictional":"fictional",
+      "summary":"Huck writes the letter that would turn Jim in, remembers the raft and the fog, and tears it up. Then Tom Sawyer turns the rescue into a game — knowing all along that Jim had already been freed.",
+      "q1_whats_where":"How far is Jim now from Cairo and from any free state? That distance is the price of one wrong turn in the fog.",
+      "q2_why_there":"Why is a farm this deep in the South the end of the line for a runaway? What has the geography done that no slave-catcher had to?",
+      "q3_relationship":"Huck chooses hell over betraying Jim — then hands the rescue to Tom, who makes a joke of it. What is Twain saying about who gets to be free, and who gets to play at it?" },
+      "geometry": { "type":"Point", "coordinates":[-91.200,32.600] } },
+
+    { "type": "Feature", "properties": { "stop":13, "name":"Lighting Out for the Territory", "region":"The road not on the river", "chapters":"Chapter the Last", "river_mile":800, "real_or_fictional":"real place, imagined journey",
+      "summary":"Jim was free all along. Huck refuses to be civilized and says he will light out west — for Indian Territory, land taken from Native nations and about to be taken again.",
+      "q1_whats_where":"Find the Territory. What is it called today, and which nations were forced to live there?",
+      "q2_why_there":"Why is the Territory the only place Huck can imagine being free — and at whose expense?",
+      "q3_relationship":"The book's final promise of freedom depends on land taken from someone else. Does that undo the ending, complicate it, or explain it?" },
+      "geometry": { "type":"Point", "coordinates":[-96.500,35.300] } }
+  ]
+}

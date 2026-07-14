@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Downriver — Mapping Adventures of Huckleberry Finn</title>
+<meta name="description" content="A Storygrounds map study of Huck and Jim's raft journey down the Mississippi in Mark Twain's Adventures of Huckleberry Finn, with a three-level geographic questioning strategy for teachers." />
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+
+<!-- The shared Storygrounds stylesheet -->
+<link rel="stylesheet" href="storymap.css" />
+
+<!-- Per-book theme: river light, raft, silt -->
+<style>
+  :root{
+    --paper:      #EDE8D5;
+    --paper-deep: #DCD5BC;
+    --ink:        #2A2620;
+    --muted:      #5E5648;
+    --accent:     #9A6B2F;
+    --accent-2:   #B9A05E;
+    --cool:       #4A6B5D;
+  }
+</style>
+</head>
+<body>
+
+<div id="map-wrap">
+  <div id="viewDiv"></div>
+  <div id="mapmsg" role="status"></div>
+</div>
+
+<button id="panelToggle" class="ctrl" type="button" aria-pressed="false">Hide text</button>
+<button id="fitBtn" class="ctrl" type="button">See the whole river</button>
+
+<div id="stepper" role="group" aria-label="Move through the stops">
+  <button id="prevBtn" class="ctrl" type="button" aria-label="Previous stop">◀</button>
+  <span id="stepCount">Stop 1 of 13</span>
+  <button id="nextBtn" class="ctrl" type="button" aria-label="Next stop">▶</button>
+</div>
+
+<div id="odometer" aria-live="polite"><span class="mi">THE MISSISSIPPI</span> · ST. PETERSBURG → THE TERRITORY</div>
+
+<main id="panel">
+
+  <header class="section" id="intro">
+    <p class="eyebrow">Storygrounds: Place-based reading</p>
+    <h1>Downriver</h1>
+    <p class="subtitle">Mapping Huck and Jim's raft journey in Mark Twain's <em>Adventures of Huckleberry Finn</em> (1884)</p>
+    <hr class="rule" />
+    <p>A boy fakes his own death and slips away from a small Missouri town. On an island in the
+    river he finds Jim, who has run from Miss Watson before she can sell him downriver to New
+    Orleans. They lash together a raft and let the current take them.</p>
+    <p>And there is the trouble, written into the land itself: <strong>the Mississippi flows south.</strong>
+    Freedom lies north and east. The river that hides them is also carrying them the wrong way — and
+    everything in this novel turns on a single place where they might have escaped it, and didn't.</p>
+    <p>Scroll down. The raft moves as you read, and the river draws itself behind them, mile by mile.
+    Click any marker on the map to jump to that stop.</p>
+    <p><strong>Projecting for a class?</strong> Choose <em>Hide text</em> at the top of the map to give the map
+    the whole screen, then step through the stops with the arrows at the bottom.</p>
+  </header>
+
+  <section class="section" id="framework">
+    <p class="eyebrow">For the Teacher</p>
+    <h2>Three Levels of Geographic Questioning</h2>
+    <p>Each stop below carries one question from each level, and the banks here hold more.
+    Check the questions you want, then copy your selection for a handout, discussion guide, or exit ticket.
+    The sequence moves students from <em>location</em> to <em>explanation</em> to <em>meaning</em> — in the spirit of
+    the geographer's ladder: <em>what is where, why there, and why care?</em></p>
+
+    <details class="qgroup" open>
+      <summary><span class="q-tag">1</span> What's where?</summary>
+      <div class="q-body">
+        <p class="q-intro">Location, description, and spatial vocabulary — reading the map itself.</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q1a" data-g="1" /><label for="q1a">Which way does the Mississippi flow? Which way does the raft travel? Which way is freedom? Answer all three from the map before you say another word about the plot.</label></li>
+          <li><input type="checkbox" id="q1b" data-g="1" /><label for="q1b">Find Cairo, Illinois. Which two great rivers meet there, and where would the Ohio have taken Jim?</label></li>
+          <li><input type="checkbox" id="q1c" data-g="1" /><label for="q1c">List, in order, the states the raft passes between St. Petersburg and the Phelps farm.</label></li>
+          <li><input type="checkbox" id="q1d" data-g="1" /><label for="q1d">On an 1840s map, shade the free states and the slave states. Where exactly does the line fall, and where does the river cross it?</label></li>
+          <li><input type="checkbox" id="q1e" data-g="1" /><label for="q1e">Where is Jackson's Island in relation to the town? Why can Huck watch his own funeral from it?</label></li>
+          <li><input type="checkbox" id="q1f" data-g="1" /><label for="q1f">Measure the straight-line distance from Hannibal to the Phelps farm, then trace the river distance. Why are the two numbers so different?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="qgroup">
+      <summary><span class="q-tag">2</span> Why is it there?</summary>
+      <div class="q-body">
+        <p class="q-intro">Spatial reasoning — the processes that put things in their places.</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q2a" data-g="2" /><label for="q2a">Why is there a town at Cairo at all? What does a confluence of two great rivers do for trade, and what does it do to a town's ground?</label></li>
+          <li><input type="checkbox" id="q2b" data-g="2" /><label for="q2b">Why do Huck and Jim miss Cairo? Explain fog on a river, night navigation without landmarks, and why a raft has no way to fight the current.</label></li>
+          <li><input type="checkbox" id="q2c" data-g="2" /><label for="q2c">Twain says Bricksville's riverbank keeps caving into the water, houses and all. Why does a river eat its own bank on the outside of a bend? Find a meander on the map and predict which side is caving.</label></li>
+          <li><input type="checkbox" id="q2d" data-g="2" /><label for="q2d">Why does the story only work on a raft? What does drifting at night, off the road, with no engine and no schedule, allow that a wagon or a steamboat would not?</label></li>
+          <li><input type="checkbox" id="q2e" data-g="2" /><label for="q2e">Why are steamboats deadly to the raft? Who gets the deep channel, and who has to get out of the way?</label></li>
+          <li><input type="checkbox" id="q2f" data-g="2" /><label for="q2f">Why was "sold down the river" a threat and not just a phrase? Look at what lies at the southern end of this map, and at what was grown there.</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="qgroup">
+      <summary><span class="q-tag">3</span> What's the larger relationship — and the relationship to me?</summary>
+      <div class="q-body">
+        <p class="q-intro">Connection, comparison, and personal geography — why care?</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q3a" data-g="3" /><label for="q3a">In most journey stories, moving forward means getting closer. Here, every mile of progress makes things worse for Jim. How does that change what a "journey" means?</label></li>
+          <li><input type="checkbox" id="q3b" data-g="3" /><label for="q3b">Compare this route with the Joads' road west, where the direction of travel was the direction of hope. What does it do to a story when the map itself is against the characters?</label></li>
+          <li><input type="checkbox" id="q3c" data-g="3" /><label for="q3c">The river is a road, a border, a hiding place, and a danger, all at once. What water, road, or line near you does more than one job — and for whom?</label></li>
+          <li><input type="checkbox" id="q3d" data-g="3" /><label for="q3d">Huck's conscience changes on the raft, in the middle of the water, away from every town. Is there a place where you think differently than you do at home or at school? What is it about that place?</label></li>
+          <li><input type="checkbox" id="q3e" data-g="3" /><label for="q3e">At the end, Huck plans to light out for "the Territory" — which in 1884 meant Indian Territory, land that had been taken from Native nations and given to them, and was about to be taken again. Whose home is Huck's freedom? Find it on the map and say what was there.</label></li>
+          <li><input type="checkbox" id="q3f" data-g="3" /><label for="q3f">What routes carry people through your region now — a river, an interstate, a rail line, a flight path? Who travels them by choice, and who travels them because they must?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <button id="copyBtn" type="button">Copy selected questions</button><span id="copyMsg" role="status"></span>
+  </section>
+
+  <div id="stops"></div>
+
+  <section class="section foot" id="closing">
+    <p class="eyebrow">After the Map</p>
+    <h2>Where the River Ends</h2>
+    <p>Jim is freed by a line in a dead woman's will — a fact Tom Sawyer knew all along and sat on
+    for the sake of a good adventure. The river carried Huck and Jim eight hundred miles and delivered
+    them nowhere they meant to go. The last thing Huck says he will do is leave again, westward this
+    time, for a Territory that belonged to someone else.</p>
+    <p>Ask a class to hold the two maps side by side — the one Huck traveled and the one he
+    <em>meant</em> to travel — and the novel's moral argument is suddenly visible as a shape on the
+    ground. That is the whole idea.</p>
+    <hr class="rule" />
+    <p class="smallcaps">Teacher notes</p>
+    <small>St. Petersburg is Twain's version of Hannibal, Missouri, where he grew up. Bricksville, Pikesville, and the Wilks town are inventions; they are placed here at their approximate settings, inferred from the raft's travel time and Twain's descriptions of the Arkansas shore.</small>
+    <small>Cairo, Illinois; St. Louis; Jackson's Island; and the Ohio confluence are real and named or clearly implied in the novel. River miles are approximate.</small>
+    <small>The novel is set roughly forty to fifty years before it was published — in the 1830s or 1840s, when slavery was legal in Missouri, Kentucky, Tennessee, Arkansas, Mississippi, and Louisiana, and illegal in Illinois and the states up the Ohio.</small>
+    <small>The three-level questioning framework follows the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
+  </section>
+</main>
+
+
+<!-- ===================================================================
+     PART 1 — Content and reading panel. No dependencies.
+     =================================================================== -->
+<script>
+var CONFIG = {
+  apiKey: "",
+  styledBasemap: "arcgis/topographic",
+  freeBasemap: "osm"
+};
+
+/* Colors are read from the stylesheet, so a theme swap re-skins the map too. */
+var CSSVARS = getComputedStyle(document.documentElement);
+function tok(name){ return CSSVARS.getPropertyValue(name).trim(); }
+function rgb(hex, alpha){
+  hex = hex.replace("#", "");
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return [ parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16),
+           parseInt(hex.substr(4,2),16), alpha === undefined ? 1 : alpha ];
+}
+var C = {
+  paper:  tok("--paper"),
+  ink:    tok("--ink"),
+  accent: tok("--accent"),
+  muted:  tok("--muted"),
+  cool:   tok("--cool")
+};
+
+/* The river, downstream. */
+var PATH = [
+  [-91.358,39.710],  /* 0  St. Petersburg (Hannibal) */
+  [-91.340,39.655],  /* 1  Jackson's Island */
+  [-91.300,39.400],
+  [-90.960,39.080],
+  [-90.700,38.870],
+  [-90.190,38.630],  /* 5  St. Louis */
+  [-90.300,38.200],
+  [-90.100,37.600],  /* 7  the wreck */
+  [-89.600,37.200],  /* 8  the fog */
+  [-89.176,36.985],  /* 9  CAIRO — the missed turn */
+  [-89.350,36.800],  /* 10 run down by a steamboat */
+  [-89.190,36.560],  /* 11 the Grangerfords */
+  [-89.530,36.400],
+  [-89.600,36.000],  /* 13 the duke and the dauphin */
+  [-89.700,35.600],
+  [-90.050,35.130],
+  [-90.400,34.800],
+  [-90.590,34.530],  /* 17 Bricksville */
+  [-90.900,34.100],
+  [-91.050,33.600],
+  [-91.200,33.300],  /* 20 the Wilks town */
+  [-91.180,33.000],
+  [-91.200,32.600],  /* 22 Pikesville & the Phelps farm */
+  [-91.180,32.350]   /* 23 downriver — New Orleans, and the sale Jim was fleeing */
+];
+
+/* The escape Jim needed: up the Ohio, north and east into free states. */
+var OHIO = [ [-89.176,36.985], [-88.500,37.100], [-87.600,37.400], [-86.500,37.700] ];
+
+/* The road Huck says he'll take, and never does. */
+var TERRITORY = [ [-91.200,32.600], [-93.200,33.400], [-95.000,34.400], [-96.500,35.300] ];
+
+var STOPS = [
+{ pi:0, zoom:12, miles:0, name:"St. Petersburg, Missouri", region:"Twain's Hannibal", ch:"Chapters 1–7",
+  text:"A slave state, on the west bank, across from free Illinois. The Widow Douglas is trying to civilize Huck; Pap wants his money and locks him in a cabin. Huck butchers a pig, spreads the blood, and stages his own murder so thoroughly that the town drags the river for his body. Then he pushes a canoe into the current.",
+  q1:"Which two states face each other across the river here? Which is free and which is not?",
+  q2:"Why did a town grow at this bend in the first place? What does a river give a Missouri town in the 1840s?",
+  q3:"Huck escapes by making everyone believe he is dead. What does he give up along with his name?" },
+
+{ pi:1, zoom:12, miles:3, name:"Jackson's Island", region:"Three miles down, and free of everybody", ch:"Chapters 8–11",
+  text:"Huck hides on a wooded island and watches the ferryboat firing a cannon over the water, trying to raise his corpse. Then he finds a still-warm campfire: Jim, who has run because he overheard Miss Watson planning to sell him to a trader for eight hundred dollars — down the river, to New Orleans. The two of them are now the only people on a scrap of land that belongs to no town at all.",
+  q1:"How far is the island from the town? Why can Huck watch his own funeral from here?",
+  q2:"Why is an island the one place in this landscape where a runaway boy and a runaway man can meet as equals? What does a river island have that a riverbank does not?",
+  q3:"Both of them are running from being owned — one by a father, one by a woman with a bill of sale. Are those the same kind of running? Say why or why not." },
+
+{ pi:5, zoom:10, miles:110, name:"The Lights of St. Louis", region:"The great city on the river", ch:"Chapter 12",
+  text:"Drifting at night, the raft passes the biggest city either of them has ever seen — a hillside of lights, a whole world awake at two in the morning, and not a soul in it who knows they exist. They pass it the way you pass weather. The city is a reminder of the scale of the country they are floating through, and of how completely it can swallow two people.",
+  q1:"Find St. Louis. What is the largest place on this whole route, and where does it sit relative to the confluence with the Missouri?",
+  q2:"Why did the biggest city on the upper Mississippi grow here rather than fifty miles up or down? What do two rivers meeting do for a port?",
+  q3:"They travel at night and tie up by day. What can you do at night in a big place that you could not do in daylight — and who has always known that?" },
+
+{ pi:7, zoom:11, miles:150, name:"The Wrecked Steamboat", region:"A storm, a ruin, a close thing", ch:"Chapters 12–13",
+  text:"In a thunderstorm they board a steamboat broken on a rock and find three robbers aboard, two of them planning to leave the third to drown. Huck and Jim escape with the gang's skiff and their loot; Huck then tries, and fails, to get a ferryman to go rescue the very men who would have killed him. It is the first sign that this boy's conscience does not run on the same rails as everyone else's.",
+  q1:"Where do wrecks happen on a river? What is a snag, a bar, a rock, and why does a steamboat find them at night?",
+  q2:"Why is a steamboat wrecked here at all — what makes the Mississippi one of the most dangerous commercial waterways in the world in this era?",
+  q3:"Huck risks himself to save murderers. What is he learning to trust instead of what he has been taught?" },
+
+{ pi:8, zoom:10, miles:275, name:"The Fog", region:"Above the mouth of the Ohio", ch:"Chapter 15",
+  text:"A heavy fog separates them. Huck spends a night in the canoe, hollering, hearing whoops bounce back off the water from every direction at once. When he finds the raft again he tells Jim it never happened — that Jim dreamed it. Jim points at the leaves and the wreckage on the raft, and says that when he thought Huck was lost his heart was broken, and that a person who does that to a friend is trash. Huck apologizes. It takes him fifteen minutes to work himself up to it, and he never regrets it.",
+  q1:"How wide is the river here? Why can two people a hundred yards apart lose each other completely?",
+  q2:"Why does fog form on a river at night? What does it do to sound, and why do echoes off a bank make direction impossible to judge?",
+  q3:"This is the first time Huck humbles himself to a Black man, and the novel treats it as a turning point. What has the river done to make it possible?" },
+
+{ pi:9, zoom:10, miles:290, name:"Cairo, Illinois — the Missed Turn", region:"Where the Ohio meets the Mississippi", ch:"Chapter 16",
+  text:"This is the hinge of the entire novel, and it is a fact of geography. At Cairo the Ohio River comes in from the east. Turn up the Ohio and you are going north and east — toward Illinois, toward Ohio, toward free country, where Jim could work, buy his family out of slavery, and be a man who owns himself. Huck and Jim are watching for it in the dark, and the fog takes it from them. They pass the mouth of the Ohio without seeing it. By the time they understand, the current has them, and a raft cannot go back upstream. Every mile from here on carries Jim deeper into the country that would sell him.",
+  q1:"Locate the confluence. Trace the Ohio east on the map: which free states does it touch?",
+  q2:"Why can't they simply turn around? Explain what a current does to a raft with no engine and no sail.",
+  q3:"The most important event in this book is a place they did not reach. What does it mean that the moral catastrophe of the novel is a navigation error?" },
+
+{ pi:10, zoom:11, miles:310, name:"Run Down by a Steamboat", region:"The raft is smashed", ch:"Chapter 16",
+  text:"A steamboat comes straight down on them in the dark, huge and lit and utterly indifferent, and plows through the raft. Huck and Jim dive and surface a long way apart, each believing for a time that the other is gone. The river that hid them has just demonstrated who it actually belongs to: the boats with engines, the men with schedules, the traffic of a working commercial artery.",
+  q1:"Where in a river channel does a steamboat run? Where does a raft drift? Why do those two paths cross?",
+  q2:"Why would a steamboat pilot not stop, or even slow down? What was a raft worth, and what was a steamboat's cargo worth?",
+  q3:"The raft is the only place in this book where Huck and Jim are free and equal. It has just been destroyed by the ordinary business of the country. Is that an accident of plot, or an argument?" },
+
+{ pi:11, zoom:11, miles:350, name:"The Grangerfords", region:"The Kentucky shore", ch:"Chapters 17–18",
+  text:"Huck washes up at a handsome house belonging to a handsome family who own land, own people, go to church with their rifles, and have been killing the Shepherdsons across the way for thirty years over a quarrel nobody can remember. Buck Grangerford, Huck's age, is shot dead in the river shallows. Huck climbs a tree and cries, and then he goes back to the raft, where Jim has been waiting, and says he was ever so glad to see it. It is the first time he calls the river home.",
+  q1:"Which state is this shore, and which side of the river? Where are the Shepherdsons in relation to the Grangerfords?",
+  q2:"Why do feuds like this survive on a frontier? What does distance from courts, sheriffs, and roads do to how disputes get settled?",
+  q3:"The most respectable people Huck meets are the most murderous. What is Twain saying by putting them on the shore and the runaways on the water?" },
+
+{ pi:13, zoom:9, miles:420, name:"The Duke and the Dauphin", region:"The raft is boarded", ch:"Chapters 19–20",
+  text:"Two con men, one about thirty and one about seventy, come aboard one step ahead of a mob and immediately declare themselves a duke and a lost king of France. Huck sees through them in a page and says nothing — he has learned that the fastest way to keep peace in a family is to let it have its own way. The raft, which was a refuge, is now a stage for other people's frauds, and Jim, who has no legal standing anywhere on this map, is now traveling with two criminals.",
+  q1:"How far have they come by now? Which states are on each bank at this point?",
+  q2:"Why does a river like this carry so many drifting con men in the 1840s — what does a busy waterway full of strangers and no telegraph make possible?",
+  q3:"Huck goes along with the fraud to keep the peace. When have you gone along with something you knew was wrong because objecting seemed costlier? What did it cost anyway?" },
+
+{ pi:17, zoom:11, miles:590, name:"Bricksville, Arkansas", region:"A town falling into the river", ch:"Chapters 21–23",
+  text:"A shabby town where the loafers borrow tobacco and set dogs on pigs, and where the riverbank is caving in so steadily that houses stand half over the water, waiting their turn to go. A harmless drunk named Boggs shouts at Colonel Sherburn, and Sherburn shoots him dead in the street in front of his daughter. A mob comes to lynch Sherburn; he stands on his porch and tells them exactly what cowards they are, and they go home. The whole town is being eaten by the river, and it deserves to be.",
+  q1:"Find a sharp bend near here on the map. Which bank is being cut away, and which is building up?",
+  q2:"Why does a river erode the outside of a bend and deposit on the inside? Explain why building a town on the wrong side of a meander is a slow-motion mistake.",
+  q3:"Twain lets the landscape pass judgment on this town. Is that fair? Can a place be complicit in what its people do?" },
+
+{ pi:20, zoom:11, miles:700, name:"The Wilks Town", region:"Deep in slave country", ch:"Chapters 24–29",
+  text:"The con men impersonate the English brothers of a dead man to steal his daughters' inheritance, and in the course of it they sell the family's enslaved people — a mother to a trader bound for New Orleans, her two sons to Memphis — and watch the family torn apart and shrug. It is the cruelty of the book's world done casually, as business. Huck, who has been a passive accomplice for two hundred miles, finally acts: he steals the gold back and tells the truth.",
+  q1:"Where would a trader take people bought here? Find New Orleans and Memphis and measure both.",
+  q2:"Why is a river town the natural place for a slave market? What does a fast, cheap, downstream shipping route do to the trade in human beings?",
+  q3:"Huck risks everything for the Wilks girls — white girls he has known for three days — while Jim sits hidden on the raft. What does that tell you about how far his conscience has actually come, and how far it still has to go?" },
+
+{ pi:22, zoom:11, miles:800, name:"Pikesville & the Phelps Farm", region:"Jim is sold for forty dollars", ch:"Chapters 31–43",
+  text:"The king sells Jim to Silas Phelps for forty dollars and a jug of whiskey. Huck sits down to write the letter that will turn Jim in, and feels good about it — and then he thinks about the raft, and the fog, and the man who called him honey and stood his watch for him, and he tears the letter up and says he will go to hell, and means it. It is the moral summit of American literature, and then Tom Sawyer arrives and turns Jim's rescue into a twelve-chapter game with rope ladders and pet rattlesnakes, because Tom already knew Jim had been free for two months.",
+  q1:"How far is Jim now from Cairo and from any free state? Measure it. That distance is the price of one wrong turn in the fog.",
+  q2:"Why is a farm this deep in the South the end of the line for a runaway? What has the geography done that no slave-catcher had to?",
+  q3:"Huck decides to go to hell rather than give Jim up — and then hands the rescue to Tom, who makes a joke of it. Why does Twain let that happen? What is he saying about who gets to be free, and who gets to play at it?" },
+
+{ pi:23, zoom:6, center:[-93.9,34.0], miles:800, name:"Lighting Out for the Territory", region:"The road not on the river", ch:"Chapter the Last",
+  text:"Jim is free — he always was, by a line in Miss Watson's will. Aunt Sally wants to adopt Huck and civilize him, and he has been there before. So he says he will light out for the Territory ahead of the rest. On the map, that is west: Indian Territory, the land the United States promised to Native nations after driving them from their homelands, and which it was already preparing to take back. Huck's freedom, the last dream in the book, is somebody else's stolen country. The dashed line running west from the farm is the journey the novel ends by imagining and never makes.",
+  q1:"Find the Territory on the map. What is it called today, and which nations were forced to live there?",
+  q2:"Why is 'the Territory' the only place Huck can imagine being free? What did the map of the United States offer a boy who wanted no owners in 1884, and at whose expense?",
+  q3:"The book's final promise of freedom depends on land taken from someone else. Does that undo the ending, complicate it, or explain it? Make your case with the map in front of you." }
+];
+
+var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function shieldSVG(n){
+  return '<svg class="shield" viewBox="0 0 46 50" role="img" aria-label="Stop ' + n + '">' +
+    '<path d="M6 4 H40 V36 L23 47 L6 36 Z" fill="' + C.paper + '" stroke="' + C.ink + '" stroke-width="2.5"/>' +
+    '<text x="23" y="19" text-anchor="middle" font-size="8" font-family="Oswald, Arial" fill="' + C.ink + '" letter-spacing="1">STOP</text>' +
+    '<text x="23" y="36" text-anchor="middle" font-size="16" font-family="Oswald, Arial" font-weight="600" fill="' + C.accent + '">' + n + '</text>' +
+    '</svg>';
+}
+
+(function buildStops(){
+  var host = document.getElementById("stops");
+  for (var i = 0; i < STOPS.length; i++) {
+    var s = STOPS[i];
+    var sec = document.createElement("section");
+    sec.className = "section stop";
+    sec.id = "stop-" + i;
+    sec.setAttribute("data-stop", String(i));
+    sec.innerHTML =
+      '<div class="stop-head">' + shieldSVG(i + 1) + '<h3>' + s.name + '</h3></div>' +
+      '<p class="meta smallcaps">' + s.ch + '<span class="sep">·</span>' + s.region +
+        '<span class="sep">·</span>≈ river mile ' + s.miles.toLocaleString() + '</p>' +
+      '<p>' + s.text + '</p>' +
+      '<div class="stop-qs">' +
+        '<p><span class="lbl g1">1 · What\'s where?</span>' + s.q1 + '</p>' +
+        '<p><span class="lbl g2">2 · Why is it there?</span>' + s.q2 + '</p>' +
+        '<p><span class="lbl g3">3 · Relationship to me</span>' + s.q3 + '</p>' +
+      '</div>';
+    host.appendChild(sec);
+  }
+})();
+
+document.getElementById("copyBtn").addEventListener("click", function(){
+  var groups = { 1:"WHAT'S WHERE?", 2:"WHY IS IT THERE?", 3:"WHAT'S THE LARGER RELATIONSHIP — AND THE RELATIONSHIP TO ME?" };
+  var picked = { 1:[], 2:[], 3:[] };
+  var boxes = document.querySelectorAll('.q-list input[type=checkbox]:checked');
+  for (var i = 0; i < boxes.length; i++) {
+    var lab = document.querySelector('label[for="' + boxes[i].id + '"]');
+    picked[boxes[i].getAttribute("data-g")].push(lab.textContent.trim());
+  }
+  var out = "GEOGRAPHIC QUESTIONS — ADVENTURES OF HUCKLEBERRY FINN\n\n", count = 0, gs = [1,2,3];
+  for (var g = 0; g < gs.length; g++) {
+    var key = gs[g];
+    if (!picked[key].length) continue;
+    out += groups[key] + "\n";
+    for (var j = 0; j < picked[key].length; j++) { out += "  " + (j+1) + ". " + picked[key][j] + "\n"; count++; }
+    out += "\n";
+  }
+  var msg = document.getElementById("copyMsg");
+  if (!count) { msg.textContent = "Check at least one question first."; return; }
+  var text = out.trim();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + ".";
+    }).catch(function(){ fallbackCopy(text, msg, count); });
+  } else { fallbackCopy(text, msg, count); }
+});
+function fallbackCopy(text, msg, count){
+  var ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + "."; }
+  catch (e) { msg.textContent = "Couldn't reach the clipboard — select the text and copy it by hand."; }
+  document.body.removeChild(ta);
+}
+
+function showMapMessage(title, html){
+  var box = document.getElementById("mapmsg");
+  box.innerHTML = "<h4>" + title + "</h4>" + html;
+  box.style.display = "block";
+}
+</script>
+
+<script src="https://js.arcgis.com/4.30/"></script>
+
+<!-- ===================================================================
+     PART 2 — The map.
+     =================================================================== -->
+<script>
+(function initMap(){
+
+  if (location.protocol === "file:") {
+    showMapMessage("The map needs to be online",
+      "<p>This page was opened straight from a folder on the computer, and the map can't load that way.</p>" +
+      "<p>Put the page on the web — or open it through a local web address — and the map will appear. " +
+      "Everything else on the page works as it is.</p>");
+    return;
+  }
+  if (typeof require === "undefined") {
+    showMapMessage("The map didn't load",
+      "<p>The page couldn't reach the mapping service. Check the internet connection, " +
+      "turn off any content blocker for this page, and reload.</p>");
+    return;
+  }
+
+  require([
+    "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/layers/GraphicsLayer", "esri/Graphic",
+    "esri/geometry/Point", "esri/geometry/Polyline"
+  ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
+
+    var basemap = CONFIG.freeBasemap;
+    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.styledBasemap; }
+
+    var map = new Map({ basemap: basemap });
+    var view = new MapView({
+      container: "viewDiv", map: map,
+      center: [-90.2, 36.2], zoom: 6,
+      constraints: { snapToZoom: false },
+      popup: { dockEnabled: false, defaultPopupTemplateEnabled: false }
+    });
+
+    view.when(function(){ view.ui.move("zoom", "bottom-left"); },
+      function(err){
+        showMapMessage("The map couldn't start",
+          "<p>This browser may not support the graphics the map needs. Updating the browser usually fixes it.</p>");
+      });
+
+    var SR = { wkid: 4326 };
+    var riverLayer    = new GraphicsLayer();   /* the whole river, faint */
+    var ohioLayer     = new GraphicsLayer();   /* the escape they missed */
+    var territoryLayer= new GraphicsLayer();   /* the escape they never take */
+    var driftedLayer  = new GraphicsLayer();   /* miles behind them */
+    var stopLayer     = new GraphicsLayer();
+    map.addMany([riverLayer, ohioLayer, territoryLayer, driftedLayer, stopLayer]);
+
+    riverLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [PATH], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.muted, 0.65), width: 2.5, style: "dash" }
+    }));
+
+    /* The Ohio: the road to freedom, drawn in the cool color, shown only at Cairo. */
+    ohioLayer.visible = false;
+    ohioLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [OHIO], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.cool, 0.95), width: 5, style: "short-dot", cap: "round" }
+    }));
+    ohioLayer.add(new Graphic({
+      geometry: new Point({ longitude: OHIO[OHIO.length-1][0], latitude: OHIO[OHIO.length-1][1], spatialReference: SR }),
+      symbol: { type: "text", text: "↑ FREE STATES", color: rgb(C.cool),
+                font: { size: 11, family: "sans-serif", weight: "bold" }, xoffset: 6, yoffset: 8,
+                horizontalAlignment: "left" }
+    }));
+
+    /* The Territory: dashed, west, shown only on the last stop. */
+    territoryLayer.visible = false;
+    territoryLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [TERRITORY], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.cool, 0.9), width: 4, style: "dash", cap: "round" }
+    }));
+    territoryLayer.add(new Graphic({
+      geometry: new Point({ longitude: TERRITORY[TERRITORY.length-1][0], latitude: TERRITORY[TERRITORY.length-1][1], spatialReference: SR }),
+      symbol: { type: "text", text: "THE TERRITORY →", color: rgb(C.cool),
+                font: { size: 11, family: "sans-serif", weight: "bold" }, xoffset: -6, yoffset: 8,
+                horizontalAlignment: "right" }
+    }));
+
+    var drifted = new Graphic({
+      geometry: new Polyline({ paths: [[PATH[0], PATH[0]]], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.accent), width: 4.5, cap: "round", join: "round" }
+    });
+    driftedLayer.add(drifted);
+
+    function symbolFor(active){
+      return { type: "simple-marker", style: "circle", size: active ? 20 : 13,
+        color: active ? rgb(C.accent) : rgb(C.paper),
+        outline: { color: rgb(C.ink), width: active ? 2.5 : 2 } };
+    }
+    function labelFor(i, active){
+      return { type: "text", text: String(i + 1),
+        color: active ? rgb(C.paper) : rgb(C.ink),
+        font: { size: active ? 11 : 8, family: "sans-serif", weight: "bold" }, yoffset: -4 };
+    }
+
+    var markers = [], labels = [];
+    for (var i = 0; i < STOPS.length; i++) {
+      var s = STOPS[i];
+      var pt = new Point({ longitude: PATH[s.pi][0], latitude: PATH[s.pi][1], spatialReference: SR });
+      var attrs = { stopIndex: i, name: s.name, ch: s.ch, miles: s.miles };
+      markers.push(new Graphic({
+        geometry: pt, attributes: attrs, symbol: symbolFor(false),
+        popupTemplate: {
+          title: "Stop " + (i + 1) + " · {name}",
+          content: "<b>{ch}</b> · about river mile {miles} from St. Petersburg.<br/><br/>" + s.text
+        }
+      }));
+      labels.push(new Graphic({ geometry: pt, attributes: attrs, symbol: labelFor(i, false) }));
+      stopLayer.addMany([markers[i], labels[i]]);
+    }
+
+    var CAIRO_STOP = 5;                       /* index of the Cairo stop */
+    var TERRITORY_STOP = STOPS.length - 1;
+
+    var odometer = document.getElementById("odometer");
+    var stepCount = document.getElementById("stepCount");
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
+    var activeIndex = -1;
+
+    function activate(i, scrollPanel){
+      if (i === activeIndex || i < 0 || i >= STOPS.length) return;
+      activeIndex = i;
+
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) {
+        if (Number(els[k].getAttribute("data-stop")) === i) els[k].classList.add("active");
+        else els[k].classList.remove("active");
+      }
+      for (var m = 0; m < markers.length; m++) {
+        markers[m].symbol = symbolFor(m === i);
+        labels[m].symbol = labelFor(m, m === i);
+      }
+
+      var s = STOPS[i];
+
+      /* The two roads not taken appear exactly when they matter. */
+      ohioLayer.visible = (i === CAIRO_STOP);
+      territoryLayer.visible = (i === TERRITORY_STOP);
+
+      var run = PATH.slice(0, s.pi + 1);
+      if (run.length < 2) run = [PATH[0], PATH[0]];
+      drifted.geometry = new Polyline({ paths: [run], spatialReference: SR });
+
+      var mi = String(s.miles);
+      while (mi.length < 4) mi = "0" + mi;
+      odometer.innerHTML = '<span class="mi">MILE ' + mi + '</span> · ' + s.name.toUpperCase();
+
+      stepCount.textContent = "Stop " + (i + 1) + " of " + STOPS.length;
+      prevBtn.disabled = (i === 0);
+      nextBtn.disabled = (i === STOPS.length - 1);
+
+      view.goTo({ center: s.center || PATH[s.pi], zoom: s.zoom },
+                { duration: prefersReduced ? 0 : 1400, easing: "in-out-cubic" }).catch(function(){});
+
+      if (scrollPanel && !document.body.classList.contains("map-only")) {
+        var el = document.getElementById("stop-" + i);
+        if (el) el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
+      }
+    }
+
+    function fitRoute(){
+      activeIndex = -1;
+      ohioLayer.visible = false;
+      territoryLayer.visible = false;
+      view.goTo({ center: [-90.2, 36.2], zoom: window.innerWidth < 900 ? 5 : 6 },
+                { duration: prefersReduced ? 0 : 1200 }).catch(function(){});
+      odometer.innerHTML = '<span class="mi">THE MISSISSIPPI</span> · ST. PETERSBURG → THE TERRITORY';
+      for (var m = 0; m < markers.length; m++) {
+        markers[m].symbol = symbolFor(false);
+        labels[m].symbol = labelFor(m, false);
+      }
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) els[k].classList.remove("active");
+      stepCount.textContent = "Stop 1 of " + STOPS.length;
+      prevBtn.disabled = true;
+      nextBtn.disabled = false;
+    }
+    document.getElementById("fitBtn").addEventListener("click", fitRoute);
+
+    view.on("click", function(evt){
+      view.hitTest(evt, { include: stopLayer }).then(function(res){
+        for (var i = 0; i < res.results.length; i++) {
+          var g = res.results[i].graphic;
+          if (g && g.attributes && typeof g.attributes.stopIndex === "number") {
+            activate(g.attributes.stopIndex, true);
+            return;
+          }
+        }
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) activate(Number(entries[i].target.getAttribute("data-stop")), false);
+        }
+      }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+      var stopEls = document.querySelectorAll(".stop");
+      for (var j = 0; j < stopEls.length; j++) io.observe(stopEls[j]);
+
+      var ioIntro = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
+        for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) fitRoute();
+      }, { rootMargin: "-30% 0px -60% 0px" });
+      ioIntro.observe(document.getElementById("intro"));
+    }
+
+    var toggle = document.getElementById("panelToggle");
+    var savedScroll = 0;
+    function setPanel(hidden){
+      if (hidden) {
+        savedScroll = window.pageYOffset || document.documentElement.scrollTop;
+        document.body.classList.add("map-only");
+        toggle.textContent = "Show text";
+        toggle.setAttribute("aria-pressed", "true");
+        if (activeIndex < 0) activate(0, false);
+      } else {
+        document.body.classList.remove("map-only");
+        toggle.textContent = "Hide text";
+        toggle.setAttribute("aria-pressed", "false");
+        window.scrollTo(0, savedScroll);
+        if (activeIndex >= 0) {
+          var el = document.getElementById("stop-" + activeIndex);
+          if (el) el.scrollIntoView({ behavior: "auto", block: "center" });
+        }
+      }
+    }
+    toggle.addEventListener("click", function(){
+      setPanel(!document.body.classList.contains("map-only"));
+    });
+
+    prevBtn.addEventListener("click", function(){ activate(activeIndex - 1, false); });
+    nextBtn.addEventListener("click", function(){ activate(activeIndex + 1, false); });
+
+    document.addEventListener("keydown", function(e){
+      if (!document.body.classList.contains("map-only")) return;
+      if (e.key === "ArrowRight") { activate(activeIndex + 1, false); e.preventDefault(); }
+      if (e.key === "ArrowLeft")  { activate(activeIndex - 1, false); e.preventDefault(); }
+      if (e.key === "Escape")     { setPanel(false); }
+    });
+
+    prevBtn.disabled = true;
+
+  }, function(err){
+    showMapMessage("The map didn't load",
+      "<p>Part of the mapping service couldn't be reached. Check the connection and reload.</p>");
+  });
+})();
+</script>
+</body>
+</html>

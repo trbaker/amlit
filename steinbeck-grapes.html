@@ -139,10 +139,16 @@
      =================================================================== -->
 <script>
 /* Optional map key. Leave blank for the free basemap; see the README. */
+/* ---------------------------------------------------------------------
+   THE MAP BENEATH THE STORY
+   Terrain, with place labels. This story is a road trip through named
+   towns — Sallisaw, Amarillo, Needles, Bakersfield — so learners need
+   the names. The relief matters too: it is what makes the Panhandle,
+   the Mojave, and Tehachapi Pass legible at a glance.
+   --------------------------------------------------------------------- */
 var CONFIG = {
-  apiKey: "",
-  styledBasemap: "arcgis/topographic",
-  freeBasemap: "osm"
+  terrainUrl: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer",
+  labelsUrl:  "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer"
 };
 
 var PATH = [
@@ -329,14 +335,22 @@ function showMapMessage(title, html){
 
   require([
     "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/Basemap", "esri/layers/TileLayer",
     "esri/layers/GraphicsLayer", "esri/Graphic",
     "esri/geometry/Point", "esri/geometry/Polyline"
-  ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
+  ], function(esriConfig, Map, MapView, Basemap, TileLayer,
+              GraphicsLayer, Graphic, Point, Polyline){
 
-    var basemap = CONFIG.freeBasemap;
-    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.styledBasemap; }
+    /* Terrain, with place names and boundaries riding on top as a
+       reference overlay. Needs no key and no account. */
+    var terrainWithLabels = new Basemap({
+      baseLayers:      [ new TileLayer({ url: CONFIG.terrainUrl }) ],
+      referenceLayers: [ new TileLayer({ url: CONFIG.labelsUrl  }) ],
+      title: "Terrain with labels",
+      id: "terrain-with-labels"
+    });
 
-    var map = new Map({ basemap: basemap });
+    var map = new Map({ basemap: terrainWithLabels });
     var view = new MapView({
       container: "viewDiv",
       map: map,

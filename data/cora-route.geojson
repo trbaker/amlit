@@ -1,0 +1,118 @@
+{
+  "type": "FeatureCollection",
+  "name": "cora_route_underground_railroad",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    { "type": "Feature",
+      "properties": { "name": "The line — Cora's route", "kind": "route",
+        "novel": "The Underground Railroad", "author": "Colson Whitehead",
+        "note": "Speculative, not historical. Whitehead's railroad is literal and his states are deliberate anachronisms. Placed here in the regions the novel implies. For classroom use." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [-83.150,32.700],[-83.190,32.660],[-83.450,32.850],[-82.300,33.300],[-81.600,33.700],
+        [-81.030,34.000],[-81.010,34.020],[-80.600,34.800],[-79.950,35.950],[-79.790,36.070],
+        [-82.500,36.100],[-84.500,36.100],[-86.800,36.050],[-86.600,37.500],[-86.550,38.600],
+        [-86.550,39.600],[-86.620,39.720] ] } },
+
+    { "type": "Feature",
+      "properties": { "name": "Ajarry's crossing — Ouidah to America", "kind": "context",
+        "note": "The novel opens with the Middle Passage. Cora's grandmother is taken at Ouidah on the Bight of Benin and carried across the Atlantic." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [2.085,6.363],[-10.0,4.5],[-32.0,10.0],[-58.0,20.0],[-74.0,27.0],[-81.090,32.080] ] } },
+
+    { "type": "Feature",
+      "properties": { "name": "Free soil — what escape actually cost", "kind": "context",
+        "note": "The real route from Georgia to Canada, on foot: roughly 900 miles across four slave states. There was no train. This line is what Whitehead's conceit replaces." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [-83.150,32.700],[-84.400,35.000],[-84.500,38.000],[-84.500,39.100],[-83.050,42.330] ] } },
+
+    { "type": "Feature",
+      "properties": { "name": "West — the wagon road at the end", "kind": "context",
+        "note": "Cora leaves on a wagon bound for St. Louis and then the California trail — into land taken from Native nations." },
+      "geometry": { "type": "LineString", "coordinates": [
+        [-86.620,39.720],[-90.200,38.630],[-94.600,39.100],[-98.000,39.300] ] } },
+
+    { "type": "Feature", "properties": { "stop":1, "name":"Ouidah, and the Water", "region":"The crossing that started it", "chapter":"Ajarry", "real_or_fictional":"Ouidah is real",
+      "summary":"Cora's grandmother is taken on the West African coast, sold repeatedly before leaving the continent, and carried across an ocean to a Georgia cotton field, where she dies without ever leaving the land.",
+      "q1_whats_where":"Find Ouidah. Measure the crossing. How many miles, and how many weeks under sail?",
+      "q2_why_there":"Why did the trade concentrate on this stretch of the West African coast? What made a place a slaving port?",
+      "q3_relationship":"Ajarry's world narrows to a garden plot the size of a room. What does it mean that a story of an ocean crossing ends in three square yards?" },
+      "geometry": { "type":"Point", "coordinates":[2.085,6.363] } },
+
+    { "type": "Feature", "properties": { "stop":2, "name":"The Randall Plantation, Georgia", "region":"The cotton belt", "chapter":"Georgia", "real_or_fictional":"fictional; Georgia cotton belt",
+      "summary":"Cotton and the terror required to grow it. Cora clings to her grandmother's garden plot. Caesar tells her about the railroad; when Terrance Randall inherits, she runs.",
+      "q1_whats_where":"Where is Georgia's cotton country, and what rivers drain it? Where did the cotton go after picking?",
+      "q2_why_there":"Why a plantation here? What do the fall line, the soil, and the growing season have to do with where the misery concentrated?",
+      "q3_relationship":"Cora fights for three square yards of dirt. Why does a person with nothing hold that hard to a piece of ground?" },
+      "geometry": { "type":"Point", "coordinates":[-83.150,32.700] } },
+
+    { "type": "Feature", "properties": { "stop":3, "name":"Lumbly's Station", "region":"The first descent", "chapter":"Georgia", "real_or_fictional":"fictional",
+      "summary":"A trapdoor under a barn, stone steps, a platform, and twenty miles of track running into the dark. The agent will not say who built it. Then the train arrives, and it is not a metaphor.",
+      "q1_whats_where":"How far is the station from the plantation? Could Cora have walked it in a night?",
+      "q2_why_there":"Why would a real station be a barn, a cellar, a church, a woodpile — never a building anyone would notice?",
+      "q3_relationship":"The agent will not say who built the railroad. Why does that question matter more than where it goes?" },
+      "geometry": { "type":"Point", "coordinates":[-83.450,32.850] } },
+
+    { "type": "Feature", "properties": { "stop":4, "name":"Griffin, South Carolina", "region":"A twelve-story rescue", "chapter":"South Carolina", "real_or_fictional":"fictional; ANACHRONISTIC BY DESIGN",
+      "summary":"A city with a skyscraper, a state that offers wages, schools, and doctors — and that is sterilizing the women and letting syphilis run untreated in the men. Whitehead relocates the twentieth century into the nineteenth on purpose.",
+      "q1_whats_where":"Locate the South Carolina midlands. How far has the train carried her?",
+      "q2_why_there":"Why does the horror here arrive dressed as medicine? What has been relocated into this state, from what century, and from where?",
+      "q3_relationship":"Which is more dangerous — Georgia, which says what it is, or South Carolina, which does not?" },
+      "geometry": { "type":"Point", "coordinates":[-81.030,34.000] } },
+
+    { "type": "Feature", "properties": { "stop":5, "name":"The Museum of Natural Wonders", "region":"Three rooms, one exhibit", "chapter":"South Carolina", "real_or_fictional":"fictional",
+      "summary":"Cora is paid to stand behind glass performing a sanitized history of her own life for schoolchildren. She learns to stare back.",
+      "q1_whats_where":"What kind of place is a museum, and who decides what goes inside one?",
+      "q2_why_there":"Why does a society build a museum about the thing it is still doing? What work is the exhibit performing?",
+      "q3_relationship":"Find a museum, monument, or marker near you. What story does it tell, who chose it, and what is left out of the room?" },
+      "geometry": { "type":"Point", "coordinates":[-81.010,34.020] } },
+
+    { "type": "Feature", "properties": { "stop":6, "name":"The Freedom Trail, North Carolina", "region":"A road of bodies", "chapter":"North Carolina", "real_or_fictional":"fictional; ANACHRONISTIC BY DESIGN",
+      "summary":"The state has outlawed Black people entirely and hangs anyone found within it, along with anyone who helped them, from trees lining a road out of town. The station has been bricked up.",
+      "q1_whats_where":"Where is the North Carolina piedmont? What lies between it and free states to the north?",
+      "q2_why_there":"Why would a state expel a people rather than exploit them? What real laws, ordinances, and towns did exactly this, and where?",
+      "q3_relationship":"They named a road of corpses the Freedom Trail. Where near you is a place whose name argues with what happened there?" },
+      "geometry": { "type":"Point", "coordinates":[-79.950,35.950] } },
+
+    { "type": "Feature", "properties": { "stop":7, "name":"The Attic", "region":"Months in a crawl space", "chapter":"North Carolina", "real_or_fictional":"fictional",
+      "summary":"Cora lives for months in a nook too low to stand in, watching the town's weekly festival — which ends each Friday with a hanging in the park — through a gap in the wall.",
+      "q1_whats_where":"How large is the space Cora lives in? Pace it out on the classroom floor and stand inside it.",
+      "q2_why_there":"Why is an attic the classic hiding place, and a public park the classic place for a lynching? Who is each location meant to be seen by?",
+      "q3_relationship":"What does it do to a person to see a place that cannot see them?" },
+      "geometry": { "type":"Point", "coordinates":[-79.790,36.070] } },
+
+    { "type": "Feature", "properties": { "stop":8, "name":"Tennessee — the Burned Country", "region":"Ridgeway's wagon", "chapter":"Tennessee", "real_or_fictional":"fictional events, real state",
+      "summary":"Ridgeway hauls Cora in chains across a Tennessee consumed by wildfire and then by yellow fever. Royal and two others stop the wagon on a dark road and take her back.",
+      "q1_whats_where":"Trace the route Ridgeway hauls her along. Which direction, and what lay at the end of it?",
+      "q2_why_there":"How does fire move through this country, and where does yellow fever concentrate? What does a quarantine do to a map?",
+      "q3_relationship":"Cora reads the burned land as punishment. Is a landscape ever a moral statement, or is that a story we lay on top of it?" },
+      "geometry": { "type":"Point", "coordinates":[-86.800,36.050] } },
+
+    { "type": "Feature", "properties": { "stop":9, "name":"The Valentine Farm, Indiana", "region":"A free state, a Black farm, a library", "chapter":"Indiana", "real_or_fictional":"fictional; echoes real destroyed communities",
+      "summary":"A hundred acres owned and worked by free Black families, with a schoolhouse and a library. The surrounding white counties burn it and shoot the people running out.",
+      "q1_whats_where":"Find southern Indiana — a free state. Measure how far it is from Georgia, and from the nearest slave state across the river.",
+      "q2_why_there":"Why was a prosperous, self-sufficient Black community a target in a free state? What was intolerable about it, and to whom?",
+      "q3_relationship":"Stay and build, or leave and survive — a real argument real communities have had. Find one. What did they choose, and what happened?" },
+      "geometry": { "type":"Point", "coordinates":[-86.550,39.600] } },
+
+    { "type": "Feature", "properties": { "stop":10, "name":"Mabel's Swamp — One Mile Out", "region":"Georgia, all along", "chapter":"Mabel", "real_or_fictional":"fictional",
+      "summary":"THE REVELATION. Cora's mother, the only person ever to escape Randall, did not escape. She got into the swamp, decided to turn back for her daughter, and was killed by a snake about a mile from the cabin. Nobody found her. Nobody told Cora. Ridgeway spent a career hunting a woman who never left the county.",
+      "q1_whats_where":"Measure it. How far did Mabel get? Compare that number with every other distance on this map.",
+      "q2_why_there":"Why is a swamp both the obvious escape route and a lethal one? What does that terrain give a runaway, and what does it take?",
+      "q3_relationship":"Cora built her whole self on a story about her mother that was false, and geography proves it false. What does this do to the idea that a map simply tells the truth?" },
+      "geometry": { "type":"Point", "coordinates":[-83.190,32.660] } },
+
+    { "type": "Feature", "properties": { "stop":11, "name":"The Tunnel That Goes Nowhere", "region":"Beneath the ruins", "chapter":"The North", "real_or_fictional":"fictional",
+      "summary":"A derelict station under an abandoned house: a hand-pumped car, no agent, no schedule, no destination. Cora leaves Ridgeway broken at the bottom of the stairs and pumps into the dark.",
+      "q1_whats_where":"Where does this tunnel go? Look at the map and answer honestly.",
+      "q2_why_there":"Why would a railroad be built to nowhere? What does an unfinished route say about the country above it?",
+      "q3_relationship":"When have you had to keep going without knowing where you were?" },
+      "geometry": { "type":"Point", "coordinates":[-86.620,39.720] } },
+
+    { "type": "Feature", "properties": { "stop":12, "name":"West", "region":"The wagon road, and the open end", "chapter":"The North", "real_or_fictional":"real direction, imagined journey",
+      "summary":"Cora surfaces through a hole in the ground, walks until she meets a wagon train, and takes a seat beside a driver bound for St. Louis and the California trail. That is the last page.",
+      "q1_whats_where":"Trace the westward line. What lies between Indiana and California in 1850, and who was living there?",
+      "q2_why_there":"Why is west the only direction left? What had the eastern half of this map already proved about itself?",
+      "q3_relationship":"Huck Finn lights out for the Territory. Cora takes the California trail. Both books end by pointing at land taken from Native nations and calling it freedom. What do you make of that?" },
+      "geometry": { "type":"Point", "coordinates":[-98.000,39.300] } }
+  ]
+}

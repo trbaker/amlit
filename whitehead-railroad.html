@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beneath the Ground — Mapping The Underground Railroad</title>
+<meta name="description" content="A Storygrounds map study of Cora's flight in Colson Whitehead's The Underground Railroad, with a three-level geographic questioning strategy for teachers." />
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="storymap.css" />
+
+<!-- Per-book theme: night, lantern, rail -->
+<style>
+  :root{
+    --paper:      #E7E3DC;
+    --paper-deep: #D5D0C6;
+    --ink:        #1B1D1F;
+    --muted:      #575B5E;
+    --accent:     #7D2B2B;
+    --accent-2:   #8E7A4E;
+    --cool:       #31465C;
+  }
+</style>
+</head>
+<body>
+
+<div id="map-wrap">
+  <div id="viewDiv"></div>
+  <div id="mapmsg" role="status"></div>
+</div>
+
+<button id="panelToggle" class="ctrl" type="button" aria-pressed="false">Hide text</button>
+<button id="fitBtn" class="ctrl" type="button">See the whole line</button>
+
+<div id="stepper" role="group" aria-label="Move through the stops">
+  <button id="prevBtn" class="ctrl" type="button" aria-label="Previous stop">◀</button>
+  <span id="stepCount">Stop 1 of 12</span>
+  <button id="nextBtn" class="ctrl" type="button" aria-label="Next stop">▶</button>
+</div>
+
+<div id="odometer" aria-live="polite"><span class="mi">THE LINE</span> · GEORGIA → NORTH</div>
+
+<main id="panel">
+
+  <header class="section" id="intro">
+    <p class="eyebrow">Storygrounds: Place-based reading</p>
+    <h1>Beneath the Ground</h1>
+    <p class="subtitle">Mapping Cora's flight in Colson Whitehead's <em>The Underground Railroad</em> (2016)</p>
+    <hr class="rule" />
+    <p>The real Underground Railroad was a metaphor: a network of people, safe houses, footpaths,
+    and lies. Whitehead takes the metaphor and buries it. In this novel there is an actual railroad
+    under the actual ground — engines, tracks, timetables, station agents with lanterns — running
+    beneath a country that would kill you for standing on top of it.</p>
+    <p>Cora runs from a Georgia cotton plantation and surfaces in one state after another. Each one
+    looks, at first, like a rescue. Each one is a different way of destroying her. The train does not
+    take her to freedom; it takes her through a catalogue of America.</p>
+    <p>Scroll down to follow the line. Click any marker on the map to jump to that stop.</p>
+    <p><strong>Projecting for a class?</strong> Choose <em>Hide text</em> at the top of the map to give the map
+    the whole screen, then step through the stops with the arrows at the bottom.</p>
+  </header>
+
+  <section class="section" id="framework">
+    <p class="eyebrow">For the Teacher</p>
+    <h2>Three Levels of Geographic Questioning</h2>
+    <p>Each stop below carries one question from each level, and the banks here hold more.
+    Check the questions you want, then copy your selection for a handout, discussion guide, or exit ticket.
+    The sequence moves students from <em>location</em> to <em>explanation</em> to <em>meaning</em> — in the spirit of
+    the geographer's ladder: <em>what is where, why there, and why care?</em></p>
+
+    <details class="qgroup" open>
+      <summary><span class="q-tag">1</span> What's where?</summary>
+      <div class="q-body">
+        <p class="q-intro">Location, description, and spatial vocabulary — reading the map itself.</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q1a" data-g="1" /><label for="q1a">Trace Cora's route in order: Georgia, South Carolina, North Carolina, Tennessee, Indiana. Which direction is she traveling overall, and what state does she never reach?</label></li>
+          <li><input type="checkbox" id="q1b" data-g="1" /><label for="q1b">Find Ouidah, on the coast of West Africa. Trace the passage that brought Cora's grandmother Ajarry across the ocean. How far is it, and how long did it take?</label></li>
+          <li><input type="checkbox" id="q1c" data-g="1" /><label for="q1c">Measure the real distance from a Georgia plantation to free soil in the North, and then to Canada. Now measure how far Cora's mother Mabel actually got. Put both numbers on the board.</label></li>
+          <li><input type="checkbox" id="q1d" data-g="1" /><label for="q1d">Where were the free states in 1850, and where was the line? Find the Ohio River on the map and say what it separated.</label></li>
+          <li><input type="checkbox" id="q1e" data-g="1" /><label for="q1e">Map the routes of the <em>real</em> Underground Railroad. Did all of them run north? Look for the ones that ran south, to Mexico and to Spanish Florida.</label></li>
+          <li><input type="checkbox" id="q1f" data-g="1" /><label for="q1f">Where is the Valentine farm, and what free state is it in? Does being in a free state make Cora safe?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="qgroup">
+      <summary><span class="q-tag">2</span> Why is it there?</summary>
+      <div class="q-body">
+        <p class="q-intro">Spatial reasoning — the processes that put things in their places.</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q2a" data-g="2" /><label for="q2a">Why is the cotton belt where it is? Connect soil, growing season, rainfall, and the rivers that carried the crop to port — and then say who was forced to work it.</label></li>
+          <li><input type="checkbox" id="q2b" data-g="2" /><label for="q2b">Why was escape from the Deep South so much harder than escape from Maryland or Kentucky? Measure both distances and count the states in between.</label></li>
+          <li><input type="checkbox" id="q2c" data-g="2" /><label for="q2c">Why does Whitehead put the railroad <em>under the ground</em>? What can a train do on a map that a footpath cannot — and what does burying the route hide from the people above it?</label></li>
+          <li><input type="checkbox" id="q2d" data-g="2" /><label for="q2d">The novel's South Carolina, North Carolina, and Indiana are not historical portraits. Each one relocates a real American atrocity into a place and a decade where it did not happen. Identify them, then map where and when each actually occurred.</label></li>
+          <li><input type="checkbox" id="q2e" data-g="2" /><label for="q2e">Why was a prosperous Black farming community in a free state still a target? Look up the destruction of Black towns and districts — Tulsa, Rosewood, Wilmington — and locate them.</label></li>
+          <li><input type="checkbox" id="q2f" data-g="2" /><label for="q2f">Why does the last tunnel go nowhere? If a railroad has no terminus, what does that say about where the country was actually prepared to take her?</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="qgroup">
+      <summary><span class="q-tag">3</span> What's the larger relationship — and the relationship to me?</summary>
+      <div class="q-body">
+        <p class="q-intro">Connection, comparison, and personal geography — why care?</p>
+        <ul class="q-list">
+          <li><input type="checkbox" id="q3a" data-g="3" /><label for="q3a">Cora hated her mother for a lifetime for running away. Mabel got about a mile. What does that single fact do to how you read every distance in this book?</label></li>
+          <li><input type="checkbox" id="q3b" data-g="3" /><label for="q3b">Each state Cora surfaces in is a different America. If your own state were a stop on this line, what would the train find when it came up for air — then, and now?</label></li>
+          <li><input type="checkbox" id="q3c" data-g="3" /><label for="q3c">Compare this route with the Joads' road west and with Huck's river. In one, the map offers hope; in another, it betrays; here it is a trap with a station at every exit. What does a map do to a story?</label></li>
+          <li><input type="checkbox" id="q3d" data-g="3" /><label for="q3d">Cora ends the book heading west — toward the same territory Huck Finn plans to light out for. Whose land is that? What does it mean that both books call the same place freedom?</label></li>
+          <li><input type="checkbox" id="q3e" data-g="3" /><label for="q3e">The real railroad left almost no map, because a map would have been evidence. What does it mean to travel a route that cannot be written down? Where do people move invisibly today, and why?</label></li>
+          <li><input type="checkbox" id="q3f" data-g="3" /><label for="q3f">Find out what happened where you live. Was there a station, a safe house, a slave market, a sundown ordinance, a destroyed neighborhood? Put it on a map and say what stands there now.</label></li>
+        </ul>
+      </div>
+    </details>
+
+    <button id="copyBtn" type="button">Copy selected questions</button><span id="copyMsg" role="status"></span>
+  </section>
+
+  <div id="stops"></div>
+
+  <section class="section foot" id="closing">
+    <p class="eyebrow">After the Map</p>
+    <h2>Where the Line Ends</h2>
+    <p>It doesn't. Cora pumps a handcar down a tunnel nobody built to anywhere, comes up through a
+    hole in the ground, and takes a seat on a wagon going west with a driver she has just met. That
+    is the whole ending. The railroad that was supposed to deliver her has no terminus, because the
+    country on the surface never built one.</p>
+    <p>Ask a class to lay this map beside the other two in this collection. The Joads travel west and
+    the map at least promises something. Huck and Jim travel south and the map betrays them. Cora
+    travels through a map with a trapdoor in every state. Three journeys, one country.</p>
+    <hr class="rule" />
+    <p class="smallcaps">Teacher notes — read before assigning</p>
+    <small><strong>This is not a historical novel, and the map is not a historical map.</strong> Whitehead writes speculative history: the literal railroad is his invention, and the states Cora passes through are deliberate anachronisms. South Carolina's benevolent doctors performing forced sterilizations and running a secret syphilis study compress the real 20th-century Tuskegee study and decades of coerced sterilization. North Carolina's total ban on Black people, enforced by a road of hanged bodies, gathers together lynching, sundown towns, and expulsion. Indiana's destroyed Black farming community echoes Tulsa, Rosewood, and Wilmington. Students should be told this plainly, and then asked to go find the real events and the real places.</small>
+    <small>The Randall plantation, Griffin, the Valentine farm, and the stations are inventions. They are placed here in the regions the novel implies — Georgia's cotton belt, the South Carolina midlands, the North Carolina piedmont, middle Tennessee, and southern Indiana. Distances and station locations are approximate.</small>
+    <small>The real Underground Railroad kept almost no records and drew almost no maps, for the obvious reason. What is mapped today is reconstructed from testimony, court records, and the memoirs of the people who survived it.</small>
+    <small>The three-level questioning framework follows the geographic inquiry tradition of "What is where? Why there? Why care?"</small>
+  </section>
+</main>
+
+
+<!-- ===================================================================
+     PART 1 — Content and reading panel. No dependencies.
+     =================================================================== -->
+<script>
+var CONFIG = {
+  apiKey: "",
+  styledBasemap: "arcgis/topographic",
+  freeBasemap: "osm"
+};
+
+var CSSVARS = getComputedStyle(document.documentElement);
+function tok(name){ return CSSVARS.getPropertyValue(name).trim(); }
+function rgb(hex, alpha){
+  hex = hex.replace("#", "");
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return [ parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16),
+           parseInt(hex.substr(4,2),16), alpha === undefined ? 1 : alpha ];
+}
+var C = {
+  paper:  tok("--paper"),
+  ink:    tok("--ink"),
+  accent: tok("--accent"),
+  muted:  tok("--muted"),
+  cool:   tok("--cool")
+};
+
+/* The line, north out of Georgia. */
+var PATH = [
+  [-83.150,32.700],  /* 0  Randall plantation */
+  [-83.190,32.660],  /* 1  the swamp — one mile out */
+  [-83.450,32.850],  /* 2  Lumbly's station */
+  [-82.300,33.300],
+  [-81.600,33.700],
+  [-81.030,34.000],  /* 5  Griffin, South Carolina */
+  [-81.010,34.020],  /* 6  the Museum of Natural Wonders */
+  [-80.600,34.800],
+  [-79.950,35.950],  /* 8  the Freedom Trail */
+  [-79.790,36.070],  /* 9  the attic */
+  [-82.500,36.100],
+  [-84.500,36.100],
+  [-86.800,36.050],  /* 12 Tennessee — the burned country */
+  [-86.600,37.500],
+  [-86.550,38.600],
+  [-86.550,39.600],  /* 15 the Valentine farm, Indiana */
+  [-86.620,39.720]   /* 16 the tunnel that goes nowhere */
+];
+
+/* Ajarry's crossing: Ouidah to the Georgia coast. */
+var PASSAGE = [ [2.085,6.363], [-10.0,4.5], [-32.0,10.0], [-58.0,20.0], [-74.0,27.0], [-81.090,32.080] ];
+
+/* What escape actually cost from the Deep South: Georgia to Canada, on foot. */
+var FREESOIL = [ [-83.150,32.700], [-84.400,35.000], [-84.500,38.000], [-84.500,39.100], [-83.050,42.330] ];
+
+/* The wagon road at the end of the book. */
+var WEST = [ [-86.620,39.720], [-90.200,38.630], [-94.600,39.100], [-98.000,39.300] ];
+
+var STOPS = [
+
+{ pi:0, zoom:3, center:[-38,22], miles:0, keepRun:true,
+  name:"Ouidah, and the Water", region:"The crossing that started it", ch:"Ajarry",
+  text:"Before there is a railroad there is an ocean. Cora's grandmother Ajarry is taken at Ouidah, on the coast of West Africa, sold several times before she has even left the continent, and carried across the Atlantic in a ship where a third of the people below decks die. She is sold again in America, and again, and ends on a Georgia cotton plantation, where she plants an okra patch and never leaves the land alive. Her granddaughter is born on the same three square yards of dirt. The book begins with a map that is not a rescue.",
+  q1:"Find Ouidah. Measure the crossing to the American coast. How many miles, and how many weeks under sail?",
+  q2:"Why did the trade concentrate on this particular stretch of the West African coast? What made a place a slaving port?",
+  q3:"Ajarry's whole world narrows to a garden plot the size of a room. What does it mean that the story of an ocean crossing ends in three square yards?" },
+
+{ pi:0, zoom:12, miles:0,
+  name:"The Randall Plantation, Georgia", region:"The cotton belt", ch:"Georgia",
+  text:"Cotton, and the machinery of terror required to grow it. Cora is an outcast even here, a stray in the cabin called Hob, holding onto her grandmother's garden plot because it is the only thing anyone in her family has ever owned. Caesar tells her there is a railroad and asks her to run. She says no. Then Terrance Randall inherits the northern half of the plantation, and she says yes. — On the map you can now see a second line, running north: the distance to free soil, on foot, the way it really had to be done.",
+  q1:"Where is Georgia's cotton country, and what rivers drain it? Where did the cotton go after it was picked?",
+  q2:"Why is a plantation here rather than fifty miles east or west? What does the fall line, the soil, and the growing season have to do with where the misery was concentrated?",
+  q3:"Cora fights for a garden plot three yards square. Why does a person with nothing hold that hard to a piece of ground?" },
+
+{ pi:2, zoom:12, miles:20,
+  name:"Lumbly's Station", region:"The first descent", ch:"Georgia",
+  text:"Under a barn, under a trapdoor, down a flight of stone steps: a platform, a rail bed, and twenty miles of track disappearing into the dark in both directions. The station agent will not say who built it or where it goes. He tells them to look out as they ride, and see the true face of America. Then the train comes, and it is not a metaphor.",
+  q1:"How far is the station from the plantation? Could Cora have walked it in one night?",
+  q2:"Why would a real station have been a barn, a cellar, a church, a woodpile — and never a building anyone would notice? What makes a hiding place work?",
+  q3:"The agent will not say who built the railroad. Why does that question matter more than where it goes?" },
+
+{ pi:5, zoom:11, miles:230,
+  name:"Griffin, South Carolina", region:"A twelve-story rescue", ch:"South Carolina",
+  text:"Cora comes up into a city with a skyscraper in it, and a state that has bought the people it used to buy and now calls it care. There are dormitories, wages, schools, and doctors who explain gently that the surgery is for her own good and that the blood tests are treatment. It is the kindest place in the novel and it is sterilizing the women and letting the syphilis run its course in the men to see what happens. Whitehead has moved the twentieth century into the nineteenth on purpose.",
+  q1:"Locate the South Carolina midlands. How far has the train carried her from the plantation?",
+  q2:"Why does the horror in this state arrive dressed as medicine and opportunity? What has been relocated here, from what century, and from where?",
+  q3:"Which is more dangerous to Cora — Georgia, which says what it is, or South Carolina, which does not? Defend your answer." },
+
+{ pi:6, zoom:14, miles:230,
+  name:"The Museum of Natural Wonders", region:"Three rooms, one exhibit", ch:"South Carolina",
+  text:"Cora is given a job. She stands behind glass in a museum, in three rooms called Scenes from Darkest Africa, Life on the Slave Ship, and Typical Day on the Plantation, performing a sanitized history of her own life for schoolchildren. She learns to stare back. It is the sharpest joke in the book: a place where the country museums its own crime, gets every detail wrong, and pays the survivor to stand still inside it.",
+  q1:"This building is a place on the map like any other. What kind of place is a museum, and who decides what goes inside one?",
+  q2:"Why does a society build a museum about the very thing it is still doing? What work is the exhibit performing for the people looking in?",
+  q3:"Find a museum, a monument, or a historical marker near you. What story does it tell, who chose it, and what is left out of the room?" },
+
+{ pi:8, zoom:11, miles:390,
+  name:"The Freedom Trail, North Carolina", region:"A road of bodies", ch:"North Carolina",
+  text:"North Carolina has solved its problem by abolishing Black people altogether — outlawing their presence, importing Irish labor, and hanging anyone found within the state, along with anyone who helped them, from trees lining a road that stretches for miles out of town. They call it the Freedom Trail. The station here has been closed and bricked up. Cora arrives on a line that no longer runs.",
+  q1:"Where is the North Carolina piedmont? What lies between it and the free states to the north?",
+  q2:"Why would a state try to expel a people rather than exploit them? What real laws, ordinances, and towns did exactly this, and where?",
+  q3:"They named a road of corpses the Freedom Trail. Where near you is a place whose name argues with what happened there?" },
+
+{ pi:9, zoom:14, miles:400,
+  name:"The Attic", region:"Months in a crawl space", ch:"North Carolina",
+  text:"Martin Wells hides Cora in a nook above his attic, a space too low to stand in, for months. Through a gap in the wall she watches the town's Friday-night festivals, which end each week with a hanging in the park. Ethel Wells hates her for the danger she brings. Then a neighbor girl notices, and the mob comes for all of them. This is the smallest place on this map and it holds the longest stretch of the book.",
+  q1:"How large is the space Cora lives in? Pace it out on your classroom floor and stand inside it.",
+  q2:"Why is an attic the classic hiding place in this history — and why is a park, in the center of town, the classic place for a lynching? Think about who each location is meant to be seen by.",
+  q3:"Cora watches a whole town enjoy itself through a crack in a wall. What does it do to a person to be able to see a place that cannot see them?" },
+
+{ pi:12, zoom:9, miles:700,
+  name:"Tennessee — the Burned Country", region:"Ridgeway's wagon", ch:"Tennessee",
+  text:"Ridgeway, the slave catcher who never found Cora's mother and has made a career of the failure, takes her in chains west across a Tennessee that has been consumed by wildfire and then by yellow fever — a scorched, quarantined, dying landscape where whole towns are cordoned off and left. Cora decides the land is cursed. Then Royal and two other men stop the wagon on a dark road and take her back.",
+  q1:"Trace the route Ridgeway hauls her along. Which direction is she being taken, and what would have been at the end of it?",
+  q2:"Why does fire move the way it does through this country, and why does yellow fever concentrate where it does? What does a quarantine do to a map?",
+  q3:"Cora reads the burned land as punishment for the country's crimes. Is a landscape ever a moral statement — or is that a story we lay on top of it?" },
+
+{ pi:15, zoom:11, miles:940,
+  name:"The Valentine Farm, Indiana", region:"A free state, a Black farm, a library", ch:"Indiana",
+  text:"A hundred acres of corn and vineyards owned and worked by free Black families, with a schoolhouse, a library of a thousand books, and Saturday debates in the meeting hall about whether to stay and build or to move west and keep moving. Cora reads. She learns. She is happy, which the book has not allowed before. And the white counties around them have been watching the harvest come in, and the wagons arrive, and the library grow. They burn it down and shoot the people running out.",
+  q1:"Find southern Indiana. It is a free state — measure how far it is from Georgia, and from the nearest slave state across the river.",
+  q2:"Why was a prosperous, self-sufficient Black community a target in a free state? What was actually intolerable about it, and to whom?",
+  q3:"The debate in that meeting hall — stay and build, or leave and survive — is a real argument that real communities have had over and over. Find one. What did they choose, and what happened?" },
+
+{ pi:1, zoom:14, miles:940, keepRun:true,
+  name:"Mabel's Swamp — One Mile Out", region:"Georgia, all along", ch:"Mabel",
+  text:"Look where the map has taken you. Cora's mother Mabel is the only person who ever escaped the Randall plantation, and Cora has hated her for it since she was ten years old — hated her for running, for leaving her daughter behind, for making it. She did not make it. She got into the swamp, lay down in the black water for one night of peace, decided to turn back for her daughter, and was bitten by a cottonmouth. She died about a mile from the cabin. Nobody ever found her, and nobody ever told Cora. Ridgeway spent his career hunting a woman who never left the county.",
+  q1:"Measure it. How far did Mabel get from the plantation? Compare that number with every other distance on this map.",
+  q2:"Why is a swamp both the obvious escape route and a lethal one? What does that terrain give a runaway, and what does it take?",
+  q3:"Cora built her whole self around a story about her mother that was false, and geography is what proves it false. What does this chapter do to the idea that a map simply tells the truth?" },
+
+{ pi:16, zoom:12, miles:960,
+  name:"The Tunnel That Goes Nowhere", region:"Beneath the ruins", ch:"The North",
+  text:"Fleeing the massacre, Cora is dragged by Ridgeway to a derelict station under an abandoned house — a ghost tunnel with a hand-pumped car and no schedule, no agent, and no destination. She takes Ridgeway down the stairs with her and leaves him broken at the bottom. Then she pumps. For hours, in the dark, under the country, going she does not know where.",
+  q1:"Where does this tunnel go? Look at the map and answer honestly.",
+  q2:"Why would a railroad be built to nowhere? What does an unfinished route say about the people who dug it and the country above it?",
+  q3:"Cora is now moving through a landscape she cannot see, with no way to know her position. When have you had to keep going without knowing where you were?" },
+
+{ pi:16, zoom:5, center:[-92.0,39.0], miles:960,
+  name:"West", region:"The wagon road, and the open end", ch:"The North",
+  text:"She comes up through a hole in the ground into daylight, walks until she meets a wagon train, and takes a seat beside a driver named Ollie who is heading for St. Louis and then the trail to California. He offers her food. She wonders where he came from, and what he had to survive to be driving that wagon. That is the last page. The dashed line on the map is everything the novel refuses to promise: a direction, but no destination — and a west that already belongs to somebody else.",
+  q1:"Trace the westward line. What lies between Indiana and California in 1850, and who was living there?",
+  q2:"Why is west the only direction left? What had the eastern half of this map already proved about itself?",
+  q3:"Huck Finn ends by lighting out for the Territory. Cora ends on the trail to California. Both books end by pointing at land taken from Native nations and calling it freedom. What do you make of that?" }
+
+];
+
+var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function shieldSVG(n){
+  return '<svg class="shield" viewBox="0 0 46 50" role="img" aria-label="Stop ' + n + '">' +
+    '<rect x="5" y="5" width="36" height="40" fill="' + C.paper + '" stroke="' + C.ink + '" stroke-width="2.5"/>' +
+    '<line x1="5" y1="14" x2="41" y2="14" stroke="' + C.ink + '" stroke-width="1.5"/>' +
+    '<text x="23" y="12" text-anchor="middle" font-size="6.5" font-family="Oswald, Arial" fill="' + C.ink + '" letter-spacing="1">STOP</text>' +
+    '<text x="23" y="36" text-anchor="middle" font-size="17" font-family="Oswald, Arial" font-weight="600" fill="' + C.accent + '">' + n + '</text>' +
+    '</svg>';
+}
+
+(function buildStops(){
+  var host = document.getElementById("stops");
+  for (var i = 0; i < STOPS.length; i++) {
+    var s = STOPS[i];
+    var sec = document.createElement("section");
+    sec.className = "section stop";
+    sec.id = "stop-" + i;
+    sec.setAttribute("data-stop", String(i));
+    sec.innerHTML =
+      '<div class="stop-head">' + shieldSVG(i + 1) + '<h3>' + s.name + '</h3></div>' +
+      '<p class="meta smallcaps">' + s.ch + '<span class="sep">·</span>' + s.region + '</p>' +
+      '<p>' + s.text + '</p>' +
+      '<div class="stop-qs">' +
+        '<p><span class="lbl g1">1 · What\'s where?</span>' + s.q1 + '</p>' +
+        '<p><span class="lbl g2">2 · Why is it there?</span>' + s.q2 + '</p>' +
+        '<p><span class="lbl g3">3 · Relationship to me</span>' + s.q3 + '</p>' +
+      '</div>';
+    host.appendChild(sec);
+  }
+})();
+
+document.getElementById("copyBtn").addEventListener("click", function(){
+  var groups = { 1:"WHAT'S WHERE?", 2:"WHY IS IT THERE?", 3:"WHAT'S THE LARGER RELATIONSHIP — AND THE RELATIONSHIP TO ME?" };
+  var picked = { 1:[], 2:[], 3:[] };
+  var boxes = document.querySelectorAll('.q-list input[type=checkbox]:checked');
+  for (var i = 0; i < boxes.length; i++) {
+    var lab = document.querySelector('label[for="' + boxes[i].id + '"]');
+    picked[boxes[i].getAttribute("data-g")].push(lab.textContent.trim());
+  }
+  var out = "GEOGRAPHIC QUESTIONS — THE UNDERGROUND RAILROAD\n\n", count = 0, gs = [1,2,3];
+  for (var g = 0; g < gs.length; g++) {
+    var key = gs[g];
+    if (!picked[key].length) continue;
+    out += groups[key] + "\n";
+    for (var j = 0; j < picked[key].length; j++) { out += "  " + (j+1) + ". " + picked[key][j] + "\n"; count++; }
+    out += "\n";
+  }
+  var msg = document.getElementById("copyMsg");
+  if (!count) { msg.textContent = "Check at least one question first."; return; }
+  var text = out.trim();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + ".";
+    }).catch(function(){ fallbackCopy(text, msg, count); });
+  } else { fallbackCopy(text, msg, count); }
+});
+function fallbackCopy(text, msg, count){
+  var ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); msg.textContent = "Copied " + count + " question" + (count > 1 ? "s" : "") + "."; }
+  catch (e) { msg.textContent = "Couldn't reach the clipboard — select the text and copy it by hand."; }
+  document.body.removeChild(ta);
+}
+
+function showMapMessage(title, html){
+  var box = document.getElementById("mapmsg");
+  box.innerHTML = "<h4>" + title + "</h4>" + html;
+  box.style.display = "block";
+}
+</script>
+
+<script src="https://js.arcgis.com/4.30/"></script>
+
+<!-- ===================================================================
+     PART 2 — The map.
+     =================================================================== -->
+<script>
+(function initMap(){
+
+  if (location.protocol === "file:") {
+    showMapMessage("The map needs to be online",
+      "<p>This page was opened straight from a folder on the computer, and the map can't load that way.</p>" +
+      "<p>Put the page on the web — or open it through a local web address — and the map will appear. " +
+      "Everything else on the page works as it is.</p>");
+    return;
+  }
+  if (typeof require === "undefined") {
+    showMapMessage("The map didn't load",
+      "<p>The page couldn't reach the mapping service. Check the internet connection, " +
+      "turn off any content blocker for this page, and reload.</p>");
+    return;
+  }
+
+  require([
+    "esri/config", "esri/Map", "esri/views/MapView",
+    "esri/layers/GraphicsLayer", "esri/Graphic",
+    "esri/geometry/Point", "esri/geometry/Polyline"
+  ], function(esriConfig, Map, MapView, GraphicsLayer, Graphic, Point, Polyline){
+
+    var basemap = CONFIG.freeBasemap;
+    if (CONFIG.apiKey) { esriConfig.apiKey = CONFIG.apiKey; basemap = CONFIG.styledBasemap; }
+
+    var map = new Map({ basemap: basemap });
+    var view = new MapView({
+      container: "viewDiv", map: map,
+      center: [-84.5, 35.8], zoom: 5,
+      constraints: { snapToZoom: false },
+      popup: { dockEnabled: false, defaultPopupTemplateEnabled: false }
+    });
+
+    view.when(function(){ view.ui.move("zoom", "bottom-left"); },
+      function(){ showMapMessage("The map couldn't start",
+        "<p>This browser may not support the graphics the map needs. Updating the browser usually fixes it.</p>"); });
+
+    var SR = { wkid: 4326 };
+    var lineLayer     = new GraphicsLayer();   /* the whole line, faint */
+    var passageLayer  = new GraphicsLayer();   /* the Atlantic crossing */
+    var freesoilLayer = new GraphicsLayer();   /* what escape really cost */
+    var westLayer     = new GraphicsLayer();   /* the open ending */
+    var riddenLayer   = new GraphicsLayer();   /* track behind her */
+    var stopLayer     = new GraphicsLayer();
+    map.addMany([lineLayer, passageLayer, freesoilLayer, westLayer, riddenLayer, stopLayer]);
+
+    lineLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [PATH], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.muted, 0.6), width: 2.5, style: "short-dash" }
+    }));
+
+    /* Ajarry's crossing — shown at the first stop only. */
+    passageLayer.visible = false;
+    passageLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [PASSAGE], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.cool, 0.95), width: 4, style: "solid", cap: "round" }
+    }));
+    passageLayer.add(new Graphic({
+      geometry: new Point({ longitude: PASSAGE[0][0], latitude: PASSAGE[0][1], spatialReference: SR }),
+      symbol: { type: "text", text: "OUIDAH", color: rgb(C.cool),
+        font: { size: 11, family: "sans-serif", weight: "bold" },
+        xoffset: 8, yoffset: 8, horizontalAlignment: "left" }
+    }));
+
+    /* The real cost of escape from the Deep South — shown at the plantation. */
+    freesoilLayer.visible = false;
+    freesoilLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [FREESOIL], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.cool, 0.9), width: 3.5, style: "dash", cap: "round" }
+    }));
+    freesoilLayer.add(new Graphic({
+      geometry: new Point({ longitude: FREESOIL[FREESOIL.length-1][0], latitude: FREESOIL[FREESOIL.length-1][1], spatialReference: SR }),
+      symbol: { type: "text", text: "↑ FREE SOIL — 900 MILES ON FOOT", color: rgb(C.cool),
+        font: { size: 11, family: "sans-serif", weight: "bold" },
+        xoffset: 8, yoffset: 8, horizontalAlignment: "left" }
+    }));
+
+    /* The wagon road at the end — shown at the last stop. */
+    westLayer.visible = false;
+    westLayer.add(new Graphic({
+      geometry: new Polyline({ paths: [WEST], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.cool, 0.9), width: 4, style: "dash", cap: "round" }
+    }));
+    westLayer.add(new Graphic({
+      geometry: new Point({ longitude: WEST[WEST.length-1][0], latitude: WEST[WEST.length-1][1], spatialReference: SR }),
+      symbol: { type: "text", text: "WEST →", color: rgb(C.cool),
+        font: { size: 11, family: "sans-serif", weight: "bold" },
+        xoffset: -8, yoffset: 8, horizontalAlignment: "right" }
+    }));
+
+    var ridden = new Graphic({
+      geometry: new Polyline({ paths: [[PATH[0], PATH[0]]], spatialReference: SR }),
+      symbol: { type: "simple-line", color: rgb(C.accent), width: 4.5, cap: "round", join: "round" }
+    });
+    riddenLayer.add(ridden);
+
+    function symbolFor(active){
+      return { type: "simple-marker", style: "square", size: active ? 19 : 13,
+        color: active ? rgb(C.accent) : rgb(C.paper),
+        outline: { color: rgb(C.ink), width: active ? 2.5 : 2 } };
+    }
+    function labelFor(i, active){
+      return { type: "text", text: String(i + 1),
+        color: active ? rgb(C.paper) : rgb(C.ink),
+        font: { size: active ? 11 : 8, family: "sans-serif", weight: "bold" }, yoffset: -4 };
+    }
+
+    var markers = [], labels = [];
+    for (var i = 0; i < STOPS.length; i++) {
+      var s = STOPS[i];
+      var pt = new Point({ longitude: PATH[s.pi][0], latitude: PATH[s.pi][1], spatialReference: SR });
+      var attrs = { stopIndex: i, name: s.name, ch: s.ch };
+      markers.push(new Graphic({
+        geometry: pt, attributes: attrs, symbol: symbolFor(false),
+        popupTemplate: { title: "Stop " + (i + 1) + " · {name}", content: "<b>{ch}</b><br/><br/>" + s.text }
+      }));
+      labels.push(new Graphic({ geometry: pt, attributes: attrs, symbol: labelFor(i, false) }));
+      stopLayer.addMany([markers[i], labels[i]]);
+    }
+
+    var PASSAGE_STOP  = 0;
+    var PLANTATION_STOP = 1;
+    var WEST_STOP = STOPS.length - 1;
+
+    var odometer = document.getElementById("odometer");
+    var stepCount = document.getElementById("stepCount");
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
+    var activeIndex = -1;
+
+    function activate(i, scrollPanel){
+      if (i === activeIndex || i < 0 || i >= STOPS.length) return;
+      activeIndex = i;
+
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) {
+        if (Number(els[k].getAttribute("data-stop")) === i) els[k].classList.add("active");
+        else els[k].classList.remove("active");
+      }
+      for (var m = 0; m < markers.length; m++) {
+        markers[m].symbol = symbolFor(m === i);
+        labels[m].symbol = labelFor(m, m === i);
+      }
+
+      var s = STOPS[i];
+
+      passageLayer.visible  = (i === PASSAGE_STOP);
+      freesoilLayer.visible = (i === PLANTATION_STOP);
+      westLayer.visible     = (i === WEST_STOP);
+
+      /* keepRun holds the line where it was — used for the Ouidah prologue
+         and for the flight back to Mabel's swamp, which is a revelation,
+         not a retreat. */
+      if (!s.keepRun) {
+        var run = PATH.slice(0, s.pi + 1);
+        if (run.length < 2) run = [PATH[0], PATH[0]];
+        ridden.geometry = new Polyline({ paths: [run], spatialReference: SR });
+      }
+
+      odometer.innerHTML = '<span class="mi">' + s.ch.toUpperCase() + '</span> · ' + s.name.toUpperCase();
+
+      stepCount.textContent = "Stop " + (i + 1) + " of " + STOPS.length;
+      prevBtn.disabled = (i === 0);
+      nextBtn.disabled = (i === STOPS.length - 1);
+
+      view.goTo({ center: s.center || PATH[s.pi], zoom: s.zoom },
+                { duration: prefersReduced ? 0 : 1500, easing: "in-out-cubic" }).catch(function(){});
+
+      if (scrollPanel && !document.body.classList.contains("map-only")) {
+        var el = document.getElementById("stop-" + i);
+        if (el) el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
+      }
+    }
+
+    function fitRoute(){
+      activeIndex = -1;
+      passageLayer.visible = false;
+      freesoilLayer.visible = false;
+      westLayer.visible = false;
+      view.goTo({ center: [-84.5, 35.8], zoom: window.innerWidth < 900 ? 4 : 5 },
+                { duration: prefersReduced ? 0 : 1200 }).catch(function(){});
+      odometer.innerHTML = '<span class="mi">THE LINE</span> · GEORGIA → NORTH';
+      for (var m = 0; m < markers.length; m++) {
+        markers[m].symbol = symbolFor(false);
+        labels[m].symbol = labelFor(m, false);
+      }
+      var els = document.querySelectorAll(".stop");
+      for (var k = 0; k < els.length; k++) els[k].classList.remove("active");
+      stepCount.textContent = "Stop 1 of " + STOPS.length;
+      prevBtn.disabled = true;
+      nextBtn.disabled = false;
+    }
+    document.getElementById("fitBtn").addEventListener("click", fitRoute);
+
+    view.on("click", function(evt){
+      view.hitTest(evt, { include: stopLayer }).then(function(res){
+        for (var i = 0; i < res.results.length; i++) {
+          var g = res.results[i].graphic;
+          if (g && g.attributes && typeof g.attributes.stopIndex === "number") {
+            activate(g.attributes.stopIndex, true);
+            return;
+          }
+        }
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) activate(Number(entries[i].target.getAttribute("data-stop")), false);
+        }
+      }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+      var stopEls = document.querySelectorAll(".stop");
+      for (var j = 0; j < stopEls.length; j++) io.observe(stopEls[j]);
+
+      var ioIntro = new IntersectionObserver(function(entries){
+        if (document.body.classList.contains("map-only")) return;
+        for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) fitRoute();
+      }, { rootMargin: "-30% 0px -60% 0px" });
+      ioIntro.observe(document.getElementById("intro"));
+    }
+
+    var toggle = document.getElementById("panelToggle");
+    var savedScroll = 0;
+    function setPanel(hidden){
+      if (hidden) {
+        savedScroll = window.pageYOffset || document.documentElement.scrollTop;
+        document.body.classList.add("map-only");
+        toggle.textContent = "Show text";
+        toggle.setAttribute("aria-pressed", "true");
+        if (activeIndex < 0) activate(0, false);
+      } else {
+        document.body.classList.remove("map-only");
+        toggle.textContent = "Hide text";
+        toggle.setAttribute("aria-pressed", "false");
+        window.scrollTo(0, savedScroll);
+        if (activeIndex >= 0) {
+          var el = document.getElementById("stop-" + activeIndex);
+          if (el) el.scrollIntoView({ behavior: "auto", block: "center" });
+        }
+      }
+    }
+    toggle.addEventListener("click", function(){
+      setPanel(!document.body.classList.contains("map-only"));
+    });
+
+    prevBtn.addEventListener("click", function(){ activate(activeIndex - 1, false); });
+    nextBtn.addEventListener("click", function(){ activate(activeIndex + 1, false); });
+
+    document.addEventListener("keydown", function(e){
+      if (!document.body.classList.contains("map-only")) return;
+      if (e.key === "ArrowRight") { activate(activeIndex + 1, false); e.preventDefault(); }
+      if (e.key === "ArrowLeft")  { activate(activeIndex - 1, false); e.preventDefault(); }
+      if (e.key === "Escape")     { setPanel(false); }
+    });
+
+    prevBtn.disabled = true;
+
+  }, function(){
+    showMapMessage("The map didn't load",
+      "<p>Part of the mapping service couldn't be reached. Check the connection and reload.</p>");
+  });
+})();
+</script>
+</body>
+</html>
